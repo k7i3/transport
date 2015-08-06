@@ -6,11 +6,17 @@
         <item name="colorPrimary">#2196F3</item>
         <item name="colorPrimaryDark">#1565C0</item>
         <item name="colorAccent">#E91E63</item>
-    </style>
 
-    <style name="AppTheme.WithoutActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="windowActionBarOverlay">false</item>
     </style>
+
+    <!--<style name="AppTheme.WithoutActionBar">-->
+        <!--<item name="windowActionBar">false</item>-->
+        <!--<item name="windowNoTitle">true</item>-->
+    <!--</style>-->
+
+    <!--<item name="windowActionBarOverlay">false</item>-->
 
 </resources>
