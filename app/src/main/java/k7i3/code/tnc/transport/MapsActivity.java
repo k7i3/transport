@@ -1,5 +1,6 @@
 package k7i3.code.tnc.transport;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,6 +12,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends BaseActivity {
+
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_maps;
+    }
 
     private GoogleMap googleMap; // Might be null if Google Play services APK is not available.
     private FloatingActionButton fabFilterOptions;
@@ -34,6 +40,14 @@ public class MapsActivity extends BaseActivity {
         fabFilterOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startActivity(new Intent(getBaseContext(), RoutesActivity.class));
+            }
+        });
+
+        fabCurrentPosition = (FloatingActionButton) findViewById(R.id.fabCurrentPosition);
+        fabCurrentPosition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 Snackbar.make(rootLayout, "fabFilterOptions", Snackbar.LENGTH_SHORT)
                         .setAction("Undo", new View.OnClickListener() {
                             @Override
@@ -44,19 +58,6 @@ public class MapsActivity extends BaseActivity {
                         .show();
             }
         });
-
-        fabCurrentPosition = (FloatingActionButton) findViewById(R.id.fabCurrentPosition);
-        fabCurrentPosition.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-    }
-
-    @Override
-    protected int getLayoutResource() {
-        return R.layout.activity_maps;
     }
 
     /**
