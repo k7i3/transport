@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <include layout="@layout/base_toolbar"/>
+            <include layout="@layout/maps_toolbar"/>
         </android.support.design.widget.AppBarLayout>
 
             <android.support.design.widget.FloatingActionButton
@@ -49,6 +49,6 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <include layout="@layout/base_nav_drawer"/>
+    <include layout="@layout/nav_drawer"/>
     
 </android.support.v4.widget.DrawerLayout>
