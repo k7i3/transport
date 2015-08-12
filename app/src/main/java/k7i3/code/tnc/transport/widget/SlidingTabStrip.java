@@ -1,4 +1,4 @@
-package k7i3.code.tnc.transport.view;
+package k7i3.code.tnc.transport.widget;
 
 import android.R;
 import android.content.Context;

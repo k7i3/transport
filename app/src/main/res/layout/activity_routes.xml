@@ -49,7 +49,7 @@
                 <include layout="@layout/routes_toolbar" />
             </android.support.design.widget.CollapsingToolbarLayout>
 
-            <k7i3.code.tnc.transport.view.SlidingTabLayout
+            <k7i3.code.tnc.transport.widget.SlidingTabLayout
                 android:id="@+id/slidingTabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

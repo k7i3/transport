@@ -6,7 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 
 import k7i3.code.tnc.transport.adapter.RoutesAdapter;
-import k7i3.code.tnc.transport.view.SlidingTabLayout;
+import k7i3.code.tnc.transport.widget.SlidingTabLayout;
 
 /**
  * Created by k7i3 on 07.08.15.
