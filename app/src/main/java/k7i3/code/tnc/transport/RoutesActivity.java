@@ -35,15 +35,6 @@ public class RoutesActivity extends BaseActivity {
     }
 
     private void initInstances() {
-//        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-//        tabLayout.addTab(tabLayout.newTab().setText("Автобус"));
-//        tabLayout.addTab(tabLayout.newTab().setText("Троллейбус"));
-//        tabLayout.addTab(tabLayout.newTab().setText("Трамвай"));
-
-//        tabLayoutTest = (TabLayout) findViewById(R.id.tabLayoutTest);
-//        tabLayoutTest.addTab(tabLayoutTest.newTab().setText("Рядом"));
-//        tabLayoutTest.addTab(tabLayoutTest.newTab().setText("Все"));
-
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout);
         collapsingToolbarLayout.setTitle("Маршруты");
 

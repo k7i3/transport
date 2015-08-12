@@ -11,26 +11,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="#ffe812" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="256dp"
+            android:layout_height="wrap_content"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-            <!--<android.support.design.widget.TabLayout-->
-            <!--android:id="@+id/tabLayoutTest"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--app:layout_scrollFlags="scroll|enterAlwaysCollapsed"-->
-            <!--app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
-            <!--android:layout_gravity="bottom"/>-->
 
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/collapsingToolbarLayout"
                 android:layout_width="match_parent"
-                android:layout_height="208dp"
+                android:layout_height="200dp"
                 app:contentScrim="?attr/colorPrimary"
-                app:expandedTitleMarginBottom="80dp"
                 app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
+                <!--app:expandedTitleMarginBottom="80dp"-->
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -40,82 +46,17 @@
                     app:layout_collapseMode="parallax"
                     app:layout_collapseParallaxMultiplier="0.5" />
 
-                <!--<android.support.design.widget.TabLayout-->
-                    <!--android:id="@+id/tabLayoutTest"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="bottom"-->
-                    <!--app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />-->
-
-                <k7i3.code.tnc.transport.view.SlidingTabLayout
-                    android:id="@+id/slidingTabLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    app:layout_scrollFlags="scroll|enterAlways"
-                    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-                <!--<android.support.v4.view.ViewPager-->
-                    <!--android:id="@+id/viewPager"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="0px"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:background="@android:color/holo_red_dark" />-->
-
                 <include layout="@layout/routes_toolbar" />
-
             </android.support.design.widget.CollapsingToolbarLayout>
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/viewPager"
+            <k7i3.code.tnc.transport.view.SlidingTabLayout
+                android:id="@+id/slidingTabLayout"
                 android:layout_width="match_parent"
-                android:layout_height="0px"
-                android:layout_weight="1"
-                android:background="@android:color/holo_red_dark" />
-
-            <!--<android.support.design.widget.TabLayout-->
-                <!--android:id="@+id/tabLayout"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_gravity="bottom"-->
-                <!--app:layout_scrollFlags="scroll|enterAlways"-->
-                <!--app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />-->
-
-            <!--<k7i3.code.tnc.transport.view.SlidingTabLayout-->
-                <!--android:id="@+id/slidingTabLayout"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_gravity="bottom"-->
-                <!--app:layout_scrollFlags="scroll|enterAlways"-->
-                <!--app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>-->
-
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
         </android.support.design.widget.AppBarLayout>
-
-        <!--<k7i3.code.tnc.transport.view.SlidingTabLayout-->
-            <!--android:id="@+id/slidingTabLayout"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="bottom"-->
-            <!--app:layout_scrollFlags="scroll|enterAlways"-->
-            <!--app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>-->
-
-        <!--<android.support.v4.widget.NestedScrollView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:fillViewport="true"-->
-            <!--app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
-
-            <!--<include layout="@layout/routes_content" />-->
-
-            <!--<android.support.v4.view.ViewPager-->
-                <!--android:id="@+id/viewPager"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="0px"-->
-                <!--android:layout_weight="1"-->
-                <!--android:background="@android:color/holo_red_dark"-->
-                <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"/>-->
-
-        <!--</android.support.v4.widget.NestedScrollView>-->
     </android.support.design.widget.CoordinatorLayout>
 
     <include layout="@layout/nav_drawer" />
