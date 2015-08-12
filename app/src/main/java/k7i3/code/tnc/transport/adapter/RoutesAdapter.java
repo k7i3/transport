@@ -14,13 +14,10 @@ import k7i3.code.tnc.transport.fragment.RoutesTabNearest;
 public class RoutesAdapter extends FragmentStatePagerAdapter {
 
     CharSequence titles[];
-    int numbOfTabs;
 
-    public RoutesAdapter(FragmentManager fm, CharSequence titles[], int numbOfTabs) {
+    public RoutesAdapter(FragmentManager fm, CharSequence titles[]) {
         super(fm);
-
         this.titles = titles;
-        this.numbOfTabs = numbOfTabs;
     }
 
     @Override
@@ -42,6 +39,6 @@ public class RoutesAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return numbOfTabs;
+        return titles.length;
     }
 }

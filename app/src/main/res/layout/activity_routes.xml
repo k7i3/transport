@@ -22,10 +22,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:background="#ffe812" />
+                android:background="#feff71" />
         </android.support.v4.widget.SwipeRefreshLayout>
 
         <android.support.design.widget.AppBarLayout
+            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -42,7 +43,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/header"
+                    android:src="@drawable/transport1"
                     app:layout_collapseMode="parallax"
                     app:layout_collapseParallaxMultiplier="0.5" />
 
@@ -56,6 +57,25 @@
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
         </android.support.design.widget.AppBarLayout>
+
+        <!--TODO FAB for appBarLayout (after disable refreshingBySwipe hidden doesn't work) http://blog.grafixartist.com/toolbar-animation-with-android-design-support-library/-->
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:src="@drawable/ic_plus"
+            app:layout_anchor="@+id/appBarLayout"
+            app:layout_anchorGravity="bottom|right|end" />
+
+        <!--TODO FAB for content = recycleView (with hidden anim) https://guides.codepath.com/android/Floating-Action-Buttons-->
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:src="@drawable/ic_plus"
+            app:layout_anchor="@+id/viewPager"
+            app:layout_anchorGravity="bottom|right|end" />
+
     </android.support.design.widget.CoordinatorLayout>
 
     <include layout="@layout/nav_drawer" />
