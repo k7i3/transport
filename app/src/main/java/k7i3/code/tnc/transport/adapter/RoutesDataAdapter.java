@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class RoutesDataAdapter extends RecyclerView.Adapter<RoutesDataAdapter.Ro
 
     @Override
     public RouteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view_routes, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_routes, parent, false);
         return new RouteViewHolder(v);
     }
 
@@ -41,7 +42,6 @@ public class RoutesDataAdapter extends RecyclerView.Adapter<RoutesDataAdapter.Ro
     }
 
     public static class RouteViewHolder extends RecyclerView.ViewHolder {
-        CardView cardView;
         TextView routeNumber;
         TextView routePointA;
         TextView routePointB;
@@ -49,7 +49,6 @@ public class RoutesDataAdapter extends RecyclerView.Adapter<RoutesDataAdapter.Ro
         public RouteViewHolder(View itemView) {
             super(itemView);
 
-            cardView = (CardView)itemView.findViewById(R.id.cardView);
             routeNumber = (TextView)itemView.findViewById(R.id.routeNumber);
             routePointA = (TextView)itemView.findViewById(R.id.routePointA);
             routePointB = (TextView)itemView.findViewById(R.id.routePointB);

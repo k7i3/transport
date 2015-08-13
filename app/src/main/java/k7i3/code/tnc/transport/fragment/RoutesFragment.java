@@ -52,7 +52,7 @@ public class RoutesFragment extends Fragment {
         routes.add(new Route("110", "ВАЗ", "Аэропорт"));
         routes.add(new Route("110с", "ДОК", "Аэропорт"));
         routes.add(new Route("51", "Точка А", "Точка Б"));
-        routes.add(new Route("51А", "Точка А", "Точка Б"));
+        routes.add(new Route("51а", "Точка А", "Точка Б"));
         routes.add(new Route("69", "Точка А", "Точка Б"));
         routes.add(new Route("74", "Точка А", "Точка Б"));
         routes.add(new Route("57", "Точка А", "Точка Б"));
