@@ -1,9 +1,12 @@
-package k7i3.code.tnc.transport;
+package k7i3.code.tnc.transport.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+
+import k7i3.code.tnc.transport.R;
+import k7i3.code.tnc.transport.activity.BaseActivity;
 import k7i3.code.tnc.transport.adapter.RoutesPagerAdapter;
 import k7i3.code.tnc.transport.widget.SlidingTabLayout;
 

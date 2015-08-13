@@ -1,4 +1,4 @@
-package k7i3.code.tnc.transport;
+package k7i3.code.tnc.transport.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -9,7 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
+
+import k7i3.code.tnc.transport.R;
 
 /**
  * Created by k7i3 on 05.08.15.

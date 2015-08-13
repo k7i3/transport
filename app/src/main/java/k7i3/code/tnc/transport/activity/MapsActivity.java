@@ -1,4 +1,4 @@
-package k7i3.code.tnc.transport;
+package k7i3.code.tnc.transport.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import k7i3.code.tnc.transport.R;
 
 public class MapsActivity extends BaseActivity {
 

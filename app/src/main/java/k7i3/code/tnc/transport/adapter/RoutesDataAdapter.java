@@ -24,7 +24,7 @@ public class RoutesDataAdapter extends RecyclerView.Adapter<RoutesDataAdapter.Ro
 
     @Override
     public RouteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.routes_card_view, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view_routes, parent, false);
         return new RouteViewHolder(v);
     }
 

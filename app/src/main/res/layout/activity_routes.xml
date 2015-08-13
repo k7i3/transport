@@ -47,7 +47,7 @@
                     app:layout_collapseMode="parallax"
                     app:layout_collapseParallaxMultiplier="0.5" />
 
-                <include layout="@layout/routes_toolbar" />
+                <include layout="@layout/toolbar_routes" />
             </android.support.design.widget.CollapsingToolbarLayout>
 
             <k7i3.code.tnc.transport.widget.SlidingTabLayout
