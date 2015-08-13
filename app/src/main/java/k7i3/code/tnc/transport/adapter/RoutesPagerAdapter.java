@@ -11,11 +11,11 @@ import k7i3.code.tnc.transport.fragment.RoutesTabNearest;
 /**
  * Created by k7i3 on 11.08.15.
  */
-public class RoutesAdapter extends FragmentStatePagerAdapter {
+public class RoutesPagerAdapter extends FragmentStatePagerAdapter {
 
     CharSequence titles[];
 
-    public RoutesAdapter(FragmentManager fm, CharSequence titles[]) {
+    public RoutesPagerAdapter(FragmentManager fm, CharSequence titles[]) {
         super(fm);
         this.titles = titles;
     }

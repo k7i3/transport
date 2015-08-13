@@ -2,11 +2,9 @@ package k7i3.code.tnc.transport;
 
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-
-import k7i3.code.tnc.transport.adapter.RoutesAdapter;
+import k7i3.code.tnc.transport.adapter.RoutesPagerAdapter;
 import k7i3.code.tnc.transport.widget.SlidingTabLayout;
 
 /**
@@ -14,13 +12,13 @@ import k7i3.code.tnc.transport.widget.SlidingTabLayout;
  */
 public class RoutesActivity extends BaseActivity {
 
+    private CharSequence titles[] = {"Избранные", "Рядом", "Все"};
+    private RoutesPagerAdapter routesPagerAdapter;
+
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private SlidingTabLayout slidingTabLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ViewPager viewPager;
-
-    private CharSequence titles[] = {"Избранные", "Рядом", "Все"};
-    private RoutesAdapter routesAdapter;
 
     @Override
     protected int getLayoutResource() {
@@ -37,9 +35,9 @@ public class RoutesActivity extends BaseActivity {
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout);
         collapsingToolbarLayout.setTitle("Маршруты");
 
-        routesAdapter = new RoutesAdapter(getSupportFragmentManager(), titles);
+        routesPagerAdapter = new RoutesPagerAdapter(getSupportFragmentManager(), titles);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        viewPager.setAdapter(routesAdapter);
+        viewPager.setAdapter(routesPagerAdapter);
 
         slidingTabLayout = (SlidingTabLayout) findViewById(R.id.slidingTabLayout);
         slidingTabLayout.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
