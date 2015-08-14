@@ -3,6 +3,7 @@ package k7i3.code.tnc.transport.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,6 +21,9 @@ import k7i3.code.tnc.transport.R;
 import k7i3.code.tnc.transport.adapter.RoutesDataAdapter;
 import k7i3.code.tnc.transport.data.Route;
 import k7i3.code.tnc.transport.listener.RecyclerItemClickListener;
+import k7i3.code.tnc.transport.widget.decorator.DividerItemDecoration;
+import k7i3.code.tnc.transport.widget.decorator.VerticalSpaceItemDecoration;
+
 
 /**
  * Created by k7i3 on 11.08.15.
@@ -53,7 +57,7 @@ public class RoutesFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
 //                Toast.makeText(view.getContext(), "onItemClick => position = " + position, Toast.LENGTH_SHORT).show();
-                ((CheckBox)view.findViewById(R.id.checkBox)).toggle();
+                ((CheckBox) view.findViewById(R.id.checkBox)).toggle();
             }
 
             @Override
@@ -61,11 +65,15 @@ public class RoutesFragment extends Fragment {
 //                Toast.makeText(view.getContext(), "onItemLongClick => position = " + position, Toast.LENGTH_SHORT).show();
             }
         }));
+
+//        TODO waiting for built-in implementation of decorators http://stackoverflow.com/questions/24618829/how-to-add-dividers-and-spaces-between-items-in-recyclerview
+        recyclerView.addItemDecoration(new DividerItemDecoration(view.getContext())); //(getActivity()));
+//        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), R.drawable.divider));
+//        recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(48));
     }
 
     private void initRoutes(int position) {
         routes = new ArrayList<>();
-
         routes.add(new Route(position + "", "Точка А", "Точка Б"));
         routes.add(new Route("110", "ВАЗ", "Аэропорт"));
         routes.add(new Route("110с", "ДОК", "Аэропорт"));
