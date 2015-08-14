@@ -6,8 +6,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +19,7 @@ import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.R;
 import k7i3.code.tnc.transport.adapter.RoutesDataAdapter;
 import k7i3.code.tnc.transport.data.Route;
+import k7i3.code.tnc.transport.listener.RecyclerItemClickListener;
 
 /**
  * Created by k7i3 on 11.08.15.
@@ -36,13 +40,27 @@ public class RoutesFragment extends Fragment {
         return view;
     }
 
-    private void initInstances(View view) {
+    private void initInstances(final View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
 //        recyclerView.setHasFixedSize(true); if size won't be changing (for performance)
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         routesDataAdapter = new RoutesDataAdapter(routes);
         recyclerView.setAdapter(routesDataAdapter);
+
+//        TODO waiting for built-in implementation http://stackoverflow.com/questions/24471109/recyclerview-onclick/26826692#26826692
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+//                Toast.makeText(view.getContext(), "onItemClick => position = " + position, Toast.LENGTH_SHORT).show();
+                ((CheckBox)view.findViewById(R.id.checkBox)).toggle();
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+//                Toast.makeText(view.getContext(), "onItemLongClick => position = " + position, Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     private void initRoutes(int position) {
