@@ -22,6 +22,6 @@
         android:id="@+id/action_user"
         android:orderInCategory="300"
         android:title="User"
-        android:icon="@drawable/mr_ic_media_route_connecting_mono_dark"
+        android:icon="@drawable/abc_ratingbar_full_material"
         app:showAsAction="ifRoom"/>
 </menu>

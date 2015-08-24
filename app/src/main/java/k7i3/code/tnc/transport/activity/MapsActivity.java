@@ -46,20 +46,14 @@ public class MapsActivity extends BaseActivity {
             }
         });
 
-        fabCurrentPosition = (FloatingActionButton) findViewById(R.id.fabCurrentPosition);
-        fabCurrentPosition.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Snackbar.make(rootLayout, "fabFilterOptions", Snackbar.LENGTH_SHORT)
-                        .setAction("Undo", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                            }
-                        })
-                        .show();
-            }
-        });
+//                Snackbar.make(rootLayout, "fabFilterOptions", Snackbar.LENGTH_SHORT)
+//                        .setAction("Undo", new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//
+//                            }
+//                        })
+//                        .show();
     }
 
     /**
