@@ -59,13 +59,13 @@
         </android.support.design.widget.AppBarLayout>
 
         <!--TODO FAB for appBarLayout (after disable refreshingBySwipe hidden doesn't work) http://blog.grafixartist.com/toolbar-animation-with-android-design-support-library/  http://android-developers.blogspot.ru/2015/05/android-design-support-library.html-->
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:src="@drawable/ic_plus"
-            app:layout_anchor="@+id/appBarLayout"
-            app:layout_anchorGravity="bottom|right|end" />
+        <!--<android.support.design.widget.FloatingActionButton-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:clickable="true"-->
+            <!--android:src="@drawable/ic_plus"-->
+            <!--app:layout_anchor="@+id/appBarLayout"-->
+            <!--app:layout_anchorGravity="bottom|right|end" />-->
 
         <!--TODO FAB for content = recycleView (with hidden anim) https://guides.codepath.com/android/Floating-Action-Buttons-->
         <android.support.design.widget.FloatingActionButton
