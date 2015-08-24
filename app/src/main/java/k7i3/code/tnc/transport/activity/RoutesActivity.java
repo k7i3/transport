@@ -50,5 +50,16 @@ public class RoutesActivity extends BaseActivity {
         // disable refreshing
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setEnabled(false);
+
+//        toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
     }
+
+//    public int getStatusBarHeight() {
+//        int result = 0;
+//        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+//        if (resourceId > 0) {
+//            result = getResources().getDimensionPixelSize(resourceId);
+//        }
+//        return result;
+//    }
 }

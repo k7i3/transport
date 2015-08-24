@@ -19,7 +19,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     protected CoordinatorLayout rootLayout;
-    private Toolbar toolbar;
+    protected Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
