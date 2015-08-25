@@ -10,5 +10,5 @@
         app:headerLayout="@layout/nav_drawer_header"
         app:itemIconTint="#333"
         app:itemTextColor="#333"
-        app:menu="@menu/nav_drawer_items" />
+        app:menu="@menu/nav_drawer_menu" />
 </merge>

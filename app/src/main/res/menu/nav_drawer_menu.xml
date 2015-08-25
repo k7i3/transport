@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single"
+        android:id="@+id/mainGroup">
+        <item
+            android:checked="true"
+            android:id="@+id/navItem1"
+            android:icon="@drawable/ic_my_location_black_24dp"
+            android:title="Карта" />
+        <item
+            android:id="@+id/navItem2"
+            android:icon="@drawable/ic_my_location_black_24dp"
+            android:title="Маршруты" />
+        <item
+            android:id="@+id/navItem3"
+            android:icon="@drawable/ic_my_location_black_24dp"
+            android:title="Остановки" />
+    </group>
+
+    <group android:checkableBehavior="none"
+        android:id="@+id/supportGroup">
+        <item
+            android:id="@+id/navItem4"
+            android:icon="@drawable/ic_my_location_black_24dp"
+            android:title="Справка" />
+
+        <item
+            android:id="@+id/navItem5"
+            android:icon="@drawable/ic_my_location_black_24dp"
+            android:title="О программе" />
+
+        <item
+            android:id="@+id/navItem6"
+            android:icon="@drawable/ic_my_location_black_24dp"
+            android:title="Контакты" />
+    </group>
+
+
+
+</menu>

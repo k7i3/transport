@@ -17,7 +17,7 @@ import k7i3.code.tnc.transport.R;
 public class MapsActivity extends BaseActivity {
 
     private GoogleMap googleMap; // Might be null if Google Play services APK is not available.
-    private FloatingActionButton fabFilterOptions;
+    private FloatingActionButton routesFAB;
 
     @Override
     protected int getLayoutResource() {
@@ -38,13 +38,15 @@ public class MapsActivity extends BaseActivity {
     }
 
     private void initInstances() {
+//        toolbar.setLogo(R.drawable.logo);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 //            getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
 
-        fabFilterOptions = (FloatingActionButton) findViewById(R.id.fabFilterOptions);
-        fabFilterOptions.setOnClickListener(new View.OnClickListener() {
+        routesFAB = (FloatingActionButton) findViewById(R.id.routesFAB);
+        routesFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getBaseContext(), RoutesActivity.class));

@@ -1,10 +1,12 @@
 package k7i3.code.tnc.transport.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.View;
 
 import k7i3.code.tnc.transport.R;
 import k7i3.code.tnc.transport.activity.BaseActivity;
@@ -23,6 +25,7 @@ public class RoutesActivity extends BaseActivity {
     private SlidingTabLayout slidingTabLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ViewPager viewPager;
+    private FloatingActionButton mapsFAB;
 
     @Override
     protected int getLayoutResource() {
@@ -50,6 +53,14 @@ public class RoutesActivity extends BaseActivity {
         // disable refreshing
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setEnabled(false);
+
+        mapsFAB = (FloatingActionButton) findViewById(R.id.mapsFAB);
+        mapsFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getBaseContext(), MapsActivity.class));
+            }
+        });
 
 //        toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
     }

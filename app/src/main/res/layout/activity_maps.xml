@@ -19,15 +19,15 @@
             tools:context=".MapsActivity" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabFilterOptions"
+            android:id="@+id/routesFAB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_marginBottom="@dimen/fab_margin_bottom"
             android:layout_marginEnd="@dimen/fab_margin_end"
-            android:src="@drawable/ic_plus"
-            app:backgroundTint="#c01f18"
+            android:src="@drawable/ic_directions_bus_white_24dp"
             app:fabSize="normal" />
+        <!--app:backgroundTint="#4952c0"-->
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
