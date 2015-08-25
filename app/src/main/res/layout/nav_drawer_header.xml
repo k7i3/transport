@@ -11,17 +11,16 @@
 
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="36dp"
-        android:src="@drawable/nuuneoi" />
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:src="@drawable/logo" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_margin="16dp"
-        android:text="nuuneoi"
+        android:text="АО &quot;ТНЦ&quot;"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
 </FrameLayout>
