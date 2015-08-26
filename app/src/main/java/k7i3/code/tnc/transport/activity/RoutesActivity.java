@@ -39,6 +39,8 @@ public class RoutesActivity extends BaseActivity {
     }
 
     private void initInstances() {
+        drawerToggle.setDrawerIndicatorEnabled(false);
+
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout);
         collapsingToolbarLayout.setTitle("Маршруты");
 
