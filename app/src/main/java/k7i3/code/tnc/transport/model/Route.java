@@ -1,4 +1,4 @@
-package k7i3.code.tnc.transport.data;
+package k7i3.code.tnc.transport.model;
 
 /**
  * Created by k7i3 on 13.08.15.

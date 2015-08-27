@@ -9,7 +9,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import k7i3.code.tnc.transport.R;
-import k7i3.code.tnc.transport.data.Route;
+import k7i3.code.tnc.transport.model.Route;
 
 /**
  * Created by k7i3 on 13.08.15.

@@ -12,16 +12,16 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_search"
-        android:orderInCategory="200"
-        android:title="Search"
-        android:icon="@drawable/abc_ic_menu_share_mtrl_alpha"
-        app:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/action_user"
-        android:orderInCategory="300"
+        android:orderInCategory="200"
         android:title="User"
         android:icon="@drawable/logo"
         app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_search"
+        android:orderInCategory="300"
+        android:title="Search"
+        android:icon="@drawable/abc_ic_menu_share_mtrl_alpha"
+        app:showAsAction="ifRoom" />
 </menu>
