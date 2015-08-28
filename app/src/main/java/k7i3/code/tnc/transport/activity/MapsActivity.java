@@ -14,10 +14,13 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -69,6 +72,7 @@ public class MapsActivity extends BaseActivity
     @Override
     protected void onPause() {
         super.onPause();
+        googleMap.clear();
         googleApiClient.disconnect();
     }
 
@@ -89,6 +93,9 @@ public class MapsActivity extends BaseActivity
         });
     }
 
+    /**
+     * Implementation of {@link OnMapReadyCallback}.
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
@@ -100,8 +107,6 @@ public class MapsActivity extends BaseActivity
         UiSettings uiSettings = googleMap.getUiSettings();
         uiSettings.setZoomControlsEnabled(true);
         uiSettings.setMyLocationButtonEnabled(true);
-
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
 
     /**
@@ -125,7 +130,39 @@ public class MapsActivity extends BaseActivity
                 googleApiClient,
                 REQUEST,
                 this);  // LocationListener
+
+        Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        moveCamera(latLng);
+        drawTransport(location);
     }
+
+    private void moveCamera(LatLng latLng) {
+//        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(latLng)             // Sets the center of the map to location user
+                .zoom(17)                   // Sets the zoom
+                .bearing(0)
+                .tilt(30)                   // Sets the tilt of the camera to 30 degrees
+                .build();                   // Creates a CameraPosition from the builder
+        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+    private void drawTransport(Location location) {
+        googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title(location.getTime() + " " + location.getProvider()));
+    }
+
+//    TODO make custom marker icon http://stackoverflow.com/questions/14811579/android-map-api-v2-custom-marker-with-imageview /// http://stackoverflow.com/questions/13763545/android-maps-api-v2-with-custom-markers /// http://stackoverflow.com/questions/11100428/add-text-to-image-in-android-programmatically /// http://googlemaps.github.io/android-maps-utils/
+//    TODO use android-maps-utils https://github.com/googlemaps/android-maps-utils
+//    private void addIcon(IconGenerator iconFactory, String text, LatLng position) {
+//        MarkerOptions markerOptions = new MarkerOptions().
+//                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(text))).
+//                position(position).
+//                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+//
+//        googleMap.addMarker(markerOptions);
+//    }
 
     /**
      * Callback called when disconnected from GCore. Implementation of {@link GoogleApiClient.ConnectionCallbacks}.
@@ -143,6 +180,9 @@ public class MapsActivity extends BaseActivity
 
     }
 
+    /**
+     * Implementation of {@link com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener}.
+     */
     @Override
     public boolean onMyLocationButtonClick() {
 //        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
@@ -151,6 +191,9 @@ public class MapsActivity extends BaseActivity
         return false;
     }
 
+    /**
+     * Implementation of {@link LocationListener}.
+     */
     @Override
     public void onLocationChanged(Location location) {
 //        Toast.makeText(this, "Location = " + location, Toast.LENGTH_SHORT).show();
