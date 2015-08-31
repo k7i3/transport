@@ -1,13 +1,18 @@
 package k7i3.code.tnc.transport.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -23,6 +28,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.ui.IconGenerator;
 
 import k7i3.code.tnc.transport.R;
 
@@ -150,19 +156,53 @@ public class MapsActivity extends BaseActivity
     }
 
     private void drawTransport(Location location) {
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title(location.getTime() + " " + location.getProvider()));
+//        googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title(location.getTime() + " " + location.getProvider()));
+
+        location.setBearing(45);
+
+        Drawable drawable = getResources().getDrawable(R.drawable.ic_navigation_white_24dp);
+//        drawable.setTint(Color.CYAN); // API 21
+        ColorFilter filter = new PorterDuffColorFilter(Color.CYAN, PorterDuff.Mode.MULTIPLY);
+        drawable.setColorFilter(filter);
+        drawable.setAlpha(255);
+
+        IconGenerator iconFactory = new IconGenerator(this);
+        iconFactory.setBackground(drawable);
+        iconFactory.setContentPadding(0, 30, 0, 30);
+        iconFactory.setTextAppearance(R.style.Marker);
+//        iconFactory.setContentRotation(-90);
+//        iconFactory.setColor(Color.CYAN);
+//        iconFactory.setStyle(IconGenerator.STYLE_PURPLE);
+
+        addIcon(iconFactory, "110c", location);
+
+        //TEST
+        location.setLongitude(location.getLongitude() + 0.001);
+        addIcon(iconFactory, "290", location);
+        location.setLongitude(location.getLongitude() + 0.001);
+        addIcon(iconFactory, "69", location);
+        location.setLongitude(location.getLongitude() + 0.001);
+        addIcon(iconFactory, "6", location);
+
+        iconFactory.setContentRotation(-90);
+        iconFactory.setContentPadding(0, 0, 0, 0);
+        iconFactory.setStyle(IconGenerator.STYLE_PURPLE);
+        location.setLongitude(location.getLongitude() + 0.001);
+        addIcon(iconFactory, "110c", location);
     }
 
-//    TODO make custom marker icon http://stackoverflow.com/questions/14811579/android-map-api-v2-custom-marker-with-imageview /// http://stackoverflow.com/questions/13763545/android-maps-api-v2-with-custom-markers /// http://stackoverflow.com/questions/11100428/add-text-to-image-in-android-programmatically /// http://googlemaps.github.io/android-maps-utils/
-//    TODO use android-maps-utils https://github.com/googlemaps/android-maps-utils
-//    private void addIcon(IconGenerator iconFactory, String text, LatLng position) {
-//        MarkerOptions markerOptions = new MarkerOptions().
-//                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(text))).
-//                position(position).
-//                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
-//
-//        googleMap.addMarker(markerOptions);
-//    }
+    //    TODO make custom marker icon http://stackoverflow.com/questions/14811579/android-map-api-v2-custom-marker-with-imageview /// http://stackoverflow.com/questions/13763545/android-maps-api-v2-with-custom-markers /// http://stackoverflow.com/questions/11100428/add-text-to-image-in-android-programmatically /// http://googlemaps.github.io/android-maps-utils/
+    //    TODO use android-maps-utils https://github.com/googlemaps/android-maps-utils
+    private void addIcon(IconGenerator iconFactory, String text, Location location) {
+        MarkerOptions markerOptions = new MarkerOptions().
+                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(text))).
+                position(new LatLng(location.getLatitude(), location.getLongitude())).
+                flat(true).
+                rotation(location.getBearing()).
+                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+
+        googleMap.addMarker(markerOptions);
+    }
 
     /**
      * Callback called when disconnected from GCore. Implementation of {@link GoogleApiClient.ConnectionCallbacks}.
