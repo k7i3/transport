@@ -144,8 +144,6 @@ public class MapsActivity extends BaseActivity
     }
 
     private void moveCamera(LatLng latLng) {
-//        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(latLng)             // Sets the center of the map to location user
                 .zoom(17)                   // Sets the zoom
@@ -153,26 +151,28 @@ public class MapsActivity extends BaseActivity
                 .tilt(30)                   // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+//        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
     }
 
     private void drawTransport(Location location) {
 //        googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title(location.getTime() + " " + location.getProvider()));
 
-        location.setBearing(45);
+        location.setBearing(45);  // direction
 
-        Drawable drawable = getResources().getDrawable(R.drawable.ic_navigation_white_24dp);
+//        TODO make good nine-patch drawable (.9.png) or custom drawable (.xml) https://romannurik.github.io/AndroidAssetStudio/index.html
+        Drawable drawable = getResources().getDrawable(R.drawable.arrow);
 //        drawable.setTint(Color.CYAN); // API 21
-        ColorFilter filter = new PorterDuffColorFilter(Color.CYAN, PorterDuff.Mode.MULTIPLY);
+        ColorFilter filter = new PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
         drawable.setColorFilter(filter);
-        drawable.setAlpha(255);
+//        drawable.setAlpha(255);
 
         IconGenerator iconFactory = new IconGenerator(this);
         iconFactory.setBackground(drawable);
-        iconFactory.setContentPadding(0, 30, 0, 30);
+        iconFactory.setContentPadding(0, 0, 0, 0);
         iconFactory.setTextAppearance(R.style.Marker);
-//        iconFactory.setContentRotation(-90);
-//        iconFactory.setColor(Color.CYAN);
-//        iconFactory.setStyle(IconGenerator.STYLE_PURPLE);
+        iconFactory.setContentRotation(-90);
+//        iconFactory.setColor(Color.CYAN); // ONLY FOR DEFAULT MARKER?
+//        iconFactory.setStyle(IconGenerator.STYLE_PURPLE); // ONLY FOR DEFAULT MARKER?
 
         addIcon(iconFactory, "110c", location);
 
@@ -183,16 +183,8 @@ public class MapsActivity extends BaseActivity
         addIcon(iconFactory, "69", location);
         location.setLongitude(location.getLongitude() + 0.001);
         addIcon(iconFactory, "6", location);
-
-        iconFactory.setContentRotation(-90);
-        iconFactory.setContentPadding(0, 0, 0, 0);
-        iconFactory.setStyle(IconGenerator.STYLE_PURPLE);
-        location.setLongitude(location.getLongitude() + 0.001);
-        addIcon(iconFactory, "110c", location);
     }
 
-    //    TODO make custom marker icon http://stackoverflow.com/questions/14811579/android-map-api-v2-custom-marker-with-imageview /// http://stackoverflow.com/questions/13763545/android-maps-api-v2-with-custom-markers /// http://stackoverflow.com/questions/11100428/add-text-to-image-in-android-programmatically /// http://googlemaps.github.io/android-maps-utils/
-    //    TODO use android-maps-utils https://github.com/googlemaps/android-maps-utils
     private void addIcon(IconGenerator iconFactory, String text, Location location) {
         MarkerOptions markerOptions = new MarkerOptions().
                 icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(text))).
