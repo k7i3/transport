@@ -3,7 +3,6 @@ package k7i3.code.tnc.transport.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
-import android.graphics.LightingColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
@@ -32,7 +31,7 @@ import com.google.maps.android.ui.IconGenerator;
 
 import k7i3.code.tnc.transport.R;
 
-public class MapsActivity extends BaseActivity
+public class TransportActivity extends BaseActivity
         implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -54,7 +53,7 @@ public class MapsActivity extends BaseActivity
 
     @Override
     protected int getLayoutResource() {
-        return R.layout.activity_maps;
+        return R.layout.activity_transport;
     }
 
     @Override

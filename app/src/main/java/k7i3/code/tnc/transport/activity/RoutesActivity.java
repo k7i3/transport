@@ -9,7 +9,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 
 import k7i3.code.tnc.transport.R;
-import k7i3.code.tnc.transport.activity.BaseActivity;
 import k7i3.code.tnc.transport.adapter.RoutesPagerAdapter;
 import k7i3.code.tnc.transport.widget.SlidingTabLayout;
 
@@ -60,7 +59,7 @@ public class RoutesActivity extends BaseActivity {
         mapsFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getBaseContext(), MapsActivity.class));
+                startActivity(new Intent(getBaseContext(), TransportActivity.class));
             }
         });
 

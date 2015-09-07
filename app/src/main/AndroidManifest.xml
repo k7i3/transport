@@ -26,8 +26,8 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".activity.MapsActivity"
-            android:label="@string/title_activity_maps"
+            android:name=".activity.TransportActivity"
+            android:label="@string/title_activity_transport"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,7 +39,7 @@
             android:name=".activity.RoutesActivity"
             android:label="@string/title_activity_routes"
             android:launchMode="singleInstance"
-            android:parentActivityName=".activity.MapsActivity">
+            android:parentActivityName=".activity.TransportActivity">
 
         </activity>
 
