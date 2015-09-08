@@ -1,8 +1,8 @@
 package k7i3.code.tnc.transport.loader;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
 import com.google.gson.GsonBuilder;
@@ -16,6 +16,8 @@ import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
+import k7i3.code.tnc.transport.helper.DateTimeHelper;
+import k7i3.code.tnc.transport.helper.SecurityHelper;
 import k7i3.code.tnc.transport.model.InvocationContext;
 import k7i3.code.tnc.transport.model.Route;
 
@@ -29,7 +31,7 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
 
     public RoutesLoader(Context context, Bundle args) {
         super(context);
-        invocationContext = new InvocationContext("127.0.0.1", "Android", SecurityUtils.encrypt("!QAZxsw2".getBytes("UTF-8")), "Администратор БАТ");
+        invocationContext = new InvocationContext("127.0.0.1", "Android", SecurityHelper.encrypt("!QAZxsw2"), "Администратор БАТ");
 
 //        TODO check args for understanding which routes is needed (all, favorites or nearest). Or may be need separate Loaders.
     }
@@ -39,7 +41,7 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
 
         try {
             // OUT
-            String request = new GsonBuilder().create().toJson(new Object[]{invocationContext, new Date()});
+            String request = new GsonBuilder().create().toJson(new Object[]{invocationContext, DateTimeHelper.now()});
             Log.d(TAG, "request: " + request);
             HttpURLConnection c = (HttpURLConnection) new URL(URL).openConnection();
             c.setRequestMethod("POST");
@@ -55,6 +57,10 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
             // IN
             InputStream in = (c.getResponseCode() == 200) ? c.getInputStream() : c.getErrorStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+
+//            Student obj = gson.fromJson(buffered, Student.class);
+
+
             String line;
             StringBuilder stringBuilder = new StringBuilder();
             while ((line = bufferedReader.readLine()) != null) {

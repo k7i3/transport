@@ -77,7 +77,7 @@ public class TransportActivity extends BaseActivity
     @Override
     protected void onPause() {
         super.onPause();
-        googleMap.clear();
+        if (googleMap != null) googleMap.clear();
         googleApiClient.disconnect();
     }
 

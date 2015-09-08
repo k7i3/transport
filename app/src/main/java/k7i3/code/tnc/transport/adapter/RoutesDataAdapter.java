@@ -52,4 +52,8 @@ public class RoutesDataAdapter extends RecyclerView.Adapter<RoutesDataAdapter.Ro
             routePointB = (TextView)itemView.findViewById(R.id.routePointB);
         }
     }
+
+    public void setRoutes(List<Route> routes) {
+        this.routes = routes;
+    }
 }
