@@ -20,7 +20,7 @@ public class SecurityHelper {
             MessageDigest md = MessageDigest.getInstance(SECURITY_ALGORITHM);
             byte[] md5 = md.digest(data.getBytes("UTF-8"));
             Log.d(TAG, "md5: " + md5.toString());
-            String base64 = Base64.encodeToString(md5, Base64.DEFAULT);
+            String base64 = Base64.encodeToString(md5, Base64.NO_WRAP); // NO_WRAP = without "/n" at the end of line in JSON
             Log.d(TAG, "base64: " + base64);
             return base64;
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {

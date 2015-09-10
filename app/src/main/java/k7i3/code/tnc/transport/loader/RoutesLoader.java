@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.helper.DateTimeHelper;
 import k7i3.code.tnc.transport.helper.SecurityHelper;
+import k7i3.code.tnc.transport.helper.Utils;
 import k7i3.code.tnc.transport.model.InvocationContext;
 import k7i3.code.tnc.transport.model.Route;
 
@@ -46,59 +47,45 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
     protected void onStartLoading() {
         Log.d(TAG, "onStartLoading()");
         super.onStartLoading();
-        invocationContext = new InvocationContext("127.0.0.1", "Android", SecurityHelper.encrypt("!QAZxsw2"), "Администратор БАТ");
+        invocationContext = new InvocationContext(Utils.getIPAddress(true), "Android", SecurityHelper.encrypt("Klim55CVfg"), "Klim");
+//        invocationContext = new InvocationContext(Utils.getIPAddress(true), "Android", "45BlPwIWKaZrIXlYNeCHQw==", "Klim");
         forceLoad();
     }
 
     @Override
     public List<Route> loadInBackground() {
-        Log.d(TAG, "loadInBackground() before sleep");
+        Log.d(TAG, "loadInBackground()");
         try {
-            TimeUnit.SECONDS.sleep(10);
-        } catch (InterruptedException e) {
-            return null;
+            // OUT
+            String request = new GsonBuilder().create().toJson(new Object[]{invocationContext, DateTimeHelper.now()});
+            Log.d(TAG, "request: " + request); //[{"clientIPAddress":"192.168.137.201","initiator":"Android","password":"45BlPwIWKaZrIXlYNeCHQw\u003d\u003d\n","userName":"Klim"},"2015-09-10T12:31:11Z"]
+            HttpURLConnection c = (HttpURLConnection) new URL(URL).openConnection();
+            c.setRequestMethod("POST");
+            c.setDoInput(true);
+            c.setDoOutput(true);
+            c.connect();
+
+            OutputStream out = c.getOutputStream();
+            out.write(request.getBytes("UTF-8"));
+            out.flush();
+            out.close();
+
+            // IN
+            Log.d(TAG, "c.getResponseCode(): " + c.getResponseCode());
+            InputStream in = (c.getResponseCode() == 200) ? c.getInputStream() : c.getErrorStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+
+//            Student obj = gson.fromJson(buffered, Student.class);
+            String line;
+            StringBuilder stringBuilder = new StringBuilder();
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+            String response = stringBuilder.toString();
+            Log.d(TAG, "response: " + response);
+        } catch (Exception e) {
+            Log.d(TAG, "error: " + e.getMessage() + " " + e);
         }
-        Log.d(TAG, "loadInBackground() after sleep");
-
-        routes = new ArrayList<>();
-        initMockRoutes();
-
-        return routes;
-
-
-
-//        try {
-//            // OUT
-//            String request = new GsonBuilder().create().toJson(new Object[]{invocationContext, DateTimeHelper.now()});
-//            Log.d(TAG, "request: " + request);
-//            HttpURLConnection c = (HttpURLConnection) new URL(URL).openConnection();
-//            c.setRequestMethod("POST");
-//            c.setDoInput(true);
-//            c.setDoOutput(true);
-//            c.connect();
-//
-//            OutputStream out = c.getOutputStream();
-//            out.write(request.getBytes("UTF-8"));
-//            out.flush();
-//            out.close();
-//
-//            // IN
-//            InputStream in = (c.getResponseCode() == 200) ? c.getInputStream() : c.getErrorStream();
-//            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
-//
-////            Student obj = gson.fromJson(buffered, Student.class);
-//
-//
-//            String line;
-//            StringBuilder stringBuilder = new StringBuilder();
-//            while ((line = bufferedReader.readLine()) != null) {
-//                stringBuilder.append(line);
-//            }
-//            String response = stringBuilder.toString();
-//            Log.d(TAG, "response: " + response);
-//        } catch (Exception e) {
-//            Log.d(TAG, "error: " + e.getMessage() + " " + e);
-//        }
 
 //        WayBillSimpleWS.getListRoute
 //        JSON
@@ -118,6 +105,19 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
 //        Long,
 //        Date
 //        ]
+
+        Log.d(TAG, "loadInBackground() before sleep");
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            return null;
+        }
+        Log.d(TAG, "loadInBackground() after sleep");
+
+        routes = new ArrayList<>();
+        initMockRoutes();
+
+        return routes;
     }
 
     private void initMockRoutes() {

@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by k7i3 on 08.09.15.
@@ -13,11 +14,11 @@ import java.util.Locale;
 public class DateTimeHelper {
     private static final String TAG = "=====> DateTimeHelper";
     public static String now() {
-        SimpleDateFormat iso8601 = new SimpleDateFormat("yyyy-MM-dd/THH:mm:ss/Z", Locale.getDefault());
+        Log.d(TAG, "now()");
+        SimpleDateFormat iso8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
         String date = iso8601.format(new Date());
-        Log.d(TAG, "date: " + date);
+        Log.d(TAG, "date: " + date); //2015-09-10T10:16:44Z
         return date;
-//        return iso8601.format(new Date());
     }
 }
 //    php: gmdate('Y-m-d\TH:i:s\Z'
