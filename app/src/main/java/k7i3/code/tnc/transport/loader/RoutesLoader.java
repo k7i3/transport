@@ -6,11 +6,13 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
     InvocationContext invocationContext;
     private List<Route> routes;
     private int position;
+    GsonBuilder gson;
 
     public RoutesLoader(Context context, Bundle args) {
         super(context);
@@ -48,7 +51,7 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
         Log.d(TAG, "onStartLoading()");
         super.onStartLoading();
         invocationContext = new InvocationContext(Utils.getIPAddress(true), "Android", SecurityHelper.encrypt("Klim55CVfg"), "Klim");
-//        invocationContext = new InvocationContext(Utils.getIPAddress(true), "Android", "45BlPwIWKaZrIXlYNeCHQw==", "Klim");
+        gson = new GsonBuilder();
         forceLoad();
     }
 
@@ -57,8 +60,8 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
         Log.d(TAG, "loadInBackground()");
         try {
             // OUT
-            String request = new GsonBuilder().create().toJson(new Object[]{invocationContext, DateTimeHelper.now()});
-            Log.d(TAG, "request: " + request); //[{"clientIPAddress":"192.168.137.201","initiator":"Android","password":"45BlPwIWKaZrIXlYNeCHQw\u003d\u003d\n","userName":"Klim"},"2015-09-10T12:31:11Z"]
+            String request = gson.create().toJson(new Object[]{invocationContext, DateTimeHelper.now()});
+            Log.d(TAG, "request: " + request); //[{"clientIPAddress":"192.168.137.201","initiator":"Android","password":"45BlPwIWKaZrIXlYNeCHQw\u003d\u003d","userName":"Klim"},"2015-09-10T12:31:11Z"]
             HttpURLConnection c = (HttpURLConnection) new URL(URL).openConnection();
             c.setRequestMethod("POST");
             c.setDoInput(true);
@@ -76,13 +79,16 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
 
 //            Student obj = gson.fromJson(buffered, Student.class);
-            String line;
-            StringBuilder stringBuilder = new StringBuilder();
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuilder.append(line);
-            }
-            String response = stringBuilder.toString();
-            Log.d(TAG, "response: " + response);
+            Type type = new TypeToken<ArrayList<Route>>(){}.getType();
+            routes = gson.create().fromJson(bufferedReader, type);
+
+//            String line;
+//            StringBuilder stringBuilder = new StringBuilder();
+//            while ((line = bufferedReader.readLine()) != null) {
+//                stringBuilder.append(line);
+//            }
+//            String response = stringBuilder.toString();
+//            Log.d(TAG, "response: " + response);
         } catch (Exception e) {
             Log.d(TAG, "error: " + e.getMessage() + " " + e);
         }
@@ -106,31 +112,38 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
 //        Date
 //        ]
 
-        Log.d(TAG, "loadInBackground() before sleep");
-        try {
-            TimeUnit.SECONDS.sleep(5);
-        } catch (InterruptedException e) {
-            return null;
-        }
-        Log.d(TAG, "loadInBackground() after sleep");
 
-        routes = new ArrayList<>();
-        initMockRoutes();
-
+        //TEST
+//        Log.d(TAG, "loadInBackground() before sleep");
+//        try {
+//            TimeUnit.SECONDS.sleep(5);
+//        } catch (InterruptedException e) {
+//            return null;
+//        }
+//        Log.d(TAG, "loadInBackground() after sleep");
+//
+//        routes = new ArrayList<>();
+//        initMockRoutes();
+//
         return routes;
     }
 
     private void initMockRoutes() {
         Log.d(TAG, "initMockRoutes()");
-        routes.add(new Route(position + "", "Точка А", "Точка Б"));
-        routes.add(new Route("110", "ВАЗ", "Аэропорт"));
-        routes.add(new Route("110с", "ДОК", "Аэропорт"));
-        routes.add(new Route("51", "Точка А", "Точка Б"));
-        routes.add(new Route("51а", "Точка А", "Точка Б"));
-        routes.add(new Route("69", "Точка А", "Точка Б"));
-        routes.add(new Route("74", "Точка А", "Точка Б"));
-        routes.add(new Route("57", "Точка А", "Точка Б"));
-        routes.add(new Route("290", "Точка А", "Точка Б"));
-        routes.add(new Route("226", "Точка А", "Точка Б"));
+        routes.add(new Route(1, position + "", 20, 60, "10 Док-п. Максимовка"));
+        routes.add(new Route(2, "105", 40, 89, "105 К.Рынок-в.Изяк"));
+        routes.add(new Route(3, "104С", 77, 120, "104С Уфа-Благовещенск"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
     }
 }

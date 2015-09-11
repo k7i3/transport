@@ -111,16 +111,22 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
     }
 
     private void initMockRoutes() {
-        routes.add(new Route(position + "", "Точка А", "Точка Б"));
-        routes.add(new Route("110", "ВАЗ", "Аэропорт"));
-        routes.add(new Route("110с", "ДОК", "Аэропорт"));
-        routes.add(new Route("51", "Точка А", "Точка Б"));
-        routes.add(new Route("51а", "Точка А", "Точка Б"));
-        routes.add(new Route("69", "Точка А", "Точка Б"));
-        routes.add(new Route("74", "Точка А", "Точка Б"));
-        routes.add(new Route("57", "Точка А", "Точка Б"));
-        routes.add(new Route("290", "Точка А", "Точка Б"));
-        routes.add(new Route("226", "Точка А", "Точка Б"));
+        Log.d(TAG, "initMockRoutes()");
+        routes.add(new Route(1, position + "", 20, 60, "10 Док-п. Максимовка"));
+        routes.add(new Route(2, "105", 40, 89, "105 К.Рынок-в.Изяк"));
+        routes.add(new Route(3, "104С", 77, 120, "104С Уфа-Благовещенск"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
 
         progressBar.setVisibility(ProgressBar.INVISIBLE);
     }

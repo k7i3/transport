@@ -29,9 +29,10 @@ public class RoutesDataAdapter extends RecyclerView.Adapter<RoutesDataAdapter.Ro
 
     @Override
     public void onBindViewHolder(RouteViewHolder holder, int position) {
-        holder.routeNumber.setText(routes.get(position).number);
-        holder.routePointA.setText(routes.get(position).pointA);
-        holder.routePointB.setText(routes.get(position).pointB);
+        holder.routeNumber.setText(routes.get(position).getNum());
+        holder.routeName.setText(routes.get(position).getName());
+        holder.routeDistance.setText(routes.get(position).getDistance() + " км");
+        holder.routeDuration.setText(routes.get(position).getRouteDurInMin() + " мин");
     }
 
     @Override
@@ -41,15 +42,17 @@ public class RoutesDataAdapter extends RecyclerView.Adapter<RoutesDataAdapter.Ro
 
     public static class RouteViewHolder extends RecyclerView.ViewHolder {
         TextView routeNumber;
-        TextView routePointA;
-        TextView routePointB;
+        TextView routeName;
+        TextView routeDistance;
+        TextView routeDuration;
 
         public RouteViewHolder(View itemView) {
             super(itemView);
 
             routeNumber = (TextView)itemView.findViewById(R.id.routeNumber);
-            routePointA = (TextView)itemView.findViewById(R.id.routePointA);
-            routePointB = (TextView)itemView.findViewById(R.id.routePointB);
+            routeName = (TextView)itemView.findViewById(R.id.routeName);
+            routeDistance = (TextView)itemView.findViewById(R.id.routeDistance);
+            routeDuration = (TextView)itemView.findViewById(R.id.routeDuration);
         }
     }
 

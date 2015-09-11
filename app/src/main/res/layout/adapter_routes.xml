@@ -12,24 +12,39 @@
         android:layout_alignParentTop="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
-        android:textSize="30sp"
-        android:gravity="center" />
+        android:gravity="center"
+        android:textSize="25sp"
+        android:singleLine="true"
+        android:ellipsize="end"/>
 
     <TextView
-        android:id="@+id/routePointA"
-        android:layout_width="wrap_content"
+        android:id="@+id/routeName"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_marginEnd="16dp"
         android:layout_toEndOf="@+id/routeNumber"
-        android:textSize="25sp" />
+        android:textSize="16sp"
+        android:singleLine="true"
+        android:ellipsize="middle"/>
 
     <TextView
-        android:id="@+id/routePointB"
+        android:id="@+id/routeDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/routePointA"
+        android:layout_below="@+id/routeName"
+        android:layout_marginEnd="16dp"
         android:layout_toEndOf="@+id/routeNumber"
-        android:textSize="25sp" />
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/routeDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/routeName"
+        android:layout_marginEnd="16dp"
+        android:layout_toEndOf="@+id/routeDistance"
+        android:textSize="16sp" />
 
     <CheckBox
         android:id="@+id/checkBox"
@@ -37,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:clickable="false"/>
+        android:layout_marginStart="16dp"
+        android:clickable="false" />
 
 </RelativeLayout>
