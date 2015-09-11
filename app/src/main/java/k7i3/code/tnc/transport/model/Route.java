@@ -18,6 +18,33 @@ public class Route {
         this.name = name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Route route = (Route) o;
+
+        if (id != route.id) return false;
+        if (Double.compare(route.distance, distance) != 0) return false;
+        if (routeDurInMin != route.routeDurInMin) return false;
+        if (!num.equals(route.num)) return false;
+        return name.equals(route.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = (int) (id ^ (id >>> 32));
+        result = 31 * result + num.hashCode();
+        temp = Double.doubleToLongBits(distance);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + routeDurInMin;
+        result = 31 * result + name.hashCode();
+        return result;
+    }
+
     public long getId() {
         return id;
     }

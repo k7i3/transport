@@ -1,6 +1,8 @@
 package k7i3.code.tnc.transport.adapter;
 
+import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.util.SortedListAdapterCallback;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +17,32 @@ import k7i3.code.tnc.transport.model.Route;
  * Created by k7i3 on 13.08.15.
  */
 public class RoutesDataAdapter extends RecyclerView.Adapter<RoutesDataAdapter.RouteViewHolder> {
-    List<Route> routes;
+    private SortedList<Route> routes = new SortedList<Route>(Route.class, new SortedListAdapterCallback<Route>(this) {
+    @Override
+    public int compare(Route o1, Route o2) {
+        return o1.getNum().compareTo(o2.getNum());
+    }
+
+    @Override
+    public boolean areContentsTheSame(Route oldItem, Route newItem) {
+//        TODO make more intelligently
+//        Called by the SortedList when it wants to check whether two items have the same data or not. SortedList uses this information to decide whether it should call onChanged(int, int) or not.
+//        SortedList uses this method to check equality instead of equals(Object) so that you can change its behavior depending on your UI.
+//        For example, if you are using SortedList with a RecyclerView.Adapter, you should return whether the items' visual representations are the same or not.
+        return oldItem.equals(newItem);
+    }
+
+    @Override
+    public boolean areItemsTheSame(Route item1, Route item2) {
+//        TODO may be equals() instead of ==?
+//        Called by the SortedList to decide whether two object represent the same Item or not.
+//        For example, if your items have unique ids, this method should check their equality.
+        return item1.getId() == item2.getId();
+    }
+});
 
     public RoutesDataAdapter(List<Route> routes) {
-        this.routes = routes;
+        this.routes.addAll(routes);
     }
 
     @Override
@@ -57,6 +81,15 @@ public class RoutesDataAdapter extends RecyclerView.Adapter<RoutesDataAdapter.Ro
     }
 
     public void setRoutes(List<Route> routes) {
-        this.routes = routes;
+//        this.routes = routes;
+        if(routes != null) {
+            this.routes.clear();
+            this.routes.addAll(routes);
+        }
     }
+
+    public SortedList<Route> getRoutes() {
+        return routes;
+    }
+
 }

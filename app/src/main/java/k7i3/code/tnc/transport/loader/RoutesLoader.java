@@ -34,10 +34,11 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
     private static final String TAG = "=====> RoutesLoader";
     private static final String URL = "http://62.133.191.98:47201/vms-ws/rest/WayBillSimpleWS/getListRoute";
 
-    InvocationContext invocationContext;
+    private InvocationContext invocationContext;
     private List<Route> routes;
     private int position;
-    GsonBuilder gson;
+    private GsonBuilder gson;
+    private Type type;
 
     public RoutesLoader(Context context, Bundle args) {
         super(context);
@@ -52,6 +53,7 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
         super.onStartLoading();
         invocationContext = new InvocationContext(Utils.getIPAddress(true), "Android", SecurityHelper.encrypt("Klim55CVfg"), "Klim");
         gson = new GsonBuilder();
+        type = new TypeToken<ArrayList<Route>>(){}.getType();
         forceLoad();
     }
 
@@ -78,10 +80,7 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
             InputStream in = (c.getResponseCode() == 200) ? c.getInputStream() : c.getErrorStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
 
-//            Student obj = gson.fromJson(buffered, Student.class);
-            Type type = new TypeToken<ArrayList<Route>>(){}.getType();
             routes = gson.create().fromJson(bufferedReader, type);
-
 //            String line;
 //            StringBuilder stringBuilder = new StringBuilder();
 //            while ((line = bufferedReader.readLine()) != null) {
@@ -124,26 +123,7 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
 //
 //        routes = new ArrayList<>();
 //        initMockRoutes();
-//
-        return routes;
-    }
 
-    private void initMockRoutes() {
-        Log.d(TAG, "initMockRoutes()");
-        routes.add(new Route(1, position + "", 20, 60, "10 Док-п. Максимовка"));
-        routes.add(new Route(2, "105", 40, 89, "105 К.Рынок-в.Изяк"));
-        routes.add(new Route(3, "104С", 77, 120, "104С Уфа-Благовещенск"));
-        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+        return routes;
     }
 }
