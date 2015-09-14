@@ -1,14 +1,18 @@
 package k7i3.code.tnc.transport.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by k7i3 on 13.08.15.
  */
-public class Route {
+public class Route implements Parcelable{
     private long id;
     private String num;
     private double distance;
     private int routeDurInMin;
     private String name;
+    private boolean checked;
 
     public Route(long id, String num, int distance, int routeDurInMin, String name) {
         this.id = id;
@@ -17,6 +21,39 @@ public class Route {
         this.routeDurInMin = routeDurInMin;
         this.name = name;
     }
+
+    private Route(Parcel in) {
+        id = in.readLong();
+        num = in.readString();
+        distance = in.readDouble();
+        routeDurInMin = in.readInt();
+        name = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(num);
+        dest.writeDouble(distance);
+        dest.writeInt(routeDurInMin);
+        dest.writeString(name);
+    }
+
+    public static final Parcelable.Creator<Route> CREATOR
+            = new Parcelable.Creator<Route>() {
+        public Route createFromParcel(Parcel in) {
+            return new Route(in);
+        }
+
+        public Route[] newArray(int size) {
+            return new Route[size];
+        }
+    };
 
     @Override
     public boolean equals(Object o) {
@@ -43,6 +80,18 @@ public class Route {
         result = 31 * result + routeDurInMin;
         result = 31 * result + name.hashCode();
         return result;
+    }
+
+    public void toggle() {
+        setChecked(!checked);
+    }
+
+    public Boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
     }
 
     public long getId() {
@@ -84,4 +133,5 @@ public class Route {
     public void setName(String name) {
         this.name = name;
     }
+
 }

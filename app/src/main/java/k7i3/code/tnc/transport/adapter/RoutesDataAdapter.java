@@ -6,6 +6,7 @@ import android.support.v7.widget.util.SortedListAdapterCallback;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.List;
@@ -57,6 +58,7 @@ public class RoutesDataAdapter extends RecyclerView.Adapter<RoutesDataAdapter.Ro
         holder.routeName.setText(routes.get(position).getName());
         holder.routeDistance.setText(routes.get(position).getDistance() + " км");
         holder.routeDuration.setText(routes.get(position).getRouteDurInMin() + " мин");
+        holder.checkBox.setChecked(routes.get(position).isChecked());
     }
 
     @Override
@@ -69,6 +71,7 @@ public class RoutesDataAdapter extends RecyclerView.Adapter<RoutesDataAdapter.Ro
         TextView routeName;
         TextView routeDistance;
         TextView routeDuration;
+        CheckBox checkBox;
 
         public RouteViewHolder(View itemView) {
             super(itemView);
@@ -77,6 +80,7 @@ public class RoutesDataAdapter extends RecyclerView.Adapter<RoutesDataAdapter.Ro
             routeName = (TextView)itemView.findViewById(R.id.routeName);
             routeDistance = (TextView)itemView.findViewById(R.id.routeDistance);
             routeDuration = (TextView)itemView.findViewById(R.id.routeDuration);
+            checkBox = (CheckBox)itemView.findViewById(R.id.checkBox);
         }
     }
 

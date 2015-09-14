@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.Loader;
+import android.support.v7.util.SortedList;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,7 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
     private static final String TAG = "=====> RoutesFragment";
     private static final int LOADER_ROUTES = 1;
     private List<Route> routes;
+    private List<Route> filteredRoutes;
 
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
@@ -85,6 +88,9 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
             public void onItemClick(View view, int position) {
 //                Toast.makeText(view.getContext(), "onItemClick => position = " + position, Toast.LENGTH_SHORT).show();
                 ((CheckBox) view.findViewById(R.id.checkBox)).toggle();
+                routesDataAdapter.getRoutes().get(position).toggle();
+                filterRoutes(routesDataAdapter.getRoutes());
+                Toast.makeText(view.getContext(), "filteredRoutes.size(): " + filteredRoutes.size(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -110,6 +116,16 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
         } else {
             initMockRoutes();
         }
+    }
+
+    private List<Route> filterRoutes(SortedList<Route> routes) {
+        filteredRoutes = new ArrayList<>();
+        Route route;
+        for (int i = 0; i < routes.size(); i++) {
+            route = routes.get(i);
+            if (route.isChecked()) filteredRoutes.add(route);
+        }
+        return filteredRoutes;
     }
 
     private void initMockRoutes() {
@@ -162,6 +178,7 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
             final Runnable r = new Runnable() {
                 public void run() {
                     routesDataAdapter.getRoutes().removeItemAt(0);
+                    routesDataAdapter.getRoutes().add(new Route(39427972044L, "103", 111, 111, "test"));
                     handler.postDelayed(this, 3000);
                 }
             };
