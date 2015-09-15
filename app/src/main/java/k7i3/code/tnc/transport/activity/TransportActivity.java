@@ -10,8 +10,10 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -29,7 +31,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.R;
+import k7i3.code.tnc.transport.model.Route;
 
 public class TransportActivity extends BaseActivity
         implements
@@ -45,11 +52,16 @@ public class TransportActivity extends BaseActivity
             .setInterval(5000)         // 5 seconds
             .setFastestInterval(16)    // 16ms = 60fps
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    private static final String TAG = "====> TransportActivity";
+    private static final int REQUEST_CODE_ROUTES = 1;
 
     private GoogleApiClient googleApiClient;
 
     private GoogleMap googleMap; // Might be null if Google Play services APK is not available.
     private FloatingActionButton routesFAB;
+
+    private List<Route> routes;
+    private Location location;
 
     @Override
     protected int getLayoutResource() {
@@ -93,9 +105,25 @@ public class TransportActivity extends BaseActivity
         routesFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getBaseContext(), RoutesActivity.class));
+                startActivityForResult(new Intent(getBaseContext(), RoutesActivity.class), REQUEST_CODE_ROUTES);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "requestCode = " + requestCode + " resultCode = " + resultCode);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CODE_ROUTES:
+                    routes = data.getParcelableArrayListExtra(Constants.ROUTES);
+                    Toast.makeText(this, "!!! routes.size(): " + routes.size(), Toast.LENGTH_SHORT).show();
+                    drawTransport(location);
+                    break;
+            }
+        } else {
+            Toast.makeText(this, "!!!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -131,15 +159,16 @@ public class TransportActivity extends BaseActivity
      */
     @Override
     public void onConnected(Bundle bundle) {
+        Log.d(TAG, "onConnected()");
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 googleApiClient,
                 REQUEST,
                 this);  // LocationListener
 
-        Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         moveCamera(latLng);
-        drawTransport(location);
+//        drawTransport(location);
     }
 
     private void moveCamera(LatLng latLng) {
@@ -173,7 +202,7 @@ public class TransportActivity extends BaseActivity
 //        iconFactory.setColor(Color.CYAN); // ONLY FOR DEFAULT MARKER?
 //        iconFactory.setStyle(IconGenerator.STYLE_PURPLE); // ONLY FOR DEFAULT MARKER?
 
-        addIcon(iconFactory, "110c", location);
+        addIcon(iconFactory, routes.get(0).getNum(), location);
 
         //TEST
         location.setLongitude(location.getLongitude() + 0.001);

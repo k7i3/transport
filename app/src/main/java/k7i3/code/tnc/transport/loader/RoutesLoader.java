@@ -31,7 +31,7 @@ import k7i3.code.tnc.transport.model.Route;
  * Created by k7i3 on 07.09.15.
  */
 public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
-    private static final String TAG = "=====> RoutesLoader";
+    private static final String TAG = "====> RoutesLoader";
     private static final String URL = "http://62.133.191.98:47201/vms-ws/rest/WayBillSimpleWS/getListRoute";
 
     private InvocationContext invocationContext;

@@ -7,9 +7,15 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.widget.Toast;
 
+import java.util.ArrayList;
+
+import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.R;
 import k7i3.code.tnc.transport.adapter.RoutesPagerAdapter;
+import k7i3.code.tnc.transport.fragment.RoutesFragment;
+import k7i3.code.tnc.transport.model.Route;
 import k7i3.code.tnc.transport.widget.SlidingTabLayout;
 
 /**
@@ -59,7 +65,14 @@ public class RoutesActivity extends BaseActivity {
         mapsFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getBaseContext(), TransportActivity.class));
+//                startActivity(new Intent(getBaseContext(), TransportActivity.class));
+//                RoutesFragment routesFragment = (RoutesFragment) (routesPagerAdapter.getItem(viewPager.getCurrentItem())); // doesn't work (return new instance of Fragment instead of current)
+                RoutesFragment routesFragment = (RoutesFragment) (routesPagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem()));
+//                Toast.makeText(v.getContext(), "routesFragment.getSelectedRoutes().size(): " + routesFragment.getSelectedRoutes().size(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(); //getIntent()?;
+                intent.putParcelableArrayListExtra(Constants.ROUTES, (ArrayList<Route>) routesFragment.getSelectedRoutes());
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
 

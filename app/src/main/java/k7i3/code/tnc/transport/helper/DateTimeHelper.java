@@ -12,7 +12,7 @@ import java.util.TimeZone;
  * Created by k7i3 on 08.09.15.
  */
 public class DateTimeHelper {
-    private static final String TAG = "=====> DateTimeHelper";
+    private static final String TAG = "====> DateTimeHelper";
     public static String now() {
         Log.d(TAG, "now()");
         SimpleDateFormat iso8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
