@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
     private RoutesDataAdapter routesDataAdapter;
     private View view;
     private int position;
+    private TextView noInternet;
 
     public static RoutesFragment newInstance(int position) {
         Log.d(TAG, "newInstance()");
@@ -67,6 +69,7 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
         Log.d(TAG, "position: " + position);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         progressBar.setVisibility(ProgressBar.VISIBLE);
+        noInternet = (TextView) view.findViewById(R.id.noInternet);
         loadRoutes();
         initInstances();
     }
@@ -169,6 +172,11 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
 //            initInstances(); // can be used instead of {routesDataAdapter.setRoutes(routes); routesDataAdapter.notifyDataSetChanged();} but in this way adapter will be recreate
             progressBar.setVisibility(ProgressBar.INVISIBLE);
 
+            if (routes == null) {
+                noInternet.setVisibility(View.VISIBLE);
+            } else {
+                noInternet.setVisibility(View.INVISIBLE);
+            }
 
             // TEST
             final android.os.Handler handler = new android.os.Handler();

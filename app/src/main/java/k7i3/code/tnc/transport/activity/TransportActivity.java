@@ -10,6 +10,7 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -33,10 +34,13 @@ import com.google.maps.android.ui.IconGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.R;
+import k7i3.code.tnc.transport.loader.TransportLoader;
 import k7i3.code.tnc.transport.model.Route;
+import k7i3.code.tnc.transport.model.Transport;
 
 public class TransportActivity extends BaseActivity
         implements
@@ -44,7 +48,8 @@ public class TransportActivity extends BaseActivity
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnMyLocationButtonClickListener,
-        LocationListener {
+        LocationListener,
+        android.support.v4.app.LoaderManager.LoaderCallbacks<Map<Route, List<Transport>>> {
 
     // These settings are the same as the settings for the map. They will in fact give you updates
     // at the maximal rates currently possible.
@@ -54,6 +59,7 @@ public class TransportActivity extends BaseActivity
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     private static final String TAG = "====> TransportActivity";
     private static final int REQUEST_CODE_ROUTES = 1;
+    private static final int LOADER_TRANSPORT = 1;
 
     private GoogleApiClient googleApiClient;
 
@@ -61,6 +67,7 @@ public class TransportActivity extends BaseActivity
     private FloatingActionButton routesFAB;
 
     private List<Route> routes;
+    private Map<Route, List<Transport>> transportByRoute;
     private Location location;
 
     @Override
@@ -124,6 +131,14 @@ public class TransportActivity extends BaseActivity
         } else {
             Toast.makeText(this, "!!!", Toast.LENGTH_SHORT).show();
         }
+
+        startTransportLoader();
+    }
+
+    private void startTransportLoader() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(Constants.ROUTES, (ArrayList<Route>) routes);
+        getSupportLoaderManager().restartLoader(LOADER_TRANSPORT, bundle, this); // if Loader already exist, when initLoader() called, constructor doesn't called, and routes remain old
     }
 
     /**
@@ -257,5 +272,33 @@ public class TransportActivity extends BaseActivity
     @Override
     public void onLocationChanged(Location location) {
 //        Toast.makeText(this, "Location = " + location, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public Loader<Map<Route, List<Transport>>> onCreateLoader(int id, Bundle args) {
+        Loader<Map<Route, List<Transport>>> loader = null;
+        //TODO switch if needed
+        if (id == LOADER_TRANSPORT) {
+            Log.d(TAG, "onCreateLoader() / id == LOADER_TRANSPORT");
+            loader = new TransportLoader(this, args);
+        }
+        return loader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Map<Route, List<Transport>>> loader, Map<Route, List<Transport>> data) {
+        Log.d(TAG, "onLoadFinished()");
+        //TODO switch if needed
+        if (loader.getId() == LOADER_TRANSPORT) {
+            Log.d(TAG, "if (loader.getId() == LOADER_TRANSPORT) {");
+            transportByRoute = data;
+            Log.d(TAG, "transportByRoute.size(): " + transportByRoute.size());
+        }
+        //TODO start next loader/service for retrieve coordinates
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Map<Route, List<Transport>>> loader) {
+
     }
 }

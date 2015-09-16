@@ -13,6 +13,7 @@ import java.util.TimeZone;
  */
 public class DateTimeHelper {
     private static final String TAG = "====> DateTimeHelper";
+    //TODO not needed now (delete?). Instead of it: gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     public static String now() {
         Log.d(TAG, "now()");
         SimpleDateFormat iso8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());

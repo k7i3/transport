@@ -52,7 +52,7 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
         Log.d(TAG, "onStartLoading()");
         super.onStartLoading();
         invocationContext = new InvocationContext(Utils.getIPAddress(true), "Android", SecurityHelper.encrypt("Klim55CVfg"), "Klim");
-        gson = new GsonBuilder();
+        gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         type = new TypeToken<ArrayList<Route>>(){}.getType();
         forceLoad();
     }
@@ -62,7 +62,7 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
         Log.d(TAG, "loadInBackground()");
         try {
             // OUT
-            String request = gson.create().toJson(new Object[]{invocationContext, DateTimeHelper.now()});
+            String request = gson.create().toJson(new Object[]{invocationContext, new Date()});
             Log.d(TAG, "request: " + request); //[{"clientIPAddress":"192.168.137.201","initiator":"Android","password":"45BlPwIWKaZrIXlYNeCHQw\u003d\u003d","userName":"Klim"},"2015-09-10T12:31:11Z"]
             HttpURLConnection c = (HttpURLConnection) new URL(URL).openConnection();
             c.setRequestMethod("POST");
@@ -81,6 +81,9 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
 
             routes = gson.create().fromJson(bufferedReader, type);
+
+            bufferedReader.close();
+            in.close();
 //            String line;
 //            StringBuilder stringBuilder = new StringBuilder();
 //            while ((line = bufferedReader.readLine()) != null) {
