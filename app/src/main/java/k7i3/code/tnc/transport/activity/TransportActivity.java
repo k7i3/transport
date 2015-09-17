@@ -29,10 +29,12 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -68,6 +70,7 @@ public class TransportActivity extends BaseActivity
 
     private List<Route> routes;
     private Map<Route, List<Transport>> transportByRoute;
+    private Map<Long, Marker> markersByDeviceId;
     private Location location;
 
     @Override
@@ -85,6 +88,8 @@ public class TransportActivity extends BaseActivity
                 .addOnConnectionFailedListener(this)
                 .build();
         initInstances();
+
+        markersByDeviceId = new HashMap<>();
     }
 
     @Override
@@ -125,7 +130,7 @@ public class TransportActivity extends BaseActivity
                 case REQUEST_CODE_ROUTES:
                     routes = data.getParcelableArrayListExtra(Constants.ROUTES);
                     Toast.makeText(this, "!!! routes.size(): " + routes.size(), Toast.LENGTH_SHORT).show();
-                    drawTransport(location);
+//                    drawTransport();
                     break;
             }
         } else {
@@ -197,11 +202,10 @@ public class TransportActivity extends BaseActivity
 //        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
     }
 
-    private void drawTransport(Location location) {
+    private void drawTransport() {
 //        googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title(location.getTime() + " " + location.getProvider()));
 
-        location.setBearing(45);  // direction
-
+        //DRAWABLE
 //        TODO make good nine-patch drawable (.9.png) or custom drawable (.xml) https://romannurik.github.io/AndroidAssetStudio/index.html
         Drawable drawable = getResources().getDrawable(R.drawable.arrow);
 //        drawable.setTint(Color.CYAN); // API 21
@@ -209,6 +213,7 @@ public class TransportActivity extends BaseActivity
         drawable.setColorFilter(filter);
 //        drawable.setAlpha(255);
 
+        //ICONGENERATOR
         IconGenerator iconFactory = new IconGenerator(this);
         iconFactory.setBackground(drawable);
         iconFactory.setContentPadding(0, 0, 0, 0);
@@ -217,26 +222,45 @@ public class TransportActivity extends BaseActivity
 //        iconFactory.setColor(Color.CYAN); // ONLY FOR DEFAULT MARKER?
 //        iconFactory.setStyle(IconGenerator.STYLE_PURPLE); // ONLY FOR DEFAULT MARKER?
 
-        addIcon(iconFactory, routes.get(0).getNum(), location);
+        Route route;
+        List<Transport> transportList;
+        for(Map.Entry<Route, List<Transport>> entry : transportByRoute.entrySet()) {
+            location.setLatitude(location.getLatitude() + 0.001);
+            route = entry.getKey();
+            transportList = entry.getValue();
 
-        //TEST
-        location.setLongitude(location.getLongitude() + 0.001);
-        addIcon(iconFactory, "290", location);
-        location.setLongitude(location.getLongitude() + 0.001);
-        addIcon(iconFactory, "69", location);
-        location.setLongitude(location.getLongitude() + 0.001);
-        addIcon(iconFactory, "6", location);
+            for (Transport transport : transportList) {
+                location.setLongitude(location.getLongitude() + 0.001);
+                addMarker(iconFactory, route.getNum(), location, transport.getDeviceId());
+            }
+        }
+
+
+
+//        TEST
+//        location.setBearing(45);  // mock direction
+//        addMarker(iconFactory, "!!!1", location, 1);
+//                location.setLongitude(location.getLongitude() + 0.001);
+//        addMarker(iconFactory, "!!!2", location, 2);
+//        addMarker(iconFactory, "!!!3", location, 3);
+//        location.setLongitude(location.getLongitude() + 0.001);
+//        addMarker(iconFactory, "290", location, 2);
+//        location.setLongitude(location.getLongitude() + 0.001);
+//        addMarker(iconFactory, "69", location, 3);
+//        location.setLongitude(location.getLongitude() + 0.001);
+//        addMarker(iconFactory, "6", location, 4);
     }
 
-    private void addIcon(IconGenerator iconFactory, String text, Location location) {
+    private void addMarker(IconGenerator iconFactory, String title, Location location, long deviceId) {
+//        TODO make marker invisible
         MarkerOptions markerOptions = new MarkerOptions().
-                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(text))).
+                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(title))).
                 position(new LatLng(location.getLatitude(), location.getLongitude())).
                 flat(true).
                 rotation(location.getBearing()).
                 anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
 
-        googleMap.addMarker(markerOptions);
+        markersByDeviceId.put(deviceId, googleMap.addMarker(markerOptions));
     }
 
     /**
@@ -294,6 +318,7 @@ public class TransportActivity extends BaseActivity
             transportByRoute = data;
             Log.d(TAG, "transportByRoute.size(): " + transportByRoute.size());
         }
+        drawTransport();
         //TODO start next loader/service for retrieve coordinates
     }
 
