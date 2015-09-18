@@ -1,6 +1,7 @@
 package k7i3.code.tnc.transport.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.Loader;
@@ -90,6 +91,8 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
 //                Toast.makeText(view.getContext(), "onItemClick => position = " + position, Toast.LENGTH_SHORT).show();
                 ((CheckBox) view.findViewById(R.id.checkBox)).toggle();
                 routesDataAdapter.getRoutes().get(position).toggle();
+
+                //TEST
                 filterRoutes(routesDataAdapter.getRoutes());
                 Toast.makeText(view.getContext(), "selectedRoutes.size(): " + selectedRoutes.size(), Toast.LENGTH_SHORT).show();
             }
@@ -176,10 +179,11 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
                 noInternet.setVisibility(View.VISIBLE);
             } else {
                 noInternet.setVisibility(View.INVISIBLE);
+                Toast.makeText(getActivity(), "Маршрутов на линии: " + routes.size(), Toast.LENGTH_SHORT).show();
             }
 
             // TEST
-            final android.os.Handler handler = new android.os.Handler();
+            final Handler handler = new Handler();
             final Runnable r = new Runnable() {
                 public void run() {
                     routesDataAdapter.getRoutes().removeItemAt(0);

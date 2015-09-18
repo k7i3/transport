@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.Loader;
 import android.util.Log;
@@ -40,9 +41,13 @@ import java.util.Map;
 
 import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.R;
+import k7i3.code.tnc.transport.helper.gmaps.LatLngInterpolator;
+import k7i3.code.tnc.transport.helper.gmaps.MarkerAnimation;
 import k7i3.code.tnc.transport.loader.TransportLoader;
 import k7i3.code.tnc.transport.model.Route;
 import k7i3.code.tnc.transport.model.Transport;
+
+import static k7i3.code.tnc.transport.helper.gmaps.LatLngInterpolator.*;
 
 public class TransportActivity extends BaseActivity
         implements
@@ -188,7 +193,6 @@ public class TransportActivity extends BaseActivity
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         moveCamera(latLng);
-//        drawTransport(location);
     }
 
     private void moveCamera(LatLng latLng) {
@@ -237,10 +241,23 @@ public class TransportActivity extends BaseActivity
 
 
 
-//        TEST
+        // TEST
 //        location.setBearing(45);  // mock direction
-//        addMarker(iconFactory, "!!!1", location, 1);
-//                location.setLongitude(location.getLongitude() + 0.001);
+        addMarker(iconFactory, "!!!1", location, 1);
+
+        final Handler handler = new Handler();
+        final Runnable r = new Runnable() {
+            public void run() {
+//                location.setLongitude(location.getLongitude() + 0.0001);
+                location.setLatitude(location.getLatitude() + 0.001);
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                MarkerAnimation.animateMarkerToICS(markersByDeviceId.get(1L), latLng, new Spherical());
+                handler.postDelayed(this, 3000);
+            }
+        };
+        if (true) handler.postDelayed(r, 3000);
+
+//        location.setLongitude(location.getLongitude() + 0.001);
 //        addMarker(iconFactory, "!!!2", location, 2);
 //        addMarker(iconFactory, "!!!3", location, 3);
 //        location.setLongitude(location.getLongitude() + 0.001);
