@@ -240,7 +240,6 @@ public class TransportActivity extends BaseActivity
         }
 
 
-
         // TEST
 //        location.setBearing(45);  // mock direction
         addMarker(iconFactory, "!!!1", location, 1);
