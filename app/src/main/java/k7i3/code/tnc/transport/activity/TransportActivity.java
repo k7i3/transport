@@ -1,5 +1,6 @@
 package k7i3.code.tnc.transport.activity;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -38,14 +39,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.R;
-import k7i3.code.tnc.transport.helper.gmaps.LatLngInterpolator;
 import k7i3.code.tnc.transport.helper.gmaps.MarkerAnimation;
 import k7i3.code.tnc.transport.loader.TransportLoader;
 import k7i3.code.tnc.transport.model.Route;
 import k7i3.code.tnc.transport.model.Transport;
+import k7i3.code.tnc.transport.service.LocationIntentService;
 
 import static k7i3.code.tnc.transport.helper.gmaps.LatLngInterpolator.*;
 
@@ -58,15 +60,16 @@ public class TransportActivity extends BaseActivity
         LocationListener,
         android.support.v4.app.LoaderManager.LoaderCallbacks<Map<Route, List<Transport>>> {
 
+    private static final String TAG = "====> TransportActivity";
     // These settings are the same as the settings for the map. They will in fact give you updates
     // at the maximal rates currently possible.
     private static final LocationRequest REQUEST = LocationRequest.create()
             .setInterval(5000)         // 5 seconds
             .setFastestInterval(16)    // 16ms = 60fps
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    private static final String TAG = "====> TransportActivity";
     private static final int REQUEST_CODE_ROUTES = 1;
-    private static final int LOADER_TRANSPORT = 1;
+    private static final int LOADER_TRANSPORT = 70;
+    private static final int REQUEST_CODE_LOCATION = 50;
 
     private GoogleApiClient googleApiClient;
 
@@ -86,6 +89,7 @@ public class TransportActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate()");
         ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -100,15 +104,102 @@ public class TransportActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume()");
         googleApiClient.connect();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d(TAG, "onPause()");
         if (googleMap != null) googleMap.clear();
         googleApiClient.disconnect();
     }
+
+    //ACTIVITY RESULTS
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "requestCode = " + requestCode + " resultCode = " + resultCode);
+        //ACTIVITY FOR RESULT
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CODE_ROUTES:
+                    routes = data.getParcelableArrayListExtra(Constants.ROUTES);
+                    Toast.makeText(this, "!!! routes.size(): " + routes.size(), Toast.LENGTH_SHORT).show();
+                    startTransportLoader();
+                    break;
+            }
+        //PENDING INTENT
+        } else if (resultCode == LocationIntentService.STATUS_START) {
+            switch (requestCode) {
+                case REQUEST_CODE_LOCATION:
+                    Toast.makeText(this, "STATUS_START", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        } else if (resultCode == LocationIntentService.STATUS_UPDATE) {
+            switch (requestCode) {
+                case REQUEST_CODE_LOCATION:
+                    Toast.makeText(this, "STATUS_UPDATE", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        } else if (resultCode == LocationIntentService.STATUS_FINISH) {
+            switch (requestCode) {
+                case REQUEST_CODE_LOCATION:
+                    Toast.makeText(this, "STATUS_FINISH", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        } else if (resultCode == LocationIntentService.STATUS_ERROR) {
+            switch (requestCode) {
+                case REQUEST_CODE_LOCATION:
+                    Toast.makeText(this, "STATUS_ERROR", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+        else {
+            Toast.makeText(this, "!!! unexpected resultCode !!!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    //LOADERS
+
+    @Override
+    public Loader<Map<Route, List<Transport>>> onCreateLoader(int id, Bundle args) {
+        Loader<Map<Route, List<Transport>>> loader = null;
+        //TODO switch if needed
+        if (id == LOADER_TRANSPORT) {
+            Log.d(TAG, "onCreateLoader() / id == LOADER_TRANSPORT");
+            loader = new TransportLoader(this, args);
+        }
+        return loader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Map<Route, List<Transport>>> loader, Map<Route, List<Transport>> data) {
+        Log.d(TAG, "onLoadFinished()");
+        //TODO switch if needed
+        if (loader.getId() == LOADER_TRANSPORT) {
+            Log.d(TAG, "if (loader.getId() == LOADER_TRANSPORT) {");
+            transportByRoute = data;
+            Log.d(TAG, "transportByRoute.size(): " + transportByRoute.size());
+
+            drawTransport();
+
+            //TODO start next loader/service for retrieve coordinates
+            //1.PENDING INTENT (doesn't work correctly, reset activity) http://startandroid.ru/ru/uroki/vse-uroki-spiskom/160-urok-95-service-obratnaja-svjaz-s-pomoschju-pendingintent.html
+            PendingIntent pendingIntent = createPendingResult(REQUEST_CODE_LOCATION, new Intent(), 0); // intent may not be null
+            Set<Long> set = markersByDeviceId.keySet();
+            LocationIntentService.startActionPendingIntent(this, set.toArray(new Long[set.size()]), pendingIntent);
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Map<Route, List<Transport>>> loader) {
+
+    }
+
+    //HELPERS
 
     private void initInstances() {
 //        toolbar.setLogo(R.drawable.logo);
@@ -127,83 +218,10 @@ public class TransportActivity extends BaseActivity
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "requestCode = " + requestCode + " resultCode = " + resultCode);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case REQUEST_CODE_ROUTES:
-                    routes = data.getParcelableArrayListExtra(Constants.ROUTES);
-                    Toast.makeText(this, "!!! routes.size(): " + routes.size(), Toast.LENGTH_SHORT).show();
-//                    drawTransport();
-                    break;
-            }
-        } else {
-            Toast.makeText(this, "!!!", Toast.LENGTH_SHORT).show();
-        }
-
-        startTransportLoader();
-    }
-
     private void startTransportLoader() {
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(Constants.ROUTES, (ArrayList<Route>) routes);
         getSupportLoaderManager().restartLoader(LOADER_TRANSPORT, bundle, this); // if Loader already exist, when initLoader() called, constructor doesn't called, and routes remain old
-    }
-
-    /**
-     * Implementation of {@link OnMapReadyCallback}.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        this.googleMap = googleMap;
-
-//        TODO change position of maps api's buttons or make their custom http://stackoverflow.com/questions/14489880/how-to-change-the-position-of-maps-apis-get-my-location-button /// http://stackoverflow.com/questions/1768097/how-to-layout-zoom-control-with-setbuiltinzoomcontrolstrue
-        googleMap.setMyLocationEnabled(true);
-        googleMap.setPadding(36, 240, 36, 240);
-        googleMap.setOnMyLocationButtonClickListener(this);
-        UiSettings uiSettings = googleMap.getUiSettings();
-        uiSettings.setZoomControlsEnabled(true);
-        uiSettings.setMyLocationButtonEnabled(true);
-    }
-
-    /**
-     * Button to get current Location. This demonstrates how to get the current Location as required
-     * without needing to register a LocationListener.
-     */
-//    public void showMyLocation(View view) {
-//        if (googleApiClient.isConnected()) {
-//            String msg = "Location = "
-//                    + LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-//            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-//        }
-//    }
-
-    /**
-     * Callback called when connected to GCore. Implementation of {@link GoogleApiClient.ConnectionCallbacks}.
-     */
-    @Override
-    public void onConnected(Bundle bundle) {
-        Log.d(TAG, "onConnected()");
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                googleApiClient,
-                REQUEST,
-                this);  // LocationListener
-
-        location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        moveCamera(latLng);
-    }
-
-    private void moveCamera(LatLng latLng) {
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(latLng)             // Sets the center of the map to location user
-                .zoom(17)                   // Sets the zoom
-                .bearing(0)
-                .tilt(30)                   // Sets the tilt of the camera to 30 degrees
-                .build();                   // Creates a CameraPosition from the builder
-        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-//        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
     }
 
     private void drawTransport() {
@@ -279,12 +297,95 @@ public class TransportActivity extends BaseActivity
         markersByDeviceId.put(deviceId, googleMap.addMarker(markerOptions));
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //MAPS
+
+    /**
+     * Implementation of {@link OnMapReadyCallback}.
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        Log.d(TAG, "onMapReady()");
+        this.googleMap = googleMap;
+
+//        TODO change position of maps api's buttons or make their custom http://stackoverflow.com/questions/14489880/how-to-change-the-position-of-maps-apis-get-my-location-button /// http://stackoverflow.com/questions/1768097/how-to-layout-zoom-control-with-setbuiltinzoomcontrolstrue
+        googleMap.setMyLocationEnabled(true);
+        googleMap.setPadding(36, 240, 36, 240);
+        googleMap.setOnMyLocationButtonClickListener(this);
+        UiSettings uiSettings = googleMap.getUiSettings();
+        uiSettings.setZoomControlsEnabled(true);
+        uiSettings.setMyLocationButtonEnabled(true);
+    }
+
+    /**
+     * Button to get current Location. This demonstrates how to get the current Location as required
+     * without needing to register a LocationListener.
+     */
+//    public void showMyLocation(View view) {
+//        if (googleApiClient.isConnected()) {
+//            String msg = "Location = "
+//                    + LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+//            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+//        }
+//    }
+
+    /**
+     * Callback called when connected to GCore. Implementation of {@link GoogleApiClient.ConnectionCallbacks}.
+     */
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d(TAG, "onConnected()");
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                googleApiClient,
+                REQUEST,
+                this);  // LocationListener
+
+        location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        moveCamera(latLng);
+    }
+
+    private void moveCamera(LatLng latLng) {
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(latLng)             // Sets the center of the map to location user
+                .zoom(17)                   // Sets the zoom
+                .bearing(0)
+                .tilt(30)                   // Sets the tilt of the camera to 30 degrees
+                .build();                   // Creates a CameraPosition from the builder
+        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+//        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+    }
+
     /**
      * Callback called when disconnected from GCore. Implementation of {@link GoogleApiClient.ConnectionCallbacks}.
      */
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.d(TAG, "onConnectionSuspended()");
     }
 
     /**
@@ -292,7 +393,7 @@ public class TransportActivity extends BaseActivity
      */
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
+        Log.d(TAG, "onConnectionFailed()");
     }
 
     /**
@@ -300,6 +401,7 @@ public class TransportActivity extends BaseActivity
      */
     @Override
     public boolean onMyLocationButtonClick() {
+        Log.d(TAG, "onMyLocationButtonClick()");
 //        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
@@ -311,35 +413,7 @@ public class TransportActivity extends BaseActivity
      */
     @Override
     public void onLocationChanged(Location location) {
+        Log.d(TAG, "onLocationChanged");
 //        Toast.makeText(this, "Location = " + location, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public Loader<Map<Route, List<Transport>>> onCreateLoader(int id, Bundle args) {
-        Loader<Map<Route, List<Transport>>> loader = null;
-        //TODO switch if needed
-        if (id == LOADER_TRANSPORT) {
-            Log.d(TAG, "onCreateLoader() / id == LOADER_TRANSPORT");
-            loader = new TransportLoader(this, args);
-        }
-        return loader;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Map<Route, List<Transport>>> loader, Map<Route, List<Transport>> data) {
-        Log.d(TAG, "onLoadFinished()");
-        //TODO switch if needed
-        if (loader.getId() == LOADER_TRANSPORT) {
-            Log.d(TAG, "if (loader.getId() == LOADER_TRANSPORT) {");
-            transportByRoute = data;
-            Log.d(TAG, "transportByRoute.size(): " + transportByRoute.size());
-        }
-        drawTransport();
-        //TODO start next loader/service for retrieve coordinates
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Map<Route, List<Transport>>> loader) {
-
     }
 }
