@@ -186,10 +186,14 @@ public class TransportActivity extends BaseActivity
             drawTransport();
 
             //TODO start next loader/service for retrieve coordinates
-            //1.PENDING INTENT (doesn't work correctly, reset activity) http://startandroid.ru/ru/uroki/vse-uroki-spiskom/160-urok-95-service-obratnaja-svjaz-s-pomoschju-pendingintent.html
-            PendingIntent pendingIntent = createPendingResult(REQUEST_CODE_LOCATION, new Intent(), 0); // intent may not be null
-            Set<Long> set = markersByDeviceId.keySet();
-            LocationIntentService.startActionPendingIntent(this, set.toArray(new Long[set.size()]), pendingIntent);
+            //1.PENDING INTENT via createPendingResult() with callback at onActivityResult() (doesn't work correctly, activity call onPause() when intent (which used to start service) contains PendingIntent. Without PI onPause() doesn't called) http://startandroid.ru/ru/uroki/vse-uroki-spiskom/160-urok-95-service-obratnaja-svjaz-s-pomoschju-pendingintent.html
+//            Log.d(TAG, "1. PENDING INTENT START");
+//            PendingIntent pendingIntent = createPendingResult(REQUEST_CODE_LOCATION, new Intent(), 0); // intent may not be null, but in example is null!
+//            Set<Long> set = markersByDeviceId.keySet();
+//            LocationIntentService.startActionPendingIntent(this, set.toArray(new Long[set.size()]), pendingIntent);
+//            Log.d(TAG, "1. PENDING INTENT FINISH");
+            //2. PENDING INTENT for a broadcast (with getBroadcast()) http://stackoverflow.com/questions/6099364/how-to-use-pendingintent-to-communicate-from-a-service-to-a-client-activity
+
         }
 
     }
@@ -225,6 +229,7 @@ public class TransportActivity extends BaseActivity
     }
 
     private void drawTransport() {
+        Log.d(TAG, "drawTransport()");
 //        googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title(location.getTime() + " " + location.getProvider()));
 
         //DRAWABLE
