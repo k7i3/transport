@@ -1,6 +1,5 @@
 package k7i3.code.tnc.transport.activity;
 
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -10,7 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.Loader;
 import android.util.Log;
@@ -41,12 +39,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import de.greenrobot.event.EventBus;
 import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.R;
 import k7i3.code.tnc.transport.helper.gmaps.MarkerAnimation;
 import k7i3.code.tnc.transport.loader.TransportLoader;
+import k7i3.code.tnc.transport.model.LocationMessage;
 import k7i3.code.tnc.transport.model.Route;
 import k7i3.code.tnc.transport.model.Transport;
+import k7i3.code.tnc.transport.model.TransportLocation;
 import k7i3.code.tnc.transport.service.LocationIntentService;
 
 import static k7i3.code.tnc.transport.helper.gmaps.LatLngInterpolator.*;
@@ -99,6 +100,8 @@ public class TransportActivity extends BaseActivity
         initInstances();
 
         markersByDeviceId = new HashMap<>();
+
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -193,14 +196,39 @@ public class TransportActivity extends BaseActivity
 //            LocationIntentService.startActionPendingIntent(this, set.toArray(new Long[set.size()]), pendingIntent);
 //            Log.d(TAG, "1. PENDING INTENT FINISH");
             //2. PENDING INTENT for a broadcast (with getBroadcast()) http://stackoverflow.com/questions/6099364/how-to-use-pendingintent-to-communicate-from-a-service-to-a-client-activity
-
+            //3. EVENTBUS
+            Set<Long> set = markersByDeviceId.keySet();
+            LocationIntentService.startActionEventBus(this, set.toArray(new Long[set.size()]));
         }
-
     }
 
     @Override
     public void onLoaderReset(Loader<Map<Route, List<Transport>>> loader) {
 
+    }
+
+    //EVENTBUS
+
+    public void onEventMainThread(LocationMessage locationMessage) {
+        Log.d(TAG, "!!! onEventMainThread(LocationMessage locationMessage)");
+
+        Marker marker;
+        for (TransportLocation transportLocation : locationMessage.getTransportLocations()) {
+            Log.d(TAG, "!!! transportLocation: " + transportLocation);
+            marker = markersByDeviceId.get(transportLocation.getDeviceId());
+            marker.setVisible(true);
+            marker.setRotation((float) transportLocation.getDirection());
+            MarkerAnimation.animateMarkerToICS(
+                    marker,
+                    new LatLng(transportLocation.getLat(), transportLocation.getLon()),
+                    new LinearFixed());
+        }
+
+//        TransportLocation transportLocation = locationMessage.getTransportLocations()[0];
+//        Log.d(TAG, "!!! transportLocation: " + transportLocation);
+//        long deviceId = transportLocation.getDeviceId();
+//        LatLng latLng = new LatLng(transportLocation.getLat(), transportLocation.getLon());
+//        MarkerAnimation.animateMarkerToICS(markersByDeviceId.get(deviceId), latLng, new LinearFixed());
     }
 
     //HELPERS
@@ -264,20 +292,20 @@ public class TransportActivity extends BaseActivity
 
 
         // TEST
-//        location.setBearing(45);  // mock direction
+        location.setBearing(0);  // mock direction
         addMarker(iconFactory, "!!!1", location, 1);
 
-        final Handler handler = new Handler();
-        final Runnable r = new Runnable() {
-            public void run() {
-//                location.setLongitude(location.getLongitude() + 0.0001);
-                location.setLatitude(location.getLatitude() + 0.001);
-                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                MarkerAnimation.animateMarkerToICS(markersByDeviceId.get(1L), latLng, new Spherical());
-                handler.postDelayed(this, 3000);
-            }
-        };
-        if (true) handler.postDelayed(r, 3000);
+//        final Handler handler = new Handler();
+//        final Runnable r = new Runnable() {
+//            public void run() {
+////                location.setLongitude(location.getLongitude() + 0.0001);
+//                location.setLatitude(location.getLatitude() + 0.001);
+//                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+//                MarkerAnimation.animateMarkerToICS(markersByDeviceId.get(1L), latLng, new Spherical());
+//                handler.postDelayed(this, 3000);
+//            }
+//        };
+//        if (true) handler.postDelayed(r, 3000);
 
 //        location.setLongitude(location.getLongitude() + 0.001);
 //        addMarker(iconFactory, "!!!2", location, 2);
@@ -347,12 +375,12 @@ public class TransportActivity extends BaseActivity
     }
 
     /**
-     * Button to get current Location. This demonstrates how to get the current Location as required
+     * Button to get current TransportLocation. This demonstrates how to get the current TransportLocation as required
      * without needing to register a LocationListener.
      */
 //    public void showMyLocation(View view) {
 //        if (googleApiClient.isConnected()) {
-//            String msg = "Location = "
+//            String msg = "TransportLocation = "
 //                    + LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
 //            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
 //        }
@@ -419,6 +447,6 @@ public class TransportActivity extends BaseActivity
     @Override
     public void onLocationChanged(Location location) {
         Log.d(TAG, "onLocationChanged");
-//        Toast.makeText(this, "Location = " + location, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "TransportLocation = " + location, Toast.LENGTH_SHORT).show();
     }
 }

@@ -121,4 +121,13 @@ public class Utils {
         } catch (Exception ex) { } // for now eat exceptions
         return "";
     }
+
+    public static long[] castLongArrayToPrimitive(Long[] source) {
+        long[] destination = new long[source.length];
+        int i = 0;
+        for (Long sourceItem : source) {
+            destination[i++] = sourceItem;
+        }
+        return  destination;
+    }
 }
