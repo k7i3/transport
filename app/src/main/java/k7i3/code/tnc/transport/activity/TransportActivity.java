@@ -210,25 +210,21 @@ public class TransportActivity extends BaseActivity
     //EVENTBUS
 
     public void onEventMainThread(LocationMessage locationMessage) {
-        Log.d(TAG, "!!! onEventMainThread(LocationMessage locationMessage)");
+        Log.d(TAG, "EVENTBUS onEventMainThread(LocationMessage locationMessage)");
 
+//        TODO asyncTask?
         Marker marker;
-        for (TransportLocation transportLocation : locationMessage.getTransportLocations()) {
+        for (TransportLocation transportLocation : locationMessage.getDataJson()) {
             Log.d(TAG, "!!! transportLocation: " + transportLocation);
             marker = markersByDeviceId.get(transportLocation.getDeviceId());
-            marker.setVisible(true);
-            marker.setRotation((float) transportLocation.getDirection());
+            float direction = (float) transportLocation.getDirection();
+            if (direction != 0) marker.setRotation(direction);
             MarkerAnimation.animateMarkerToICS(
                     marker,
                     new LatLng(transportLocation.getLat(), transportLocation.getLon()),
                     new LinearFixed());
+            if (!marker.isVisible()) marker.setVisible(true);
         }
-
-//        TransportLocation transportLocation = locationMessage.getTransportLocations()[0];
-//        Log.d(TAG, "!!! transportLocation: " + transportLocation);
-//        long deviceId = transportLocation.getDeviceId();
-//        LatLng latLng = new LatLng(transportLocation.getLat(), transportLocation.getLon());
-//        MarkerAnimation.animateMarkerToICS(markersByDeviceId.get(deviceId), latLng, new LinearFixed());
     }
 
     //HELPERS
@@ -292,8 +288,8 @@ public class TransportActivity extends BaseActivity
 
 
         // TEST
-        location.setBearing(0);  // mock direction
-        addMarker(iconFactory, "!!!1", location, 1);
+//        location.setBearing(0);  // mock direction
+//        addMarker(iconFactory, "!!!1", location, 1);
 
 //        final Handler handler = new Handler();
 //        final Runnable r = new Runnable() {
@@ -319,13 +315,13 @@ public class TransportActivity extends BaseActivity
     }
 
     private void addMarker(IconGenerator iconFactory, String title, Location location, long deviceId) {
-//        TODO make marker invisible
         MarkerOptions markerOptions = new MarkerOptions().
                 icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(title))).
                 position(new LatLng(location.getLatitude(), location.getLongitude())).
                 flat(true).
                 rotation(location.getBearing()).
-                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV()).
+                visible(false);
 
         markersByDeviceId.put(deviceId, googleMap.addMarker(markerOptions));
     }
@@ -397,6 +393,7 @@ public class TransportActivity extends BaseActivity
                 REQUEST,
                 this);  // LocationListener
 
+        //TODO check for NULL
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         moveCamera(latLng);

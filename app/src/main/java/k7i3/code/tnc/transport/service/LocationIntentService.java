@@ -6,12 +6,16 @@ import android.content.Intent;
 import android.content.Context;
 import android.util.Log;
 
-import java.util.Date;
+import com.google.gson.GsonBuilder;
+
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import de.greenrobot.event.EventBus;
+import de.tavendo.autobahn.WebSocketConnection;
+import de.tavendo.autobahn.WebSocketException;
+import de.tavendo.autobahn.WebSocketHandler;
 import k7i3.code.tnc.transport.helper.Utils;
-import k7i3.code.tnc.transport.model.TransportLocation;
 import k7i3.code.tnc.transport.model.LocationMessage;
 
 /**
@@ -34,6 +38,9 @@ public class LocationIntentService extends IntentService {
     public static final int STATUS_UPDATE = 101;
     public static final int STATUS_FINISH = 102;
     public static final int STATUS_ERROR = 103;
+
+    private final WebSocketConnection wsConnection = new WebSocketConnection();
+    private static final String WS_URI = "ws://62.133.191.98:47201/vms-ws/socket";
 
     public LocationIntentService() {
         super("LocationIntentService");
@@ -100,20 +107,93 @@ public class LocationIntentService extends IntentService {
         Log.d(TAG, "handleActionPendingIntent() finish");
     }
 
-    private void handleActionEventBus(long[] deviceIds) {
+    private void handleActionEventBus(final long[] deviceIds) {
         Log.d(TAG, "handleActionEventBus() start");
         Log.d(TAG, "handleActionEventBus()... deviceIds.length: " + deviceIds.length);
 
-        TransportLocation[] transportLocations = {new TransportLocation(0, 1, new Date(), 0, 0, 90, 10, 5, 210)};
+        final GsonBuilder gson = new GsonBuilder();
+
+        //TODO Connect to WS and retrieve locations
         try {
-            TimeUnit.SECONDS.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            wsConnection.connect(WS_URI, new WebSocketHandler() {
+                boolean isFirstMessage = true;
+
+                @Override
+                public void onOpen() {
+                    Log.d(TAG, "Status: Connected to " + WS_URI);
+
+                    //TODO Make it by GsonBuilder
+//                    InvocationContext invocationContext = new InvocationContext(Utils.getIPAddress(true), "Android", SecurityHelper.encrypt("Klim55CVfg"), "Klim");
+//                    GsonBuilder gson = new GsonBuilder();
+//                    String request = gson.create().toJson(new Object[]{invocationContext, new Date()});
+//                    Log.d(TAG, "request: " + request); //[{"clientIPAddress":"192.168.137.201","initiator":"Android","password":"45BlPwIWKaZrIXlYNeCHQw\u003d\u003d","userName":"Klim"},"2015-09-10T12:31:11Z"]
+
+                    // 51 маршрут = 39419173957
+                    // автобусы 51 маршрута ("deviceId") = 9781,8741,8751,8759,8761,8773,9069,8777,8781,8783,8785,8795,8801,8813,8815,8823,9075,8861,87360616019,87360630497,87360641757,87360652815
+
+                    Log.d(TAG, "!!!deviceIds1: " + Arrays.toString(deviceIds));
+                    String request = "{\"serviceName\":\"NDDataWS\"," +
+                            "\"methodName\":\"sendList\"," +
+                            "\"messageType\":\"ru.infor.ws.business.vms.websocket.objects.SubscribingOptions_SendListNDData\"," +
+                            "\"context\":{\"userName\":\"Klim\",\"password\":\"45BlPwIWKaZrIXlYNeCHQw\\u003d\\u003d\"}," +
+                            "\"deviceIdList\":" + Arrays.toString(deviceIds) + "}";
+//                            "\"deviceIdList\":[9781,8741,8751,8759,8761,8773,9069,8777,8781,8783,8785,8795,8801,8813,8815,8823,9075,8861,87360616019,87360630497,87360641757,87360652815]}";
+                    Log.d(TAG, "request: " + request);
+                    wsConnection.sendTextMessage(request);
+                }
+
+                @Override
+                public void onTextMessage(String payload) {
+                    Log.d(TAG, "Got echo: " + payload);
+                    if (isFirstMessage) {
+//                        TODO handle status message
+//                        {"status":0,"sid":"0015002ecc7ce","serviceName":"NDDataWS","methodName":"sendList","messageType":"ru.infor.websocket.transport.SubscribingResult"}
+                        isFirstMessage = false;
+                        Log.d(TAG, "isFirstMessage change to false");
+                    } else {
+                        Log.d(TAG, "!isFirstMessage");
+                        LocationMessage locationMessage = gson.create().fromJson(payload, LocationMessage.class);
+                        Log.d(TAG, "locationMessage.getDataJson().size(): " + locationMessage.getDataJson().size());
+                        EventBus.getDefault().post(locationMessage);
+                        Log.d(TAG, "EVENTBUS post");
+                    }
+                }
+
+                @Override
+                public void onClose(int code, String reason) {
+                    Log.d(TAG, "Connection lost: " + code + " " + reason);
+//                    TODO try to connect else? change isFirstMessage to true?
+                }
+            });
+        } catch (WebSocketException e) {
+            Log.d(TAG, e.toString());
         }
-        EventBus.getDefault().post(new LocationMessage(transportLocations));
+
+        //TODO make boolean field
+        while (true) {
+//            Log.d(TAG, "loop");
+        }
 
 
 
-        Log.d(TAG, "handleActionEventBus() finish");
+
+
+
+
+
+
+
+
+
+        //TEST
+//        TransportLocation[] transportLocations = {new TransportLocation(0, 1, new Date(), 0, 0, 90, 10, 5, 210)};
+//        try {
+//            TimeUnit.SECONDS.sleep(10);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        EventBus.getDefault().post(new LocationMessage(transportLocations));
+
+//        Log.d(TAG, "handleActionEventBus() finish");
     }
 }
