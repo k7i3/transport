@@ -29,6 +29,7 @@ public class LocationIntentService extends IntentService {
 
     public static final String ACTION_PENDING_INTENT = "k7i3.code.tnc.transport.service.action.PENDING_INTENT";
     public static final String ACTION_EVENT_BUS = "k7i3.code.tnc.transport.service.action.EVENT_BUS";
+    public static final String ACTION_STOP_SERVICE = "k7i3.code.tnc.transport.service.action.STOP_SERVICE";
 
     public static final String EXTRA_DEVICE_IDS = "k7i3.code.tnc.transport.service.extra.DEVICE_IDS";
     public static final String EXTRA_PENDING_INTENT = "k7i3.code.tnc.transport.service.extra.EXTRA_PENDING_INTENT";
@@ -41,6 +42,8 @@ public class LocationIntentService extends IntentService {
 
     private final WebSocketConnection wsConnection = new WebSocketConnection();
     private static final String WS_URI = "ws://62.133.191.98:47201/vms-ws/socket";
+    private boolean status;
+    private static Intent currentIntent;
 
     public LocationIntentService() {
         super("LocationIntentService");
@@ -58,10 +61,27 @@ public class LocationIntentService extends IntentService {
 
     public static void startActionEventBus(Context context, Long[] deviceIds) {
         Log.d(TAG, "startActionEventBus()... deviceIds.length: " + deviceIds.length);
+
+//        stopService(context); doesn't work
+
         Intent intent = new Intent(context, LocationIntentService.class);
         intent.setAction(ACTION_EVENT_BUS);
         intent.putExtra(EXTRA_DEVICE_IDS, Utils.castLongArrayToPrimitive(deviceIds));
+        currentIntent = intent;
         context.startService(intent);
+    }
+
+    public static void stopService(Context context) {
+        Log.d(TAG, "stopService()");
+//        TODO find way to stop intentService (1,2,3,4 doesn't work)
+//1        context.stopService(new Intent(context, LocationIntentService.class)); // doesn't work - call onHandleIntent()
+//2        status = false;
+//3        Intent intent = new Intent(context, LocationIntentService.class);
+//        intent.setAction(ACTION_STOP_SERVICE);
+//        context.stopService(intent);
+//4        if (currentIntent != null) {
+//            context.stopService(currentIntent);
+//        }
     }
 
     //LIFECYCLE
@@ -76,11 +96,22 @@ public class LocationIntentService extends IntentService {
                 PendingIntent pendingIntent = intent.getParcelableExtra(EXTRA_PENDING_INTENT);
                 handleActionPendingIntent(deviceIds, pendingIntent);
             } else if (ACTION_EVENT_BUS.equals(action)) {
+                status = true;
                 final long[] deviceIds = intent.getLongArrayExtra(EXTRA_DEVICE_IDS);
                 Log.d(TAG, "onHandleIntent()... deviceIds.length: " + deviceIds.length);
                 handleActionEventBus(deviceIds);
+            } else if (ACTION_STOP_SERVICE.equals(action)) {
+                Log.d(TAG, "ACTION_STOP_SERVICE");
+                return;
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "onHandleIntent()");
+        status = false;
+        super.onDestroy();
     }
 
     //HELPERS
@@ -111,9 +142,18 @@ public class LocationIntentService extends IntentService {
         Log.d(TAG, "handleActionEventBus() start");
         Log.d(TAG, "handleActionEventBus()... deviceIds.length: " + deviceIds.length);
 
-        final GsonBuilder gson = new GsonBuilder();
+        connectToWS(deviceIds);
 
-        //TODO Connect to WS and retrieve locations
+        while (status) {
+//            Log.d(TAG, "loop");
+        }
+
+    }
+
+    private void connectToWS(final long[] deviceIds) {
+        Log.d(TAG, "connectToWS()");
+        final GsonBuilder gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // "createdDateTime":"Sep 30, 2015 12:10:57 PM" - dateFormat doesn't work
+
         try {
             wsConnection.connect(WS_URI, new WebSocketHandler() {
                 boolean isFirstMessage = true;
@@ -154,6 +194,7 @@ public class LocationIntentService extends IntentService {
                         Log.d(TAG, "!isFirstMessage");
                         LocationMessage locationMessage = gson.create().fromJson(payload, LocationMessage.class);
                         Log.d(TAG, "locationMessage.getDataJson().size(): " + locationMessage.getDataJson().size());
+                        locationMessage.filterDuplicates();
                         EventBus.getDefault().post(locationMessage);
                         Log.d(TAG, "EVENTBUS post");
                     }
@@ -162,38 +203,19 @@ public class LocationIntentService extends IntentService {
                 @Override
                 public void onClose(int code, String reason) {
                     Log.d(TAG, "Connection lost: " + code + " " + reason);
-//                    TODO try to connect else? change isFirstMessage to true?
+                    reconnectToWS(deviceIds);
                 }
             });
         } catch (WebSocketException e) {
             Log.d(TAG, e.toString());
+            reconnectToWS(deviceIds);
         }
-
-        //TODO make boolean field
-        while (true) {
-//            Log.d(TAG, "loop");
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-        //TEST
-//        TransportLocation[] transportLocations = {new TransportLocation(0, 1, new Date(), 0, 0, 90, 10, 5, 210)};
-//        try {
-//            TimeUnit.SECONDS.sleep(10);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        EventBus.getDefault().post(new LocationMessage(transportLocations));
-
-//        Log.d(TAG, "handleActionEventBus() finish");
     }
+
+    private void reconnectToWS(long[] deviceIds) {
+        Log.d(TAG, "reconnectToWS()");
+        wsConnection.disconnect();
+        connectToWS(deviceIds);
+    }
+
 }

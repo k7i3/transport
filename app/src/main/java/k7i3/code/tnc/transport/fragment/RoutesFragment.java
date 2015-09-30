@@ -133,22 +133,21 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
 
     private void initMockRoutes() {
         Log.d(TAG, "initMockRoutes()");
-        routes.add(new Route(1, position + "", 20, 60, "10 Док-п. Максимовка"));
-        routes.add(new Route(2, "105", 40, 89, "105 К.Рынок-в.Изяк"));
-        routes.add(new Route(3, "104С", 77, 120, "104С Уфа-Благовещенск"));
-        routes.add(new Route(4, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(5, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(6, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(7, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(8, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(9, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(10, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(0, "test1", 11, 111, "test1 Название маршрута"));
-        routes.add(new Route(0, "test2", 11, 111, "test2 Название маршрута"));
-        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
-        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
-
+        routes.add(new Route(1, position + "", 30, 60, "описание маршрута"));
+//        routes.add(new Route(2, "105", 40, 89, "105 К.Рынок-в.Изяк"));
+//        routes.add(new Route(3, "104С", 77, 120, "104С Уфа-Благовещенск"));
+//        routes.add(new Route(4, "111", 11, 111, "111 Название маршрута"));
+//        routes.add(new Route(5, "111", 11, 111, "111 Название маршрута"));
+//        routes.add(new Route(6, "111", 11, 111, "111 Название маршрута"));
+//        routes.add(new Route(7, "111", 11, 111, "111 Название маршрута"));
+//        routes.add(new Route(8, "111", 11, 111, "111 Название маршрута"));
+//        routes.add(new Route(9, "111", 11, 111, "111 Название маршрута"));
+//        routes.add(new Route(10, "111", 11, 111, "111 Название маршрута"));
+//        routes.add(new Route(0, "test1", 11, 111, "test1 Название маршрута"));
+//        routes.add(new Route(0, "test2", 11, 111, "test2 Название маршрута"));
+//        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+//        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
+//        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
         progressBar.setVisibility(ProgressBar.INVISIBLE);
     }
 
@@ -168,7 +167,7 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
         Log.d(TAG, "onLoadFinished()");
         //TODO switch if needed
         if (loader.getId() == LOADER_ROUTES) {
-            Log.d(TAG, "if (loader.getId() == LOADER_ROUTES) {");
+            Log.d(TAG, "if (loader.getId() == LOADER_ROUTES)");
             routes = data;
             routesDataAdapter.setRoutes(routes);
 //            routesDataAdapter.notifyDataSetChanged(); // not needed when used SortedList at routesDataAdapter (it has built-in callbacks)
@@ -183,16 +182,15 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
             }
 
             // TEST
-            final Handler handler = new Handler();
-            final Runnable r = new Runnable() {
-                public void run() {
-                    routesDataAdapter.getRoutes().removeItemAt(0);
-                    routesDataAdapter.getRoutes().add(new Route(39427972044L, "103", 111, 111, "test"));
-                    handler.postDelayed(this, 3000);
-                }
-            };
-
-            if (routesDataAdapter.getRoutes().size() > 0) handler.postDelayed(r, 3000);
+//            final Handler handler = new Handler();
+//            final Runnable r = new Runnable() {
+//                public void run() {
+//                    routesDataAdapter.getRoutes().removeItemAt(0);
+//                    routesDataAdapter.getRoutes().add(new Route(39427972044L, "103", 111, 111, "test"));
+//                    handler.postDelayed(this, 3000);
+//                }
+//            };
+//            if (routesDataAdapter.getRoutes().size() > 0) handler.postDelayed(r, 3000);
         }
     }
 

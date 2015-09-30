@@ -5,6 +5,52 @@ import java.util.Date;
 /**
  * Created by k7i3 on 16.09.15.
  */
+//        [
+//        {
+//        "id": 87361271912,
+//        "transportTypeCode": "НЕФАЗ 5299-30-42",
+//        "transportTypeDescription": "НЕФАЗ 5299-30-42",
+//        "regNum": "С970ВМ102",
+//        "description": "УПАТП-3",
+//        "groupCode": "16",
+//        "groupDescription": "ПП УПАТП-3",
+//        "garageNum": "С970ВМ102",
+//        "codeM": "НЕФАЗ 5299-30-42",
+//        "deviceId": 87360650603,
+//        "deviceCode": "6861",
+//        "phone": "9273554837",
+//        "phone2": "УПАТП-3",
+//        "primaryGroupName": "УПАТП-3 (bat3_1)",
+//        "transmitDataToTN": 1,
+//        "lastTransfer": "Jul 7, 2015 11:09:46 AM",
+//        "codevirt": "00006861",
+//        "lastData": "Sep 30, 2015 12:13:22 PM",
+//        "softVersion": ">REV 07.627.028"
+//        },
+//        {
+//        "id": 87361276737,
+//        "transportTypeCode": "НЕФАЗ 5299-30-42",
+//        "transportTypeDescription": "НЕФАЗ 5299-30-42",
+//        "regNum": "С971ВМ102",
+//        "description": "УПАТП-3",
+//        "groupCode": "16",
+//        "groupDescription": "ПП УПАТП-3",
+//        "garageNum": "С971ВМ102",
+//        "codeM": "НЕФАЗ 5299-30-42",
+//        "deviceId": 87360652815,
+//        "deviceCode": "863591024820247",
+//        "phone": "89273554948",
+//        "phone2": "УПАТП-3",
+//        "primaryGroupName": "УПАТП-3 (bat3_1)",
+//        "transmitDataToTN": 1,
+//        "lastTransfer": "Sep 30, 2015 4:57:59 AM",
+//        "codevirt": "00006841",
+//        "lastData": "Sep 30, 2015 12:29:48 PM",
+//        "softVersion": ">REV 07.628.028",
+//        "hardVersion": ""
+//        }
+//        ]
+
 public class Transport {
     private long id;
     private String transportTypeCode;

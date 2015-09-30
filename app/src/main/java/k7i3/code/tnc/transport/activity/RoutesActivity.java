@@ -23,7 +23,7 @@ import k7i3.code.tnc.transport.widget.SlidingTabLayout;
  */
 public class RoutesActivity extends BaseActivity {
 
-    private CharSequence titles[] = {"Избранные", "Рядом", "Все"};
+    private CharSequence titles[] = {"Избранные", "Рядом", "На линии"};
     private RoutesPagerAdapter routesPagerAdapter;
 
     private CollapsingToolbarLayout collapsingToolbarLayout;

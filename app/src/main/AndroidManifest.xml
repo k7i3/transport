@@ -46,6 +46,11 @@
             android:name=".service.LocationIntentService"
             android:exported="false" >
         </service>
+        <service
+            android:name=".service.LocationService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>

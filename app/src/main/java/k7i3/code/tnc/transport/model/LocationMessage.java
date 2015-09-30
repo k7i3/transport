@@ -1,6 +1,9 @@
 package k7i3.code.tnc.transport.model;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by k7i3 on 25.09.15.
@@ -32,6 +35,14 @@ public class LocationMessage {
     public LocationMessage(List<TransportLocation> dataJson, String sid) {
         this.dataJson = dataJson;
         this.sid = sid;
+    }
+
+    public void filterDuplicates() {
+        Set<TransportLocation> noDuplicatesSet = new HashSet<>();
+        for (TransportLocation transportLocation : dataJson) {
+            noDuplicatesSet.add(transportLocation);
+        }
+        dataJson = new ArrayList<>(noDuplicatesSet);
     }
 
     public List<TransportLocation> getDataJson() {

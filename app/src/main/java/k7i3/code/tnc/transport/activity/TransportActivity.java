@@ -115,8 +115,9 @@ public class TransportActivity extends BaseActivity
     protected void onPause() {
         super.onPause();
         Log.d(TAG, "onPause()");
-        if (googleMap != null) googleMap.clear();
+//        if (googleMap != null) googleMap.clear();
         googleApiClient.disconnect();
+//        LocationIntentService.stopService(this); doesn't work
     }
 
     //ACTIVITY RESULTS
@@ -128,40 +129,43 @@ public class TransportActivity extends BaseActivity
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_ROUTES:
+
+                    if (googleMap != null) googleMap.clear();
+
                     routes = data.getParcelableArrayListExtra(Constants.ROUTES);
-                    Toast.makeText(this, "!!! routes.size(): " + routes.size(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "выбрано маршрутов: " + routes.size(), Toast.LENGTH_SHORT).show();
                     startTransportLoader();
                     break;
             }
+        } else {
+            Toast.makeText(this, "unexpected resultCode", Toast.LENGTH_SHORT).show();
+            }
         //PENDING INTENT
-        } else if (resultCode == LocationIntentService.STATUS_START) {
-            switch (requestCode) {
-                case REQUEST_CODE_LOCATION:
-                    Toast.makeText(this, "STATUS_START", Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        } else if (resultCode == LocationIntentService.STATUS_UPDATE) {
-            switch (requestCode) {
-                case REQUEST_CODE_LOCATION:
-                    Toast.makeText(this, "STATUS_UPDATE", Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        } else if (resultCode == LocationIntentService.STATUS_FINISH) {
-            switch (requestCode) {
-                case REQUEST_CODE_LOCATION:
-                    Toast.makeText(this, "STATUS_FINISH", Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        } else if (resultCode == LocationIntentService.STATUS_ERROR) {
-            switch (requestCode) {
-                case REQUEST_CODE_LOCATION:
-                    Toast.makeText(this, "STATUS_ERROR", Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        }
-        else {
-            Toast.makeText(this, "!!! unexpected resultCode !!!", Toast.LENGTH_SHORT).show();
-        }
+//        } else if (resultCode == LocationIntentService.STATUS_START) {
+//            switch (requestCode) {
+//                case REQUEST_CODE_LOCATION:
+//                    Toast.makeText(this, "STATUS_START", Toast.LENGTH_SHORT).show();
+//                    break;
+//            }
+//        } else if (resultCode == LocationIntentService.STATUS_UPDATE) {
+//            switch (requestCode) {
+//                case REQUEST_CODE_LOCATION:
+//                    Toast.makeText(this, "STATUS_UPDATE", Toast.LENGTH_SHORT).show();
+//                    break;
+//            }
+//        } else if (resultCode == LocationIntentService.STATUS_FINISH) {
+//            switch (requestCode) {
+//                case REQUEST_CODE_LOCATION:
+//                    Toast.makeText(this, "STATUS_FINISH", Toast.LENGTH_SHORT).show();
+//                    break;
+//            }
+//        } else if (resultCode == LocationIntentService.STATUS_ERROR) {
+//            switch (requestCode) {
+//                case REQUEST_CODE_LOCATION:
+//                    Toast.makeText(this, "STATUS_ERROR", Toast.LENGTH_SHORT).show();
+//                    break;
+//            }
+//        }
     }
 
     //LOADERS
@@ -182,7 +186,7 @@ public class TransportActivity extends BaseActivity
         Log.d(TAG, "onLoadFinished()");
         //TODO switch if needed
         if (loader.getId() == LOADER_TRANSPORT) {
-            Log.d(TAG, "if (loader.getId() == LOADER_TRANSPORT) {");
+            Log.d(TAG, "if (loader.getId() == LOADER_TRANSPORT)");
             transportByRoute = data;
             Log.d(TAG, "transportByRoute.size(): " + transportByRoute.size());
 
@@ -254,6 +258,9 @@ public class TransportActivity extends BaseActivity
 
     private void drawTransport() {
         Log.d(TAG, "drawTransport()");
+
+        if (googleMap != null) googleMap.clear();
+
 //        googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title(location.getTime() + " " + location.getProvider()));
 
         //DRAWABLE
@@ -402,7 +409,7 @@ public class TransportActivity extends BaseActivity
     private void moveCamera(LatLng latLng) {
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(latLng)             // Sets the center of the map to location user
-                .zoom(17)                   // Sets the zoom
+                .zoom(12)                   // Sets the zoom 17
                 .bearing(0)
                 .tilt(30)                   // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
@@ -443,7 +450,7 @@ public class TransportActivity extends BaseActivity
      */
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG, "onLocationChanged");
+//        Log.d(TAG, "onLocationChanged");
 //        Toast.makeText(this, "TransportLocation = " + location, Toast.LENGTH_SHORT).show();
     }
 }

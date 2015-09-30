@@ -28,7 +28,7 @@ import java.util.Date;
 public class TransportLocation {
     private long id;
     private long deviceId;
-    private Date createdDataTime;
+    private Date createdDataTime; //"createdDateTime":"Sep 30, 2015 12:10:57 PM" TODO why null (at Transport the same "lastTransfer": "Sep 30, 2015 4:57:59 AM", but working)?
     private double lat;
     private double lon;
     private double speed;
@@ -61,6 +61,21 @@ public class TransportLocation {
                 ", gsmSignalLevel=" + gsmSignalLevel +
                 ", direction=" + direction +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TransportLocation that = (TransportLocation) o;
+
+        return deviceId == that.deviceId;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (deviceId ^ (deviceId >>> 32));
     }
 
     public long getId() {
