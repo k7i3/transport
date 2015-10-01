@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.Loader;
 import android.util.Log;
@@ -49,6 +50,7 @@ import k7i3.code.tnc.transport.model.Route;
 import k7i3.code.tnc.transport.model.Transport;
 import k7i3.code.tnc.transport.model.TransportLocation;
 import k7i3.code.tnc.transport.service.LocationIntentService;
+import k7i3.code.tnc.transport.service.LocationService;
 
 import static k7i3.code.tnc.transport.helper.gmaps.LatLngInterpolator.*;
 
@@ -109,6 +111,7 @@ public class TransportActivity extends BaseActivity
         super.onResume();
         Log.d(TAG, "onResume()");
         googleApiClient.connect();
+        if (googleMap != null) googleMap.clear();
     }
 
     @Override
@@ -117,7 +120,8 @@ public class TransportActivity extends BaseActivity
         Log.d(TAG, "onPause()");
 //        if (googleMap != null) googleMap.clear();
         googleApiClient.disconnect();
-//        LocationIntentService.stopService(this); doesn't work
+//        LocationIntentService.stopService(this); doesn't work well
+        LocationService.stop(this);
     }
 
     //ACTIVITY RESULTS
@@ -139,6 +143,7 @@ public class TransportActivity extends BaseActivity
             }
         } else {
             Toast.makeText(this, "unexpected resultCode", Toast.LENGTH_SHORT).show();
+            if (googleMap != null) googleMap.clear();
             }
         //PENDING INTENT
 //        } else if (resultCode == LocationIntentService.STATUS_START) {
@@ -202,7 +207,8 @@ public class TransportActivity extends BaseActivity
             //2. PENDING INTENT for a broadcast (with getBroadcast()) http://stackoverflow.com/questions/6099364/how-to-use-pendingintent-to-communicate-from-a-service-to-a-client-activity
             //3. EVENTBUS
             Set<Long> set = markersByDeviceId.keySet();
-            LocationIntentService.startActionEventBus(this, set.toArray(new Long[set.size()]));
+//            LocationIntentService.startActionEventBus(this, set.toArray(new Long[set.size()]));
+            LocationService.start(this, set.toArray(new Long[set.size()]));
         }
     }
 
@@ -217,17 +223,26 @@ public class TransportActivity extends BaseActivity
         Log.d(TAG, "EVENTBUS onEventMainThread(LocationMessage locationMessage)");
 
 //        TODO asyncTask?
-        Marker marker;
+//        Marker marker;
         for (TransportLocation transportLocation : locationMessage.getDataJson()) {
             Log.d(TAG, "!!! transportLocation: " + transportLocation);
-            marker = markersByDeviceId.get(transportLocation.getDeviceId());
+            final Marker marker = markersByDeviceId.get(transportLocation.getDeviceId()); //TODO final?
             float direction = (float) transportLocation.getDirection();
             if (direction != 0) marker.setRotation(direction);
             MarkerAnimation.animateMarkerToICS(
                     marker,
                     new LatLng(transportLocation.getLat(), transportLocation.getLon()),
                     new LinearFixed());
-            if (!marker.isVisible()) marker.setVisible(true);
+
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!marker.isVisible()) marker.setVisible(true);
+                }
+            }, 3000);
+//
         }
     }
 
@@ -409,7 +424,7 @@ public class TransportActivity extends BaseActivity
     private void moveCamera(LatLng latLng) {
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(latLng)             // Sets the center of the map to location user
-                .zoom(12)                   // Sets the zoom 17
+                .zoom(10)                   // Sets the zoom 17
                 .bearing(0)
                 .tilt(30)                   // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder

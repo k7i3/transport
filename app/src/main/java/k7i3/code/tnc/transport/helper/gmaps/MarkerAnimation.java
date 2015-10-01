@@ -14,6 +14,8 @@ import android.view.animation.Interpolator;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Created by k7i3 on 18.09.15.
  */
@@ -76,7 +78,7 @@ public class MarkerAnimation {
         };
         Property<Marker, LatLng> property = Property.of(Marker.class, LatLng.class, "position");
         ObjectAnimator animator = ObjectAnimator.ofObject(marker, property, typeEvaluator, finalPosition);
-        animator.setDuration(3000);
+        animator.setDuration(2000);
         animator.start();
     }
 }

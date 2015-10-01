@@ -93,8 +93,8 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
                 routesDataAdapter.getRoutes().get(position).toggle();
 
                 //TEST
-                filterRoutes(routesDataAdapter.getRoutes());
-                Toast.makeText(view.getContext(), "selectedRoutes.size(): " + selectedRoutes.size(), Toast.LENGTH_SHORT).show();
+//                filterRoutes(routesDataAdapter.getRoutes());
+//                Toast.makeText(view.getContext(), "selectedRoutes.size(): " + selectedRoutes.size(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
