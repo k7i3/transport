@@ -32,11 +32,15 @@ public class LocationService extends Service {
     }
 
     public static void start(Context context, Long[] deviceIds) {
-        Log.d(TAG, "start()" + deviceIds.length);
-        stop(context);
-        Intent intent = new Intent(context, LocationService.class);
-        intent.putExtra(EXTRA_DEVICE_IDS, Utils.castLongArrayToPrimitive(deviceIds));
-        context.startService(intent);
+        Log.d(TAG, "start() " + "deviceIds.length: " + deviceIds.length);
+        if (deviceIds.length != 0) {
+            stop(context);
+            Intent intent = new Intent(context, LocationService.class);
+            intent.putExtra(EXTRA_DEVICE_IDS, Utils.castLongArrayToPrimitive(deviceIds));
+            context.startService(intent);
+        } else {
+            Log.d(TAG, "start() " + "deviceIds.length == 0");
+        }
     }
 
     public static void stop(Context context) {
@@ -108,7 +112,7 @@ public class LocationService extends Service {
                     // 51 маршрут = 39419173957
                     // автобусы 51 маршрута ("deviceId") = 9781,8741,8751,8759,8761,8773,9069,8777,8781,8783,8785,8795,8801,8813,8815,8823,9075,8861,87360616019,87360630497,87360641757,87360652815
 
-                    Log.d(TAG, "!!!deviceIds1: " + Arrays.toString(deviceIds));
+                    Log.d(TAG, "!!!deviceIds: " + Arrays.toString(deviceIds));
                     String request = "{\"serviceName\":\"NDDataWS\"," +
                             "\"methodName\":\"sendList\"," +
                             "\"messageType\":\"ru.infor.ws.business.vms.websocket.objects.SubscribingOptions_SendListNDData\"," +

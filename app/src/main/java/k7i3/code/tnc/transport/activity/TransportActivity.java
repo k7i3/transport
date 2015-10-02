@@ -206,9 +206,13 @@ public class TransportActivity extends BaseActivity
 //            Log.d(TAG, "1. PENDING INTENT FINISH");
             //2. PENDING INTENT for a broadcast (with getBroadcast()) http://stackoverflow.com/questions/6099364/how-to-use-pendingintent-to-communicate-from-a-service-to-a-client-activity
             //3. EVENTBUS
-            Set<Long> set = markersByDeviceId.keySet();
-//            LocationIntentService.startActionEventBus(this, set.toArray(new Long[set.size()]));
-            LocationService.start(this, set.toArray(new Long[set.size()]));
+            if (markersByDeviceId.size() != 0) {
+                Set<Long> set = markersByDeviceId.keySet();
+                LocationService.start(this, set.toArray(new Long[set.size()]));
+            } else {
+                Log.d(TAG, "markersByDeviceId.size() == 0");
+            }
+
         }
     }
 
@@ -275,6 +279,7 @@ public class TransportActivity extends BaseActivity
         Log.d(TAG, "drawTransport()");
 
         if (googleMap != null) googleMap.clear();
+        markersByDeviceId.clear();
 
 //        googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title(location.getTime() + " " + location.getProvider()));
 
