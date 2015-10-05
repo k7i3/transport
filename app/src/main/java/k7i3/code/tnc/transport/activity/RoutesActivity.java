@@ -37,11 +37,16 @@ public class RoutesActivity extends BaseActivity {
         return R.layout.activity_routes;
     }
 
+    //LIFECYCLE
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTAG("====> RoutesActivity");
         initInstances();
     }
+
+    //HELPERS
 
     private void initInstances() {
         drawerToggle.setDrawerIndicatorEnabled(false);

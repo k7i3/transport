@@ -20,10 +20,15 @@ import k7i3.code.tnc.transport.R;
  * Created by k7i3 on 05.08.15.
  */
 public abstract class BaseActivity extends AppCompatActivity {
-    private DrawerLayout drawerLayout;
+    protected DrawerLayout drawerLayout;
     protected ActionBarDrawerToggle drawerToggle;
     protected CoordinatorLayout rootLayout;
     protected Toolbar toolbar;
+    protected String TAG;
+
+    protected abstract int getLayoutResource();
+
+    //LIFECYCLE
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,40 +36,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(getLayoutResource());
         initBaseInstances();
     }
-
-    private void initBaseInstances() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        drawerToggle = new ActionBarDrawerToggle(BaseActivity.this, drawerLayout, R.string.app_name, R.string.app_name) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-//                TODO make appropriate menu_item at nav_drawer_menu checked
-                super.onDrawerOpened(drawerView);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-            }
-        };
-        drawerLayout.setDrawerListener(drawerToggle);
-
-        rootLayout = (CoordinatorLayout) findViewById(R.id.rootLayout);
-
-//        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
-    }
-
-//    private void syncActionBarArrowState() {
-//        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
-//        drawerToggle.setDrawerIndicatorEnabled(backStackEntryCount == 0);
-//        drawerToggle.setDrawerIndicatorEnabled(false);
-//    }
-
-    protected abstract int getLayoutResource();
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -117,4 +88,44 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
     }
+
+    //HELPERS
+
+    private void initBaseInstances() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        drawerToggle = new ActionBarDrawerToggle(BaseActivity.this, drawerLayout, R.string.app_name, R.string.app_name) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+//                TODO make appropriate menu_item at nav_drawer_menu checked
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+        drawerLayout.setDrawerListener(drawerToggle);
+
+        rootLayout = (CoordinatorLayout) findViewById(R.id.rootLayout);
+
+//        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
+    //GETTERS & SETTERS
+
+    protected void setTAG(String TAG) {
+        this.TAG = TAG;
+    }
+
+//    private void syncActionBarArrowState() {
+//        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+//        drawerToggle.setDrawerIndicatorEnabled(backStackEntryCount == 0);
+//        drawerToggle.setDrawerIndicatorEnabled(false);
+//    }
 }
