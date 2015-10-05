@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.Loader;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -77,6 +78,7 @@ public class TransportActivity extends BaseGoogleMapsActivity
     protected void onResume() {
         super.onResume();
         Log.d(TAG, "onResume()");
+        checkRefreshActionButtonState();
     }
 
     @Override
@@ -87,10 +89,20 @@ public class TransportActivity extends BaseGoogleMapsActivity
         LocationService.stop(this);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.refresh) {
+            refreshIfPossible();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     //ACTIVITY RESULTS
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult()");
         Log.d(TAG, "requestCode = " + requestCode + " resultCode = " + resultCode);
         //ACTIVITY FOR RESULT
         if (resultCode == RESULT_OK) {
@@ -105,7 +117,7 @@ public class TransportActivity extends BaseGoogleMapsActivity
                     break;
             }
         } else {
-            Toast.makeText(this, "unexpected resultCode", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "маршруты не выбраны", Toast.LENGTH_SHORT).show();
             if (googleMap != null) googleMap.clear();
             }
         //PENDING INTENT
@@ -145,6 +157,7 @@ public class TransportActivity extends BaseGoogleMapsActivity
         if (id == LOADER_TRANSPORT) {
             Log.d(TAG, "onCreateLoader() / id == LOADER_TRANSPORT");
             loader = new TransportLoader(this, args);
+            setRefreshActionButtonState(true);
         }
         return loader;
     }
@@ -175,7 +188,8 @@ public class TransportActivity extends BaseGoogleMapsActivity
             } else {
                 Log.d(TAG, "markersByDeviceId.size() == 0");
             }
-
+            Toast.makeText(this, "найдено автобусов: " + markersByDeviceId.size(), Toast.LENGTH_SHORT).show();
+            setRefreshActionButtonState(false);
         }
     }
 
@@ -250,7 +264,7 @@ public class TransportActivity extends BaseGoogleMapsActivity
 //        TODO make good nine-patch drawable (.9.png) or custom drawable (.xml) https://romannurik.github.io/AndroidAssetStudio/index.html
         Drawable drawable = getResources().getDrawable(R.drawable.arrow);
 //        drawable.setTint(Color.CYAN); // API 21
-        ColorFilter filter = new PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+        ColorFilter filter = new PorterDuffColorFilter(Color.parseColor("#2196F3"), PorterDuff.Mode.MULTIPLY);
         drawable.setColorFilter(filter);
 //        drawable.setAlpha(255);
 
@@ -316,4 +330,20 @@ public class TransportActivity extends BaseGoogleMapsActivity
         markersByDeviceId.put(deviceId, googleMap.addMarker(markerOptions));
     }
 
+    private void checkRefreshActionButtonState() {
+        if (routes == null) {
+            setRefreshActionButtonState(false);
+        } else {
+            setRefreshActionButtonState(true);
+        }
+    }
+
+    private void refreshIfPossible() {
+        if (routes != null) {
+            Toast.makeText(this, "обновление...", Toast.LENGTH_SHORT).show();
+            startTransportLoader();
+        } else {
+            Toast.makeText(this, "маршруты не выбраны", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

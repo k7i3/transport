@@ -25,6 +25,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected CoordinatorLayout rootLayout;
     protected Toolbar toolbar;
     protected String TAG;
+    private Menu menu;
 
     protected abstract int getLayoutResource();
 
@@ -52,8 +53,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        this.menu = menu;
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
+//        return true;
     }
 
     @Override
@@ -115,6 +118,19 @@ public abstract class BaseActivity extends AppCompatActivity {
 //        getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
+    protected void setRefreshActionButtonState(final boolean refreshing) {
+        if (menu != null) {
+            final MenuItem refreshItem = menu.findItem(R.id.refresh);
+            if (refreshItem != null) {
+                if (refreshing) {
+                    refreshItem.setActionView(R.layout.actionbar_refresh);
+                } else {
+                    refreshItem.setActionView(null);
+                }
+            }
+        }
     }
 
     //GETTERS & SETTERS
