@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.MenuItem;
@@ -33,6 +34,7 @@ import java.util.Set;
 import de.greenrobot.event.EventBus;
 import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.R;
+import k7i3.code.tnc.transport.fragment.RetainedTransportFragment;
 import k7i3.code.tnc.transport.helper.gmaps.MarkerAnimation;
 import k7i3.code.tnc.transport.loader.TransportLoader;
 import k7i3.code.tnc.transport.model.LocationMessage;
@@ -56,6 +58,8 @@ public class TransportActivity extends BaseGoogleMapsActivity
     private Map<Route, List<Transport>> transportByRoute;
     private Map<Long, Marker> markersByDeviceId;
 
+    private RetainedTransportFragment retainedTransportFragment;
+
     @Override
     protected int getLayoutResource() {
         return R.layout.activity_transport;
@@ -68,9 +72,9 @@ public class TransportActivity extends BaseGoogleMapsActivity
         super.onCreate(savedInstanceState);
         setTAG("====> TransportActivity");
         Log.d(TAG, "onCreate()");
-
         initInstances();
-        markersByDeviceId = new HashMap<>();
+        initFields();
+        startLocationServiceIfNeeded();
         EventBus.getDefault().register(this);
     }
 
@@ -108,18 +112,19 @@ public class TransportActivity extends BaseGoogleMapsActivity
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_ROUTES:
-
-                    if (googleMap != null) googleMap.clear();
-
+                    clearMap();
                     routes = data.getParcelableArrayListExtra(Constants.ROUTES);
+                    retainedTransportFragment.setRoutes(routes);
                     Toast.makeText(this, "выбрано маршрутов: " + routes.size(), Toast.LENGTH_SHORT).show();
                     startTransportLoader();
                     break;
             }
         } else {
-            Toast.makeText(this, "маршруты не выбраны", Toast.LENGTH_SHORT).show();
-            if (googleMap != null) googleMap.clear();
+            if (routes == null) {
+                Toast.makeText(this, "маршруты не выбраны", Toast.LENGTH_SHORT).show();
             }
+            clearMap();
+        }
         //PENDING INTENT
 //        } else if (resultCode == LocationIntentService.STATUS_START) {
 //            switch (requestCode) {
@@ -169,6 +174,7 @@ public class TransportActivity extends BaseGoogleMapsActivity
         if (loader.getId() == LOADER_TRANSPORT) {
             Log.d(TAG, "if (loader.getId() == LOADER_TRANSPORT)");
             transportByRoute = data;
+            retainedTransportFragment.setTransportByRoute(transportByRoute);
             Log.d(TAG, "transportByRoute.size(): " + transportByRoute.size());
 
             drawTransport();
@@ -182,12 +188,8 @@ public class TransportActivity extends BaseGoogleMapsActivity
 //            Log.d(TAG, "1. PENDING INTENT FINISH");
             //2. PENDING INTENT for a broadcast (with getBroadcast()) http://stackoverflow.com/questions/6099364/how-to-use-pendingintent-to-communicate-from-a-service-to-a-client-activity
             //3. EVENTBUS
-            if (markersByDeviceId.size() != 0) {
-                Set<Long> set = markersByDeviceId.keySet();
-                LocationService.start(this, set.toArray(new Long[set.size()]));
-            } else {
-                Log.d(TAG, "markersByDeviceId.size() == 0");
-            }
+            startLocationServiceIfNeeded();
+
             Toast.makeText(this, "найдено автобусов: " + markersByDeviceId.size(), Toast.LENGTH_SHORT).show();
             setRefreshActionButtonState(false);
         }
@@ -246,17 +248,41 @@ public class TransportActivity extends BaseGoogleMapsActivity
         });
     }
 
+    private void initFields() {
+        FragmentManager fm = getSupportFragmentManager();
+        retainedTransportFragment = (RetainedTransportFragment) fm.findFragmentByTag(TAG);
+        if (retainedTransportFragment != null) {
+            routes = retainedTransportFragment.getRoutes();
+            transportByRoute = retainedTransportFragment.getTransportByRoute();
+            markersByDeviceId = retainedTransportFragment.getMarkersByDeviceId();
+        } else {
+            retainedTransportFragment = new RetainedTransportFragment();
+            fm.beginTransaction().add(retainedTransportFragment, TAG).commit();
+
+            markersByDeviceId = new HashMap<>();
+            retainedTransportFragment.setMarkersByDeviceId(markersByDeviceId);
+        }
+    }
+
     private void startTransportLoader() {
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(Constants.ROUTES, (ArrayList<Route>) routes);
         getSupportLoaderManager().restartLoader(LOADER_TRANSPORT, bundle, this); // if Loader already exist, when initLoader() called, constructor doesn't called, and routes remain old
     }
 
+    private void startLocationServiceIfNeeded() {
+        if (markersByDeviceId.size() != 0) {
+            retainedTransportFragment.setMarkersByDeviceId(markersByDeviceId);
+            Set<Long> set = markersByDeviceId.keySet();
+            LocationService.start(this, set.toArray(new Long[set.size()]));
+        } else {
+            Log.d(TAG, "markersByDeviceId.size() == 0");
+        }
+    }
+
     private void drawTransport() {
         Log.d(TAG, "drawTransport()");
-
-        if (googleMap != null) googleMap.clear();
-        markersByDeviceId.clear();
+        clearMap();
 
 //        googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title(location.getTime() + " " + location.getProvider()));
 
@@ -316,6 +342,12 @@ public class TransportActivity extends BaseGoogleMapsActivity
 //        addMarker(iconFactory, "69", location, 3);
 //        location.setLongitude(location.getLongitude() + 0.001);
 //        addMarker(iconFactory, "6", location, 4);
+    }
+
+    private void clearMap() {
+        if (googleMap != null) googleMap.clear();
+        markersByDeviceId.clear();
+        retainedTransportFragment.setMarkersByDeviceId(markersByDeviceId);
     }
 
     private void addMarker(IconGenerator iconFactory, String title, Location location, long deviceId) {

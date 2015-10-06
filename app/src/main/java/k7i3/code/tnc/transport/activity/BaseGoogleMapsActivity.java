@@ -1,7 +1,9 @@
 package k7i3.code.tnc.transport.activity;
 
+import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -37,8 +39,10 @@ public abstract class BaseGoogleMapsActivity extends BaseActivity
             .setFastestInterval(16)    // 16ms = 60fps
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     private GoogleApiClient googleApiClient;
+    private SupportMapFragment supportMapFragment;
     protected GoogleMap googleMap; // Might be null if Google Play services APK is not available.
     protected Location location;
+    private boolean isFirstConnect = true;
 
     //LIFECYCLE
 
@@ -46,7 +50,11 @@ public abstract class BaseGoogleMapsActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
+        FragmentManager fm = getSupportFragmentManager();
+        supportMapFragment = ((SupportMapFragment) fm.findFragmentById(R.id.map));
+        supportMapFragment.setRetainInstance(true);
+
+        supportMapFragment.getMapAsync(this);
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -66,6 +74,7 @@ public abstract class BaseGoogleMapsActivity extends BaseActivity
         super.onPause();
 //        if (googleMap != null) googleMap.clear();
         googleApiClient.disconnect();
+
     }
 
     //MAPS
@@ -101,7 +110,10 @@ public abstract class BaseGoogleMapsActivity extends BaseActivity
         //TODO check for NULL
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        moveCamera(latLng);
+        if (isFirstConnect) {
+            moveCamera(latLng);
+            isFirstConnect = false;
+        }
     }
 
     /**
