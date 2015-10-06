@@ -3,6 +3,7 @@ package k7i3.code.tnc.transport.activity;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
@@ -50,6 +51,10 @@ public abstract class BaseGoogleMapsActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (savedInstanceState != null) {
+            isFirstConnect = savedInstanceState.getBoolean("isFirstConnect");
+        }
+
         FragmentManager fm = getSupportFragmentManager();
         supportMapFragment = ((SupportMapFragment) fm.findFragmentById(R.id.map));
         supportMapFragment.setRetainInstance(true);
@@ -75,6 +80,12 @@ public abstract class BaseGoogleMapsActivity extends BaseActivity
 //        if (googleMap != null) googleMap.clear();
         googleApiClient.disconnect();
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean("isFirstConnect", isFirstConnect);
+        super.onSaveInstanceState(outState);
     }
 
     //MAPS
