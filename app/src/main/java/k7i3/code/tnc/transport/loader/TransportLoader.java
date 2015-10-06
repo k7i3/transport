@@ -78,8 +78,10 @@ public class TransportLoader extends AsyncTaskLoader<Map<Route, List<Transport>>
             InputStream in;
             BufferedReader bufferedReader;
             List<Transport> transport;
+            Date date = new Date();
+            date.setHours(0);
             for (Route route : routes) {
-                request = gsonCustomDateFormat.create().toJson(new Object[]{invocationContext, route.getId(), new Date()});
+                request = gsonCustomDateFormat.create().toJson(new Object[]{invocationContext, route.getId(), date});
                 Log.d(TAG, "request: " + request);
 
                 HttpURLConnection c = (HttpURLConnection) new URL(URL).openConnection();

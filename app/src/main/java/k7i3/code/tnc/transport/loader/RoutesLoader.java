@@ -62,7 +62,9 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
         Log.d(TAG, "loadInBackground()");
         try {
             // OUT
-            String request = gson.create().toJson(new Object[]{invocationContext, new Date()});
+            Date date = new Date();
+            date.setHours(0);
+            String request = gson.create().toJson(new Object[]{invocationContext, date});
             Log.d(TAG, "request: " + request); //[{"clientIPAddress":"192.168.137.201","initiator":"Android","password":"45BlPwIWKaZrIXlYNeCHQw\u003d\u003d","userName":"Klim"},"2015-09-10T12:31:11Z"]
             HttpURLConnection c = (HttpURLConnection) new URL(URL).openConnection();
             c.setRequestMethod("POST");
