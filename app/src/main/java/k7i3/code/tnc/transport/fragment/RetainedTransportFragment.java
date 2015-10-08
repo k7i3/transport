@@ -20,11 +20,15 @@ public class RetainedTransportFragment extends Fragment {
     private Map<Route, List<Transport>> transportByRoute;
     private Map<Long, Marker> markersByDeviceId;
 
+    //LIFECYCLE
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
     }
+
+    //GETTERS & SETTERS
 
     public List<Route> getRoutes() {
         return routes;

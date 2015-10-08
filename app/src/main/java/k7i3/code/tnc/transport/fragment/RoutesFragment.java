@@ -1,7 +1,6 @@
 package k7i3.code.tnc.transport.fragment;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.Loader;
@@ -54,6 +53,8 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
         return (routesFragment);
     }
 
+    //LIFECYCLE
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -71,9 +72,61 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         progressBar.setVisibility(ProgressBar.VISIBLE);
         noInternet = (TextView) view.findViewById(R.id.noInternet);
-        loadRoutes();
+        startRoutesLoader();
         initInstances();
     }
+
+    //LOADER
+
+    @Override
+    public Loader<List<Route>> onCreateLoader(int id, Bundle args) {
+        Loader<List<Route>> loader = null;
+        //TODO switch if needed
+        if (id == LOADER_ROUTES) {
+            Log.d(TAG, "onCreateLoader() if (id == LOADER_ROUTES) + args.getInt(Constants.KEY_POSITION, -1) = " + args.getInt(Constants.KEY_POSITION, -1));
+            loader = new RoutesLoader(getActivity(), args);
+        }
+        return loader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Route>> loader, List<Route> data) {
+        Log.d(TAG, "onLoadFinished()");
+        //TODO switch if needed
+        if (loader.getId() == LOADER_ROUTES) {
+            Log.d(TAG, "if (loader.getId() == LOADER_ROUTES)");
+            routes = data;
+            routesDataAdapter.setRoutes(routes);
+//            routesDataAdapter.notifyDataSetChanged(); // not needed when used SortedList at routesDataAdapter (it has built-in callbacks)
+//            initInstances(); // can be used instead of {routesDataAdapter.setRoutes(routes); routesDataAdapter.notifyDataSetChanged();} but in this way adapter will be recreate
+            progressBar.setVisibility(ProgressBar.INVISIBLE);
+
+            if (routes == null) {
+                noInternet.setVisibility(View.VISIBLE);
+            } else {
+                noInternet.setVisibility(View.INVISIBLE);
+                Toast.makeText(getActivity(), "маршрутов на линии: " + routes.size(), Toast.LENGTH_SHORT).show();
+            }
+
+            // TEST
+//            final Handler handler = new Handler();
+//            final Runnable r = new Runnable() {
+//                public void run() {
+//                    routesDataAdapter.getRoutes().removeItemAt(0);
+//                    routesDataAdapter.getRoutes().add(new Route(39427972044L, "103", 111, 111, "test"));
+//                    handler.postDelayed(this, 3000);
+//                }
+//            };
+//            if (routesDataAdapter.getRoutes().size() > 0) handler.postDelayed(r, 3000);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Route>> loader) {
+
+    }
+
+    //HELPERS
 
     private void initInstances() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
@@ -109,7 +162,7 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
 //        recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(48));
     }
 
-    private void loadRoutes() {
+    private void startRoutesLoader() {
         routes = new ArrayList<>();
 
         //TODO switch
@@ -149,54 +202,6 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
 //        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
 //        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
         progressBar.setVisibility(ProgressBar.INVISIBLE);
-    }
-
-    @Override
-    public Loader<List<Route>> onCreateLoader(int id, Bundle args) {
-        Loader<List<Route>> loader = null;
-        //TODO switch if needed
-        if (id == LOADER_ROUTES) {
-            Log.d(TAG, "onCreateLoader() if (id == LOADER_ROUTES) + args.getInt(Constants.KEY_POSITION, -1) = " + args.getInt(Constants.KEY_POSITION, -1));
-            loader = new RoutesLoader(getActivity(), args);
-        }
-        return loader;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<Route>> loader, List<Route> data) {
-        Log.d(TAG, "onLoadFinished()");
-        //TODO switch if needed
-        if (loader.getId() == LOADER_ROUTES) {
-            Log.d(TAG, "if (loader.getId() == LOADER_ROUTES)");
-            routes = data;
-            routesDataAdapter.setRoutes(routes);
-//            routesDataAdapter.notifyDataSetChanged(); // not needed when used SortedList at routesDataAdapter (it has built-in callbacks)
-//            initInstances(); // can be used instead of {routesDataAdapter.setRoutes(routes); routesDataAdapter.notifyDataSetChanged();} but in this way adapter will be recreate
-            progressBar.setVisibility(ProgressBar.INVISIBLE);
-
-            if (routes == null) {
-                noInternet.setVisibility(View.VISIBLE);
-            } else {
-                noInternet.setVisibility(View.INVISIBLE);
-                Toast.makeText(getActivity(), "Маршрутов на линии: " + routes.size(), Toast.LENGTH_SHORT).show();
-            }
-
-            // TEST
-//            final Handler handler = new Handler();
-//            final Runnable r = new Runnable() {
-//                public void run() {
-//                    routesDataAdapter.getRoutes().removeItemAt(0);
-//                    routesDataAdapter.getRoutes().add(new Route(39427972044L, "103", 111, 111, "test"));
-//                    handler.postDelayed(this, 3000);
-//                }
-//            };
-//            if (routesDataAdapter.getRoutes().size() > 0) handler.postDelayed(r, 3000);
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<Route>> loader) {
-
     }
 
     public List<Route> getSelectedRoutes() {

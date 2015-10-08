@@ -154,7 +154,7 @@ public class LocationService extends Service {
             } catch (WebSocketException e) {
                 Log.d(TAG, "WebSocketException: " + e.toString());
 //                TODO fire message via EVENTBUS: 'ошибка подключения, пробуем соединиться снова'
-                reconnectToWS(deviceIds);
+                reconnectToWS(deviceIds); // TODO may be do nothing instead of reconnectToWS(deviceIds)?
             }
         }
 

@@ -23,6 +23,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.SphericalUtil;
 import com.google.maps.android.ui.IconGenerator;
 
 import java.util.ArrayList;
@@ -211,7 +212,13 @@ public class TransportActivity extends BaseGoogleMapsActivity
             Log.d(TAG, "!!! transportLocation: " + transportLocation);
             final Marker marker = markersByDeviceId.get(transportLocation.getDeviceId()); //TODO final?
             float direction = (float) transportLocation.getDirection();
-            if (direction != 0) marker.setRotation(direction);
+
+            if (direction != 0) {
+                marker.setRotation(direction);
+            } else {
+                marker.setRotation(calculateDirection(marker.getPosition(), new LatLng(transportLocation.getLat(), transportLocation.getLon())));
+            }
+
             MarkerAnimation.animateMarkerToICS(
                     marker,
                     new LatLng(transportLocation.getLat(), transportLocation.getLon()),
@@ -377,5 +384,9 @@ public class TransportActivity extends BaseGoogleMapsActivity
         } else {
             Toast.makeText(this, "маршруты не выбраны", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private float calculateDirection(LatLng from, LatLng to) {
+        return (float) SphericalUtil.computeHeading(from, to);
     }
 }
