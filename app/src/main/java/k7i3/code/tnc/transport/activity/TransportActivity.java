@@ -61,6 +61,8 @@ public class TransportActivity extends BaseGoogleMapsActivity
 
     private RetainedTransportFragment retainedTransportFragment;
 
+    private IconGenerator iconGenerator;
+
     @Override
     protected int getLayoutResource() {
         return R.layout.activity_transport;
@@ -269,6 +271,28 @@ public class TransportActivity extends BaseGoogleMapsActivity
             markersByDeviceId = new HashMap<>();
             retainedTransportFragment.setMarkersByDeviceId(markersByDeviceId);
         }
+
+        initIconGenerator();
+    }
+
+    private void initIconGenerator() {
+        iconGenerator = new IconGenerator(this);
+        iconGenerator.setBackground(makeIconDrawable());
+        iconGenerator.setContentPadding(0, 0, 0, 0);
+        iconGenerator.setTextAppearance(R.style.Marker);
+        iconGenerator.setContentRotation(-90);
+//        iconGenerator.setColor(Color.CYAN); // ONLY FOR DEFAULT MARKER?
+//        iconGenerator.setStyle(IconGenerator.STYLE_PURPLE); // ONLY FOR DEFAULT MARKER?
+    }
+
+    private Drawable makeIconDrawable() {
+//        TODO make good nine-patch drawable (.9.png) or custom drawable (.xml) https://romannurik.github.io/AndroidAssetStudio/index.html
+        Drawable drawable = getResources().getDrawable(R.drawable.arrow); //arrow
+//        drawable.setTint(Color.CYAN); // API 21
+        ColorFilter filter = new PorterDuffColorFilter(Color.parseColor("#2196F3"), PorterDuff.Mode.MULTIPLY);
+        drawable.setColorFilter(filter);
+//        drawable.setAlpha(255);
+        return drawable;
     }
 
     private void startTransportLoader() {
@@ -293,23 +317,6 @@ public class TransportActivity extends BaseGoogleMapsActivity
 
 //        googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title(location.getTime() + " " + location.getProvider()));
 
-        //DRAWABLE
-//        TODO make good nine-patch drawable (.9.png) or custom drawable (.xml) https://romannurik.github.io/AndroidAssetStudio/index.html
-        Drawable drawable = getResources().getDrawable(R.drawable.arrow);
-//        drawable.setTint(Color.CYAN); // API 21
-        ColorFilter filter = new PorterDuffColorFilter(Color.parseColor("#2196F3"), PorterDuff.Mode.MULTIPLY);
-        drawable.setColorFilter(filter);
-//        drawable.setAlpha(255);
-
-        //ICONGENERATOR
-        IconGenerator iconFactory = new IconGenerator(this);
-        iconFactory.setBackground(drawable);
-        iconFactory.setContentPadding(0, 0, 0, 0);
-        iconFactory.setTextAppearance(R.style.Marker);
-        iconFactory.setContentRotation(-90);
-//        iconFactory.setColor(Color.CYAN); // ONLY FOR DEFAULT MARKER?
-//        iconFactory.setStyle(IconGenerator.STYLE_PURPLE); // ONLY FOR DEFAULT MARKER?
-
         Route route;
         List<Transport> transportList;
         for(Map.Entry<Route, List<Transport>> entry : transportByRoute.entrySet()) {
@@ -319,14 +326,13 @@ public class TransportActivity extends BaseGoogleMapsActivity
 
             for (Transport transport : transportList) {
                 location.setLongitude(location.getLongitude() + 0.001);
-                addMarker(iconFactory, route.getNum(), location, transport.getDeviceId());
+                addMarker(iconGenerator, route.getNum(), location, transport.getDeviceId());
             }
         }
 
-
         // TEST
 //        location.setBearing(0);  // mock direction
-//        addMarker(iconFactory, "!!!1", location, 1);
+//        addMarker(iconGenerator, "!!!1", location, 1);
 
 //        final Handler handler = new Handler();
 //        final Runnable r = new Runnable() {
@@ -341,20 +347,14 @@ public class TransportActivity extends BaseGoogleMapsActivity
 //        if (true) handler.postDelayed(r, 3000);
 
 //        location.setLongitude(location.getLongitude() + 0.001);
-//        addMarker(iconFactory, "!!!2", location, 2);
-//        addMarker(iconFactory, "!!!3", location, 3);
+//        addMarker(iconGenerator, "!!!2", location, 2);
+//        addMarker(iconGenerator, "!!!3", location, 3);
 //        location.setLongitude(location.getLongitude() + 0.001);
-//        addMarker(iconFactory, "290", location, 2);
+//        addMarker(iconGenerator, "290", location, 2);
 //        location.setLongitude(location.getLongitude() + 0.001);
-//        addMarker(iconFactory, "69", location, 3);
+//        addMarker(iconGenerator, "69", location, 3);
 //        location.setLongitude(location.getLongitude() + 0.001);
-//        addMarker(iconFactory, "6", location, 4);
-    }
-
-    private void clearMap() {
-        if (googleMap != null) googleMap.clear();
-        markersByDeviceId.clear();
-        retainedTransportFragment.setMarkersByDeviceId(markersByDeviceId);
+//        addMarker(iconGenerator, "6", location, 4);
     }
 
     private void addMarker(IconGenerator iconFactory, String title, Location location, long deviceId) {
@@ -367,6 +367,12 @@ public class TransportActivity extends BaseGoogleMapsActivity
                 visible(false);
 
         markersByDeviceId.put(deviceId, googleMap.addMarker(markerOptions));
+    }
+
+    private void clearMap() {
+        if (googleMap != null) googleMap.clear();
+        markersByDeviceId.clear();
+        retainedTransportFragment.setMarkersByDeviceId(markersByDeviceId);
     }
 
     private void checkRefreshActionButtonState() {
