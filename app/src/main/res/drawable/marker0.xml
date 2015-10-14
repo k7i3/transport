@@ -14,3 +14,8 @@
         </rotate>
     </item>
 </layer-list>
+
+    <!--make arrow-->
+    <!--http://stackoverflow.com/questions/2517589/making-a-triangle-shape-using-xml-definitions/18421795#18421795-->
+    <!--text symbol-->
+    <!--http://unicode-table.com/en/search/?q=triangle-->

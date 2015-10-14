@@ -280,17 +280,17 @@ public class TransportActivity extends BaseGoogleMapsActivity
         iconGenerator.setBackground(makeIconDrawable());
         iconGenerator.setContentPadding(0, 0, 0, 0);
         iconGenerator.setTextAppearance(R.style.Marker);
-        iconGenerator.setContentRotation(-90);
+//        iconGenerator.setContentRotation(-90);
 //        iconGenerator.setColor(Color.CYAN); // ONLY FOR DEFAULT MARKER?
 //        iconGenerator.setStyle(IconGenerator.STYLE_PURPLE); // ONLY FOR DEFAULT MARKER?
     }
 
     private Drawable makeIconDrawable() {
-//        TODO make good nine-patch drawable (.9.png) or custom drawable (.xml) https://romannurik.github.io/AndroidAssetStudio/index.html
-        Drawable drawable = getResources().getDrawable(R.drawable.arrow); //arrow
+//        TODO make good nine-patch drawable (.9.png) or custom drawable (.xml) https://romannurik.github.io/AndroidAssetStudio/index.html dynamically: http://stackoverflow.com/questions/14442011/create-a-nine-patch-image-with-code /// http://stackoverflow.com/questions/5079868/create-a-ninepatch-ninepatchdrawable-in-runtime/14061128#14061128 /// https://gist.github.com/briangriffey/4391807
+        Drawable drawable = getResources().getDrawable(R.drawable.hippievan0_7); //arrow
 //        drawable.setTint(Color.CYAN); // API 21
-        ColorFilter filter = new PorterDuffColorFilter(Color.parseColor("#2196F3"), PorterDuff.Mode.MULTIPLY);
-        drawable.setColorFilter(filter);
+//        ColorFilter filter = new PorterDuffColorFilter(Color.parseColor("#2196F3"), PorterDuff.Mode.MULTIPLY);
+//        drawable.setColorFilter(filter);
 //        drawable.setAlpha(255);
         return drawable;
     }
