@@ -78,6 +78,8 @@
             android:src="@drawable/ic_navigation_white_24dp"
             app:layout_anchor="@+id/viewPager"
             app:layout_anchorGravity="bottom|right|end"
+            android:layout_marginBottom="@dimen/fab_margin_bottom"
+            android:layout_marginEnd="@dimen/fab_margin_end"
             app:layout_behavior="k7i3.code.tnc.transport.widget.behavior.ScrollAwareFABBehavior" />
 
     </android.support.design.widget.CoordinatorLayout>

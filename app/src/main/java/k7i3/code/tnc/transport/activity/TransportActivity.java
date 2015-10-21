@@ -320,6 +320,7 @@ public class TransportActivity extends BaseGoogleMapsActivity
         Route route;
         List<Transport> transportList;
         for(Map.Entry<Route, List<Transport>> entry : transportByRoute.entrySet()) {
+            //TODO location may be null if service unavailable!!! change logic or service..
             location.setLatitude(location.getLatitude() + 0.001);
             route = entry.getKey();
             transportList = entry.getValue();

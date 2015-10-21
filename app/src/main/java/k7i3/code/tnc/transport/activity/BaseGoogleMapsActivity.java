@@ -120,7 +120,16 @@ public abstract class BaseGoogleMapsActivity extends BaseActivity
 
         //TODO check for NULL
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+        LatLng latLng;
+        if (location != null) {
+            latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        }
+        else {
+        //TODO init location by another way
+            latLng = new LatLng(0,0);
+        }
+
         if (isFirstConnect) {
             moveCamera(latLng);
             isFirstConnect = false;
