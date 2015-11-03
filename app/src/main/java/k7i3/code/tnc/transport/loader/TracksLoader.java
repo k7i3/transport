@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -13,7 +12,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,24 +25,24 @@ import k7i3.code.tnc.transport.helper.SecurityHelper;
 import k7i3.code.tnc.transport.helper.Utils;
 import k7i3.code.tnc.transport.model.InvocationContext;
 import k7i3.code.tnc.transport.model.Route;
+import k7i3.code.tnc.transport.model.Track;
 import k7i3.code.tnc.transport.model.Transport;
 
 /**
- * Created by k7i3 on 16.09.15.
+ * Created by k7i3 on 03.11.15.
  */
-public class TransportLoader extends AsyncTaskLoader<Map<Route, List<Transport>>> {
-    private static final String TAG = "====> TransportLoader";
-    private static final String URL = "http://62.133.191.98:47201/vms-ws/rest/WayBillSimpleWS/getListTransport";
+public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
+    private static final String TAG = "====> TracksLoader";
+    private static final String URL = "http://62.133.191.98:47201/vms-ws/rest/RouteWS/getCurrentObject";
 
     private List<Route> routes;
-    private GsonBuilder gsonCustomDateFormat;
-    private GsonBuilder gson;
-    private Type type;
+
     private InvocationContext invocationContext;
-    private Map<Route, List<Transport>> transportByRoute;
+    private GsonBuilder gson;
 
+    private Map<Route, Track> trackByRoute;
 
-    public TransportLoader(Context context, Bundle args) {
+    public TracksLoader (Context context, Bundle args) {
         super(context);
         Log.d(TAG, "CONSTRUCTOR!!!");
         routes = args.getParcelableArrayList(Constants.ROUTES);
@@ -55,16 +53,14 @@ public class TransportLoader extends AsyncTaskLoader<Map<Route, List<Transport>>
     protected void onStartLoading() {
         Log.d(TAG, "onStartLoading()");
         super.onStartLoading();
-        transportByRoute = new HashMap<>();
+        trackByRoute = new HashMap<>();
         invocationContext = new InvocationContext(Utils.getIPAddress(true), "Android", SecurityHelper.encrypt("Klim55CVfg"), "Klim");
-        gsonCustomDateFormat = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // out
-        gson = new GsonBuilder(); // in (default DateFormat)
-        type = new TypeToken<ArrayList<Transport>>(){}.getType();
+        gson = new GsonBuilder();
         forceLoad();
     }
 
     @Override
-    public Map<Route, List<Transport>> loadInBackground() {
+    public Map<Route, Track> loadInBackground() {
         Log.d(TAG, "loadInBackground()");
 
         try {
@@ -72,11 +68,9 @@ public class TransportLoader extends AsyncTaskLoader<Map<Route, List<Transport>>
             OutputStream out;
             InputStream in;
             BufferedReader bufferedReader;
-            List<Transport> transport;
-            Date date = new Date();
-            date.setHours(0);
+            Track track;
             for (Route route : routes) {
-                request = gsonCustomDateFormat.create().toJson(new Object[]{invocationContext, route.getId(), date});
+                request = gson.create().toJson(new Object[]{invocationContext, route.getId()});
                 Log.d(TAG, "request: " + request);
 
                 HttpURLConnection c = (HttpURLConnection) new URL(URL).openConnection();
@@ -96,24 +90,18 @@ public class TransportLoader extends AsyncTaskLoader<Map<Route, List<Transport>>
                 in = (c.getResponseCode() == 200) ? c.getInputStream() : c.getErrorStream();
                 bufferedReader = new BufferedReader(new InputStreamReader(in));
 
-                transport = gson.create().fromJson(bufferedReader, type);
+                track = gson.create().fromJson(bufferedReader, Track.class);
 
                 //TODO ?
                 bufferedReader.close();
                 in.close();
                 c.disconnect();
 
-                addTransportToRoute(transport, route);
+                trackByRoute.put(route, track);
             }
         } catch (Exception e) {
             Log.d(TAG, "error: " + e.getMessage() + " " + e);
         }
-        return transportByRoute;
-    }
-
-    private void addTransportToRoute(List<Transport> transport, Route route) {
-        Log.d(TAG, "addTransportToRoute");
-        Log.d(TAG, "route: " + route.getNum() + " transport.size(): " + transport.size() + " first TRANSPORT:" + transport.get(0).toString() );
-        transportByRoute.put(route, transport);
+        return trackByRoute;
     }
 }

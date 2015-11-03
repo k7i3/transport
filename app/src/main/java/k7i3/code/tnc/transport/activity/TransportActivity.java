@@ -51,6 +51,7 @@ public class TransportActivity extends BaseGoogleMapsActivity
 
     private static final int REQUEST_CODE_ROUTES = 1;
     private static final int LOADER_TRANSPORT = 70;
+    private static final int LOADER_TRACKS = 80;
     private static final int REQUEST_CODE_LOCATION = 50;
 
     private FloatingActionButton routesFAB;
@@ -120,6 +121,7 @@ public class TransportActivity extends BaseGoogleMapsActivity
                     retainedTransportFragment.setRoutes(routes);
                     Toast.makeText(this, "выбрано маршрутов: " + routes.size(), Toast.LENGTH_SHORT).show();
                     startTransportLoader();
+                    if (true) startTracksLoader(); // TODO make property showTrack and check it here /// or make startTracksLoaderIfNeeded
                     break;
             }
         } else {
@@ -167,6 +169,7 @@ public class TransportActivity extends BaseGoogleMapsActivity
             loader = new TransportLoader(this, args);
             setRefreshActionButtonState(true);
         }
+//        TODO catch LOADER_TRACKS!!!!!!!!
         return loader;
     }
 
@@ -299,6 +302,12 @@ public class TransportActivity extends BaseGoogleMapsActivity
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(Constants.ROUTES, (ArrayList<Route>) routes);
         getSupportLoaderManager().restartLoader(LOADER_TRANSPORT, bundle, this); // if Loader already exist, when initLoader() called, constructor doesn't called, and routes remain old
+    }
+
+    private void startTracksLoader() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(Constants.ROUTES, (ArrayList<Route>) routes);
+        getSupportLoaderManager().restartLoader(LOADER_TRACKS, bundle, this); // if Loader already exist, when initLoader() called, constructor doesn't called, and routes remain old
     }
 
     private void startLocationServiceIfNeeded() {
