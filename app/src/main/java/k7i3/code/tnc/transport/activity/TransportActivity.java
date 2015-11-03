@@ -287,7 +287,7 @@ public class TransportActivity extends BaseGoogleMapsActivity
 
     private Drawable makeIconDrawable() {
 //        TODO make good nine-patch drawable (.9.png) or custom drawable (.xml) https://romannurik.github.io/AndroidAssetStudio/index.html dynamically: http://stackoverflow.com/questions/14442011/create-a-nine-patch-image-with-code /// http://stackoverflow.com/questions/5079868/create-a-ninepatch-ninepatchdrawable-in-runtime/14061128#14061128 /// https://gist.github.com/briangriffey/4391807
-        Drawable drawable = getResources().getDrawable(R.drawable.hippievan0_7); //arrow
+        Drawable drawable = getResources().getDrawable(R.drawable.a4); //arrow
 //        drawable.setTint(Color.CYAN); // API 21
 //        ColorFilter filter = new PorterDuffColorFilter(Color.parseColor("#2196F3"), PorterDuff.Mode.MULTIPLY);
 //        drawable.setColorFilter(filter);
