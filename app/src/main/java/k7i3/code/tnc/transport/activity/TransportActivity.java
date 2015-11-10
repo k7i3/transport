@@ -1,10 +1,6 @@
 package k7i3.code.tnc.transport.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
@@ -12,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.MenuItem;
@@ -37,17 +34,18 @@ import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.R;
 import k7i3.code.tnc.transport.fragment.RetainedTransportFragment;
 import k7i3.code.tnc.transport.helper.gmaps.MarkerAnimation;
+import k7i3.code.tnc.transport.loader.TracksLoader;
 import k7i3.code.tnc.transport.loader.TransportLoader;
 import k7i3.code.tnc.transport.model.LocationMessage;
 import k7i3.code.tnc.transport.model.Route;
+import k7i3.code.tnc.transport.model.Track;
 import k7i3.code.tnc.transport.model.Transport;
 import k7i3.code.tnc.transport.model.TransportLocation;
 import k7i3.code.tnc.transport.service.LocationService;
 
 import static k7i3.code.tnc.transport.helper.gmaps.LatLngInterpolator.LinearFixed;
 
-public class TransportActivity extends BaseGoogleMapsActivity
-        implements android.support.v4.app.LoaderManager.LoaderCallbacks<Map<Route, List<Transport>>> {
+public class TransportActivity extends BaseGoogleMapsActivity {
 
     private static final int REQUEST_CODE_ROUTES = 1;
     private static final int LOADER_TRANSPORT = 70;
@@ -58,7 +56,8 @@ public class TransportActivity extends BaseGoogleMapsActivity
 
     private List<Route> routes;
     private Map<Route, List<Transport>> transportByRoute;
-    private Map<Long, Marker> markersByDeviceId;
+    private Map<Route, Track> trackByRoute;
+    private Map<Long, Marker> markerByDeviceId;
 
     private RetainedTransportFragment retainedTransportFragment;
 
@@ -121,7 +120,7 @@ public class TransportActivity extends BaseGoogleMapsActivity
                     retainedTransportFragment.setRoutes(routes);
                     Toast.makeText(this, "выбрано маршрутов: " + routes.size(), Toast.LENGTH_SHORT).show();
                     startTransportLoader();
-                    if (true) startTracksLoader(); // TODO make property showTrack and check it here /// or make startTracksLoaderIfNeeded
+//                    startTracksLoader();
                     break;
             }
         } else {
@@ -130,80 +129,82 @@ public class TransportActivity extends BaseGoogleMapsActivity
             }
             clearMap();
         }
-        //PENDING INTENT
-//        } else if (resultCode == LocationIntentService.STATUS_START) {
-//            switch (requestCode) {
-//                case REQUEST_CODE_LOCATION:
-//                    Toast.makeText(this, "STATUS_START", Toast.LENGTH_SHORT).show();
-//                    break;
-//            }
-//        } else if (resultCode == LocationIntentService.STATUS_UPDATE) {
-//            switch (requestCode) {
-//                case REQUEST_CODE_LOCATION:
-//                    Toast.makeText(this, "STATUS_UPDATE", Toast.LENGTH_SHORT).show();
-//                    break;
-//            }
-//        } else if (resultCode == LocationIntentService.STATUS_FINISH) {
-//            switch (requestCode) {
-//                case REQUEST_CODE_LOCATION:
-//                    Toast.makeText(this, "STATUS_FINISH", Toast.LENGTH_SHORT).show();
-//                    break;
-//            }
-//        } else if (resultCode == LocationIntentService.STATUS_ERROR) {
-//            switch (requestCode) {
-//                case REQUEST_CODE_LOCATION:
-//                    Toast.makeText(this, "STATUS_ERROR", Toast.LENGTH_SHORT).show();
-//                    break;
-//            }
-//        }
     }
 
     //LOADERS
 
-    @Override
-    public Loader<Map<Route, List<Transport>>> onCreateLoader(int id, Bundle args) {
-        Loader<Map<Route, List<Transport>>> loader = null;
-        //TODO switch if needed
-        if (id == LOADER_TRANSPORT) {
-            Log.d(TAG, "onCreateLoader() / id == LOADER_TRANSPORT");
-            loader = new TransportLoader(this, args);
-            setRefreshActionButtonState(true);
-        }
-//        TODO catch LOADER_TRACKS!!!!!!!!
-        return loader;
+    private void startTransportLoader() {
+        Log.d(TAG, "startTransportLoader()");
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(Constants.ROUTES, (ArrayList<Route>) routes);
+        // if Loader already exist, when initLoader() called, constructor doesn't called, and routes remain old
+        getSupportLoaderManager().restartLoader(LOADER_TRANSPORT, bundle, new LoaderManager.LoaderCallbacks<Map<Route, List<Transport>>>() {
+            @Override
+            public Loader<Map<Route, List<Transport>>> onCreateLoader(int id, Bundle args) {
+                Log.d(TAG, "Transport - onCreateLoader()");
+                setRefreshActionButtonState(true);
+                return new TransportLoader(TransportActivity.this, args);
+            }
+
+            @Override
+            public void onLoadFinished(Loader<Map<Route, List<Transport>>> loader, Map<Route, List<Transport>> data) {
+                Log.d(TAG, "Transport - onLoadFinished()");
+                transportByRoute = data;
+                retainedTransportFragment.setTransportByRoute(transportByRoute);
+                Log.d(TAG, "transportByRoute.size(): " + transportByRoute.size());
+                drawTransport();
+                startLocationServiceIfNeeded();
+                Toast.makeText(TransportActivity.this, "найдено автобусов: " + markerByDeviceId.size(), Toast.LENGTH_SHORT).show();
+                setRefreshActionButtonState(false);
+            }
+
+            @Override
+            public void onLoaderReset(Loader<Map<Route, List<Transport>>> loader) {
+
+            }
+        });
     }
 
-    @Override
-    public void onLoadFinished(Loader<Map<Route, List<Transport>>> loader, Map<Route, List<Transport>> data) {
-        Log.d(TAG, "onLoadFinished()");
-        //TODO switch if needed
-        if (loader.getId() == LOADER_TRANSPORT) {
-            Log.d(TAG, "if (loader.getId() == LOADER_TRANSPORT)");
-            transportByRoute = data;
-            retainedTransportFragment.setTransportByRoute(transportByRoute);
-            Log.d(TAG, "transportByRoute.size(): " + transportByRoute.size());
+    private void startTracksLoader() {
+        // TODO make property showTrack and check it here /// or make startTracksLoaderIfNeeded
+        Log.d(TAG, "startTracksLoader()");
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(Constants.ROUTES, (ArrayList<Route>) routes);
+        // if Loader already exist, when initLoader() called, constructor doesn't called, and routes remain old
+        getSupportLoaderManager().restartLoader(LOADER_TRACKS, bundle, new LoaderManager.LoaderCallbacks<Map<Route, Track>>() {
+            @Override
+            public Loader<Map<Route, Track>> onCreateLoader(int id, Bundle args) {
+                Log.d(TAG, "Tracks - onCreateLoader()");
+                return new TracksLoader(TransportActivity.this, args);
+            }
 
-            drawTransport();
+            @Override
+            public void onLoadFinished(Loader<Map<Route, Track>> loader, Map<Route, Track> data) {
+                Log.d(TAG, "Tracks - onLoadFinished()");
+                trackByRoute = data;
+                retainedTransportFragment.setTrackByRoute(trackByRoute);
+                Log.d(TAG, "trackByRoute.size(): " + trackByRoute.size());
+                Toast.makeText(TransportActivity.this, "найдено треков: " + trackByRoute.size(), Toast.LENGTH_SHORT).show();
+//                TODO drawTracks()
+            }
 
-            //TODO start next loader/service for retrieve coordinates
-            //1.PENDING INTENT via createPendingResult() with callback at onActivityResult() (doesn't work correctly, activity call onPause() when intent (which used to start service) contains PendingIntent. Without PI onPause() doesn't called) http://startandroid.ru/ru/uroki/vse-uroki-spiskom/160-urok-95-service-obratnaja-svjaz-s-pomoschju-pendingintent.html
-//            Log.d(TAG, "1. PENDING INTENT START");
-//            PendingIntent pendingIntent = createPendingResult(REQUEST_CODE_LOCATION, new Intent(), 0); // intent may not be null, but in example is null!
-//            Set<Long> set = markersByDeviceId.keySet();
-//            LocationIntentService.startActionPendingIntent(this, set.toArray(new Long[set.size()]), pendingIntent);
-//            Log.d(TAG, "1. PENDING INTENT FINISH");
-            //2. PENDING INTENT for a broadcast (with getBroadcast()) http://stackoverflow.com/questions/6099364/how-to-use-pendingintent-to-communicate-from-a-service-to-a-client-activity
-            //3. EVENTBUS
-            startLocationServiceIfNeeded();
+            @Override
+            public void onLoaderReset(Loader<Map<Route, Track>> loader) {
 
-            Toast.makeText(this, "найдено автобусов: " + markersByDeviceId.size(), Toast.LENGTH_SHORT).show();
-            setRefreshActionButtonState(false);
-        }
+            }
+        });
     }
 
-    @Override
-    public void onLoaderReset(Loader<Map<Route, List<Transport>>> loader) {
+    //SERVICES
 
+    private void startLocationServiceIfNeeded() {
+        if (markerByDeviceId.size() != 0) {
+            retainedTransportFragment.setMarkerByDeviceId(markerByDeviceId);
+            Set<Long> set = markerByDeviceId.keySet();
+            LocationService.start(this, set.toArray(new Long[set.size()]));
+        } else {
+            Log.d(TAG, "markerByDeviceId.size() == 0");
+        }
     }
 
     //EVENTBUS
@@ -215,7 +216,7 @@ public class TransportActivity extends BaseGoogleMapsActivity
 //        Marker marker;
         for (TransportLocation transportLocation : locationMessage.getDataJson()) {
             Log.d(TAG, "!!! transportLocation: " + transportLocation);
-            final Marker marker = markersByDeviceId.get(transportLocation.getDeviceId()); //TODO final?
+            final Marker marker = markerByDeviceId.get(transportLocation.getDeviceId()); //TODO final?
             float direction = (float) transportLocation.getDirection();
 
             if (direction != 0) {
@@ -266,13 +267,14 @@ public class TransportActivity extends BaseGoogleMapsActivity
         if (retainedTransportFragment != null) {
             routes = retainedTransportFragment.getRoutes();
             transportByRoute = retainedTransportFragment.getTransportByRoute();
-            markersByDeviceId = retainedTransportFragment.getMarkersByDeviceId();
+            trackByRoute = retainedTransportFragment.getTrackByRoute();
+            markerByDeviceId = retainedTransportFragment.getMarkerByDeviceId();
         } else {
             retainedTransportFragment = new RetainedTransportFragment();
             fm.beginTransaction().add(retainedTransportFragment, TAG).commit();
 
-            markersByDeviceId = new HashMap<>();
-            retainedTransportFragment.setMarkersByDeviceId(markersByDeviceId);
+            markerByDeviceId = new HashMap<>();
+            retainedTransportFragment.setMarkerByDeviceId(markerByDeviceId);
         }
 
         initIconGenerator();
@@ -296,28 +298,6 @@ public class TransportActivity extends BaseGoogleMapsActivity
 //        drawable.setColorFilter(filter);
 //        drawable.setAlpha(255);
         return drawable;
-    }
-
-    private void startTransportLoader() {
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(Constants.ROUTES, (ArrayList<Route>) routes);
-        getSupportLoaderManager().restartLoader(LOADER_TRANSPORT, bundle, this); // if Loader already exist, when initLoader() called, constructor doesn't called, and routes remain old
-    }
-
-    private void startTracksLoader() {
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(Constants.ROUTES, (ArrayList<Route>) routes);
-        getSupportLoaderManager().restartLoader(LOADER_TRACKS, bundle, this); // if Loader already exist, when initLoader() called, constructor doesn't called, and routes remain old
-    }
-
-    private void startLocationServiceIfNeeded() {
-        if (markersByDeviceId.size() != 0) {
-            retainedTransportFragment.setMarkersByDeviceId(markersByDeviceId);
-            Set<Long> set = markersByDeviceId.keySet();
-            LocationService.start(this, set.toArray(new Long[set.size()]));
-        } else {
-            Log.d(TAG, "markersByDeviceId.size() == 0");
-        }
     }
 
     private void drawTransport() {
@@ -350,7 +330,7 @@ public class TransportActivity extends BaseGoogleMapsActivity
 ////                location.setLongitude(location.getLongitude() + 0.0001);
 //                location.setLatitude(location.getLatitude() + 0.001);
 //                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-//                MarkerAnimation.animateMarkerToICS(markersByDeviceId.get(1L), latLng, new Spherical());
+//                MarkerAnimation.animateMarkerToICS(markerByDeviceId.get(1L), latLng, new Spherical());
 //                handler.postDelayed(this, 3000);
 //            }
 //        };
@@ -376,13 +356,13 @@ public class TransportActivity extends BaseGoogleMapsActivity
                 anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV()).
                 visible(false);
 
-        markersByDeviceId.put(deviceId, googleMap.addMarker(markerOptions));
+        markerByDeviceId.put(deviceId, googleMap.addMarker(markerOptions));
     }
 
     private void clearMap() {
         if (googleMap != null) googleMap.clear();
-        markersByDeviceId.clear();
-        retainedTransportFragment.setMarkersByDeviceId(markersByDeviceId);
+        markerByDeviceId.clear();
+        retainedTransportFragment.setMarkerByDeviceId(markerByDeviceId);
     }
 
     private void checkRefreshActionButtonState() {

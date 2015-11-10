@@ -3,6 +3,7 @@ package k7i3.code.tnc.transport.model;
 import android.graphics.Color;
 
 import com.google.maps.android.geojson.GeoJsonFeature;
+import com.google.maps.android.geojson.GeoJsonMultiLineString;
 
 /**
  * Created by k7i3 on 03.11.15.
@@ -140,24 +141,26 @@ import com.google.maps.android.geojson.GeoJsonFeature;
 //        "isDeleted": 0
 //        }
 public class Track {
-    private GeoJsonFeature routeGeomGJ;
-    private GeoJsonFeature areaRouteGeomGJ;
+//    private GeoJsonFeature routeGeomGJ;
+//    private GeoJsonFeature areaRouteGeomGJ;
 //    Color color; // TODO int?
 
+    private String routeGeomGJ;
+    private String areaRouteGeomGJ;
 
-    public GeoJsonFeature getRouteGeomGJ() {
+    public String getRouteGeomGJ() {
         return routeGeomGJ;
     }
 
-    public void setRouteGeomGJ(GeoJsonFeature routeGeomGJ) {
+    public void setRouteGeomGJ(String routeGeomGJ) {
         this.routeGeomGJ = routeGeomGJ;
     }
 
-    public GeoJsonFeature getAreaRouteGeomGJ() {
+    public String getAreaRouteGeomGJ() {
         return areaRouteGeomGJ;
     }
 
-    public void setAreaRouteGeomGJ(GeoJsonFeature areaRouteGeomGJ) {
+    public void setAreaRouteGeomGJ(String areaRouteGeomGJ) {
         this.areaRouteGeomGJ = areaRouteGeomGJ;
     }
 }

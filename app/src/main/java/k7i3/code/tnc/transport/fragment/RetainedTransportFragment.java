@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import k7i3.code.tnc.transport.model.Route;
+import k7i3.code.tnc.transport.model.Track;
 import k7i3.code.tnc.transport.model.Transport;
 
 /**
@@ -18,7 +19,8 @@ public class RetainedTransportFragment extends Fragment {
 
     private List<Route> routes;
     private Map<Route, List<Transport>> transportByRoute;
-    private Map<Long, Marker> markersByDeviceId;
+    private Map<Route, Track> trackByRoute;
+    private Map<Long, Marker> markerByDeviceId;
 
     //LIFECYCLE
 
@@ -46,11 +48,19 @@ public class RetainedTransportFragment extends Fragment {
         this.transportByRoute = transportByRoute;
     }
 
-    public Map<Long, Marker> getMarkersByDeviceId() {
-        return markersByDeviceId;
+    public Map<Route, Track> getTrackByRoute() {
+        return trackByRoute;
     }
 
-    public void setMarkersByDeviceId(Map<Long, Marker> markersByDeviceId) {
-        this.markersByDeviceId = markersByDeviceId;
+    public void setTrackByRoute(Map<Route, Track> trackByRoute) {
+        this.trackByRoute = trackByRoute;
+    }
+
+    public Map<Long, Marker> getMarkerByDeviceId() {
+        return markerByDeviceId;
+    }
+
+    public void setMarkerByDeviceId(Map<Long, Marker> markerByDeviceId) {
+        this.markerByDeviceId = markerByDeviceId;
     }
 }
