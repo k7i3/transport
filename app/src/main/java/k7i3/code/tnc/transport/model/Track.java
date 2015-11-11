@@ -141,26 +141,24 @@ import com.google.maps.android.geojson.GeoJsonMultiLineString;
 //        "isDeleted": 0
 //        }
 public class Track {
-//    private GeoJsonFeature routeGeomGJ;
-//    private GeoJsonFeature areaRouteGeomGJ;
+    private GeoJsonFeature routeGeomGJ;
+    private GeoJsonFeature areaRouteGeomGJ;
 //    Color color; // TODO int?
 
-    private String routeGeomGJ;
-    private String areaRouteGeomGJ;
 
-    public String getRouteGeomGJ() {
+    public GeoJsonFeature getRouteGeomGJ() {
         return routeGeomGJ;
     }
 
-    public void setRouteGeomGJ(String routeGeomGJ) {
+    public void setRouteGeomGJ(GeoJsonFeature routeGeomGJ) {
         this.routeGeomGJ = routeGeomGJ;
     }
 
-    public String getAreaRouteGeomGJ() {
+    public GeoJsonFeature getAreaRouteGeomGJ() {
         return areaRouteGeomGJ;
     }
 
-    public void setAreaRouteGeomGJ(String areaRouteGeomGJ) {
+    public void setAreaRouteGeomGJ(GeoJsonFeature areaRouteGeomGJ) {
         this.areaRouteGeomGJ = areaRouteGeomGJ;
     }
 }

@@ -63,6 +63,36 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
     public Map<Route, Track> loadInBackground() {
         Log.d(TAG, "loadInBackground()");
 
+//        one of this
+//        loadFromServer();
+        loadFromFile();
+
+        return trackByRoute;
+    }
+
+    private void loadFromFile() {
+        try {
+            InputStream in;
+            BufferedReader bufferedReader;
+            Track track;
+            for (Route route : routes) {
+                in = getContext().getAssets().open(route.getId()+ ".json");
+                bufferedReader = new BufferedReader(new InputStreamReader(in));
+
+                track = gson.create().fromJson(bufferedReader, Track.class);
+
+                //TODO ?
+                bufferedReader.close();
+                in.close();
+
+                trackByRoute.put(route, track);
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "error: " + e.getMessage() + " " + e);
+        }
+    }
+
+    private void loadFromServer() {
         try {
             String request;
             OutputStream out;
@@ -70,6 +100,7 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
             BufferedReader bufferedReader;
             Track track;
             for (Route route : routes) {
+                // OUT
                 request = gson.create().toJson(new Object[]{invocationContext, route.getId()});
                 Log.d(TAG, "request: " + request);
 
@@ -102,6 +133,5 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
         } catch (Exception e) {
             Log.d(TAG, "error: " + e.getMessage() + " " + e);
         }
-        return trackByRoute;
     }
 }

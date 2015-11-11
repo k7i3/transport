@@ -21,7 +21,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.SphericalUtil;
+import com.google.maps.android.geojson.GeoJsonLayer;
 import com.google.maps.android.ui.IconGenerator;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +54,6 @@ public class TransportActivity extends BaseGoogleMapsActivity {
     private static final int REQUEST_CODE_ROUTES = 1;
     private static final int LOADER_TRANSPORT = 70;
     private static final int LOADER_TRACKS = 80;
-    private static final int REQUEST_CODE_LOCATION = 50;
 
     private FloatingActionButton routesFAB;
 
@@ -119,8 +122,8 @@ public class TransportActivity extends BaseGoogleMapsActivity {
                     routes = data.getParcelableArrayListExtra(Constants.ROUTES);
                     retainedTransportFragment.setRoutes(routes);
                     Toast.makeText(this, "выбрано маршрутов: " + routes.size(), Toast.LENGTH_SHORT).show();
-                    startTransportLoader();
-//                    startTracksLoader();
+//                    startTransportLoader();
+                    startTracksLoader();
                     break;
             }
         } else {
@@ -186,6 +189,12 @@ public class TransportActivity extends BaseGoogleMapsActivity {
                 Log.d(TAG, "trackByRoute.size(): " + trackByRoute.size());
                 Toast.makeText(TransportActivity.this, "найдено треков: " + trackByRoute.size(), Toast.LENGTH_SHORT).show();
 //                TODO drawTracks()
+                try {
+                    //TODO fix!!!!!!
+                    GeoJsonLayer layer = new GeoJsonLayer(googleMap, new JSONObject(data.get(0).getRouteGeomGJ().toString()));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
