@@ -278,6 +278,12 @@ public class TransportActivity extends BaseGoogleMapsActivity {
             retainedTransportFragment = new RetainedTransportFragment();
             fm.beginTransaction().add(retainedTransportFragment, TAG).commit();
 
+            transportByRoute = new HashMap<>();
+            retainedTransportFragment.setTransportByRoute(transportByRoute);
+
+            trackByRoute = new HashMap<>();
+            retainedTransportFragment.setTrackByRoute(trackByRoute);
+
             markerByDeviceId = new HashMap<>();
             retainedTransportFragment.setMarkerByDeviceId(markerByDeviceId);
         }
@@ -354,8 +360,12 @@ public class TransportActivity extends BaseGoogleMapsActivity {
 
     private void drawTracks() {
         for (Track track : trackByRoute.values()) {
-            GeoJsonLayer layer = new GeoJsonLayer(googleMap, track.getRouteGeomGJ());
-            layer.addLayerToMap();
+//            TODO it checked at TracksLoader too
+            if (track != null) {
+                GeoJsonLayer layer = new GeoJsonLayer(googleMap, track.getRouteGeomGJ());
+//                TODO layer.addFeature() for all other?
+                layer.addLayerToMap();
+            }
         }
     }
 

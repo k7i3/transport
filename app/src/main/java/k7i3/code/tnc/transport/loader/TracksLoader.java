@@ -96,6 +96,7 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
             String request;
             OutputStream out;
             InputStream in;
+            Track track;
             for (Route route : routes) {
                 // OUT
                 request = gson.create().toJson(new Object[]{invocationContext, route.getId()});
@@ -121,35 +122,46 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
 //                bufferedReader = new BufferedReader(new InputStreamReader(in));
 //                track = gson.create().fromJson(bufferedReader, Track.class);
 
-                trackByRoute.put(route, parseJsonFromStream(in));
+                track = parseJsonFromStream(in);
+                if (track != null) {
+                    trackByRoute.put(route, track);
+                }
 
-                // CLOSE
+                // CLOSE TODO finally?
                 c.disconnect();
             }
         } catch (Exception e) {
             Log.d(TAG, "error: " + e.getMessage() + " " + e);
+            e.printStackTrace();
         }
     }
-
-    private Track parseJsonFromStream(InputStream in) throws IOException, JSONException {
+//    TODO solve try/catch/finally/return
+    private Track parseJsonFromStream(InputStream in) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
         String line;
         StringBuilder result = new StringBuilder();
         while ((line = bufferedReader.readLine()) != null) {
             result.append(line);
         }
-        JSONObject jsonObject = new JSONObject(result.toString());
-//        TODO if the JSON would be correct
-//        JSONObject routeGeomGJ = jsonObject.getJSONObject("routeGeomGJ");
-//        JSONObject areaRouteGeomGJ = jsonObject.getJSONObject("areaRouteGeomGJ");
-        JSONObject routeGeomGJ = new JSONObject(jsonObject.getString("routeGeomGJ"));
-        JSONObject areaRouteGeomGJ = new JSONObject(jsonObject.getString("areaRouteGeomGJ"));
-        Log.d(TAG, "routeGeomGJ: " + routeGeomGJ.toString());
-        Log.d(TAG, "areaRouteGeomGJ: " + areaRouteGeomGJ.toString());
-
-        bufferedReader.close();
-        in.close();
-
-        return new Track(routeGeomGJ, areaRouteGeomGJ);
+        Track track = null;
+        try {
+            JSONObject jsonObject = new JSONObject(result.toString());
+//            TODO if the JSON would be correct
+//            JSONObject routeGeomGJ = jsonObject.getJSONObject("routeGeomGJ");
+//            JSONObject areaRouteGeomGJ = jsonObject.getJSONObject("areaRouteGeomGJ");
+            JSONObject routeGeomGJ = new JSONObject(jsonObject.getString("routeGeomGJ"));
+            JSONObject areaRouteGeomGJ = new JSONObject(jsonObject.getString("areaRouteGeomGJ"));
+            Log.d(TAG, "routeGeomGJ: " + routeGeomGJ.toString());
+            Log.d(TAG, "areaRouteGeomGJ: " + areaRouteGeomGJ.toString());
+            track = new Track(routeGeomGJ, areaRouteGeomGJ);
+        } catch (JSONException e) {
+            Log.d(TAG, "error: " + e.getMessage() + " " + e);
+            e.printStackTrace();
+        } finally {
+                bufferedReader.close();
+                in.close();
+        }
+        Log.d(TAG, "try/catch/finally/return");
+        return track;
     }
 }
