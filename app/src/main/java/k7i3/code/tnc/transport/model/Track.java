@@ -5,6 +5,8 @@ import android.graphics.Color;
 import com.google.maps.android.geojson.GeoJsonFeature;
 import com.google.maps.android.geojson.GeoJsonMultiLineString;
 
+import org.json.JSONObject;
+
 /**
  * Created by k7i3 on 03.11.15.
  */
@@ -141,24 +143,36 @@ import com.google.maps.android.geojson.GeoJsonMultiLineString;
 //        "isDeleted": 0
 //        }
 public class Track {
-    private GeoJsonFeature routeGeomGJ;
-    private GeoJsonFeature areaRouteGeomGJ;
+    private JSONObject routeGeomGJ;
+    private JSONObject areaRouteGeomGJ;
 //    Color color; // TODO int?
 
+    public Track(JSONObject routeGeomGJ, JSONObject areaRouteGeomGJ) {
+        this.routeGeomGJ = routeGeomGJ;
+        this.areaRouteGeomGJ = areaRouteGeomGJ;
+    }
 
-    public GeoJsonFeature getRouteGeomGJ() {
+    @Override
+    public String toString() {
+        return "Track{" +
+                "routeGeomGJ=" + routeGeomGJ +
+                ", areaRouteGeomGJ=" + areaRouteGeomGJ +
+                '}';
+    }
+
+    public JSONObject getRouteGeomGJ() {
         return routeGeomGJ;
     }
 
-    public void setRouteGeomGJ(GeoJsonFeature routeGeomGJ) {
+    public void setRouteGeomGJ(JSONObject routeGeomGJ) {
         this.routeGeomGJ = routeGeomGJ;
     }
 
-    public GeoJsonFeature getAreaRouteGeomGJ() {
+    public JSONObject getAreaRouteGeomGJ() {
         return areaRouteGeomGJ;
     }
 
-    public void setAreaRouteGeomGJ(GeoJsonFeature areaRouteGeomGJ) {
+    public void setAreaRouteGeomGJ(JSONObject areaRouteGeomGJ) {
         this.areaRouteGeomGJ = areaRouteGeomGJ;
     }
 }

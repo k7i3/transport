@@ -8,7 +8,11 @@ import android.util.Log;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -63,9 +67,9 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
     public Map<Route, Track> loadInBackground() {
         Log.d(TAG, "loadInBackground()");
 
-//        one of this
-//        loadFromServer();
-        loadFromFile();
+//        TODO one of this
+        loadFromServer();
+//        loadFromFile();
 
         return trackByRoute;
     }
@@ -73,19 +77,14 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
     private void loadFromFile() {
         try {
             InputStream in;
-            BufferedReader bufferedReader;
-            Track track;
             for (Route route : routes) {
-                in = getContext().getAssets().open(route.getId()+ ".json");
-                bufferedReader = new BufferedReader(new InputStreamReader(in));
+                in = getContext().getAssets().open("tracks/incorrect/" + route.getId() + ".json");
 
-                track = gson.create().fromJson(bufferedReader, Track.class);
+//                TODO doesn't work
+//                bufferedReader = new BufferedReader(new InputStreamReader(in));
+//                track = gson.create().fromJson(bufferedReader, Track.class);
 
-                //TODO ?
-                bufferedReader.close();
-                in.close();
-
-                trackByRoute.put(route, track);
+                trackByRoute.put(route, parseJsonFromStream(in));
             }
         } catch (Exception e) {
             Log.d(TAG, "error: " + e.getMessage() + " " + e);
@@ -97,8 +96,6 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
             String request;
             OutputStream out;
             InputStream in;
-            BufferedReader bufferedReader;
-            Track track;
             for (Route route : routes) {
                 // OUT
                 request = gson.create().toJson(new Object[]{invocationContext, route.getId()});
@@ -119,19 +116,40 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
                 // IN
                 Log.d(TAG, "c.getResponseCode(): " + c.getResponseCode());
                 in = (c.getResponseCode() == 200) ? c.getInputStream() : c.getErrorStream();
-                bufferedReader = new BufferedReader(new InputStreamReader(in));
 
-                track = gson.create().fromJson(bufferedReader, Track.class);
+//                TODO doesn't work
+//                bufferedReader = new BufferedReader(new InputStreamReader(in));
+//                track = gson.create().fromJson(bufferedReader, Track.class);
 
-                //TODO ?
-                bufferedReader.close();
-                in.close();
+                trackByRoute.put(route, parseJsonFromStream(in));
+
+                // CLOSE
                 c.disconnect();
-
-                trackByRoute.put(route, track);
             }
         } catch (Exception e) {
             Log.d(TAG, "error: " + e.getMessage() + " " + e);
         }
+    }
+
+    private Track parseJsonFromStream(InputStream in) throws IOException, JSONException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+        String line;
+        StringBuilder result = new StringBuilder();
+        while ((line = bufferedReader.readLine()) != null) {
+            result.append(line);
+        }
+        JSONObject jsonObject = new JSONObject(result.toString());
+//        TODO if the JSON would be correct
+//        JSONObject routeGeomGJ = jsonObject.getJSONObject("routeGeomGJ");
+//        JSONObject areaRouteGeomGJ = jsonObject.getJSONObject("areaRouteGeomGJ");
+        JSONObject routeGeomGJ = new JSONObject(jsonObject.getString("routeGeomGJ"));
+        JSONObject areaRouteGeomGJ = new JSONObject(jsonObject.getString("areaRouteGeomGJ"));
+        Log.d(TAG, "routeGeomGJ: " + routeGeomGJ.toString());
+        Log.d(TAG, "areaRouteGeomGJ: " + areaRouteGeomGJ.toString());
+
+        bufferedReader.close();
+        in.close();
+
+        return new Track(routeGeomGJ, areaRouteGeomGJ);
     }
 }

@@ -28,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,7 +123,7 @@ public class TransportActivity extends BaseGoogleMapsActivity {
                     routes = data.getParcelableArrayListExtra(Constants.ROUTES);
                     retainedTransportFragment.setRoutes(routes);
                     Toast.makeText(this, "выбрано маршрутов: " + routes.size(), Toast.LENGTH_SHORT).show();
-//                    startTransportLoader();
+                    startTransportLoader();
                     startTracksLoader();
                     break;
             }
@@ -188,13 +189,8 @@ public class TransportActivity extends BaseGoogleMapsActivity {
                 retainedTransportFragment.setTrackByRoute(trackByRoute);
                 Log.d(TAG, "trackByRoute.size(): " + trackByRoute.size());
                 Toast.makeText(TransportActivity.this, "найдено треков: " + trackByRoute.size(), Toast.LENGTH_SHORT).show();
-//                TODO drawTracks()
-                try {
-                    //TODO fix!!!!!!
-                    GeoJsonLayer layer = new GeoJsonLayer(googleMap, new JSONObject(data.get(0).getRouteGeomGJ().toString()));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                drawTracks();
+                setRefreshActionButtonState(false);
             }
 
             @Override
@@ -354,6 +350,13 @@ public class TransportActivity extends BaseGoogleMapsActivity {
 //        addMarker(iconGenerator, "69", location, 3);
 //        location.setLongitude(location.getLongitude() + 0.001);
 //        addMarker(iconGenerator, "6", location, 4);
+    }
+
+    private void drawTracks() {
+        for (Track track : trackByRoute.values()) {
+            GeoJsonLayer layer = new GeoJsonLayer(googleMap, track.getRouteGeomGJ());
+            layer.addLayerToMap();
+        }
     }
 
     private void addMarker(IconGenerator iconFactory, String title, Location location, long deviceId) {
