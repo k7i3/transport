@@ -180,8 +180,8 @@ public abstract class BaseGoogleMapsActivity extends BaseActivity
                 .target(latLng)             // Sets the center of the map to location user
                 .zoom(10)                   // Sets the zoom 17
                 .bearing(0)
-                .tilt(30)                   // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
+//                .tilt(30)                   // Sets the tilt of the camera to 30 degrees
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 //        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
     }

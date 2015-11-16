@@ -36,6 +36,14 @@
             android:title="Контакты" />
     </group>
 
+    <group android:checkableBehavior="all"
+        android:id="@+id/settingsGroup">
+        <item
+            android:id="@+id/navItem7"
+            android:icon="@drawable/ic_my_location_black_24dp"
+            android:checkable="true"
+            android:title="Настройки" />
+    </group>
 
 
 </menu>

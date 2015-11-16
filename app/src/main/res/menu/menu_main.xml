@@ -6,22 +6,18 @@
     tools:context=".BaseActivity">
 
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/refresh"
         android:orderInCategory="200"
-        android:title="refresh"
+        android:title="@string/refresh"
         android:icon="@drawable/logo"
         app:showAsAction="ifRoom"/>
 
-    <!--<item-->
-        <!--android:id="@+id/action_search"-->
-        <!--android:orderInCategory="300"-->
-        <!--android:title="Search"-->
-        <!--android:icon="@drawable/abc_ic_menu_share_mtrl_alpha"-->
-        <!--app:showAsAction="ifRoom" />-->
+    <!--<group android:checkableBehavior="all">-->
+        <!--<item-->
+            <!--android:id="@+id/tracks"-->
+            <!--android:orderInCategory="110"-->
+            <!--android:title="Линия маршрута (тест)"-->
+            <!--app:showAsAction="never" />-->
+    <!--</group>-->
+
 </menu>

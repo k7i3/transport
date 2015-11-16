@@ -145,11 +145,12 @@ import org.json.JSONObject;
 public class Track {
     private JSONObject routeGeomGJ;
     private JSONObject areaRouteGeomGJ;
-//    Color color; // TODO int?
+    private int color;
 
-    public Track(JSONObject routeGeomGJ, JSONObject areaRouteGeomGJ) {
+    public Track(JSONObject routeGeomGJ, JSONObject areaRouteGeomGJ, int color) {
         this.routeGeomGJ = routeGeomGJ;
         this.areaRouteGeomGJ = areaRouteGeomGJ;
+        this.color = color;
     }
 
     @Override
@@ -174,5 +175,13 @@ public class Track {
 
     public void setAreaRouteGeomGJ(JSONObject areaRouteGeomGJ) {
         this.areaRouteGeomGJ = areaRouteGeomGJ;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 }

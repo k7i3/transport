@@ -1,6 +1,7 @@
 package k7i3.code.tnc.transport.loader;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
@@ -135,6 +136,7 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
             e.printStackTrace();
         }
     }
+
 //    TODO solve try/catch/finally/return
     private Track parseJsonFromStream(InputStream in) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
@@ -151,9 +153,17 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
 //            JSONObject areaRouteGeomGJ = jsonObject.getJSONObject("areaRouteGeomGJ");
             JSONObject routeGeomGJ = new JSONObject(jsonObject.getString("routeGeomGJ"));
             JSONObject areaRouteGeomGJ = new JSONObject(jsonObject.getString("areaRouteGeomGJ"));
+            int color;
+            if (jsonObject.has("color")) {
+                color = jsonObject.getInt("color");
+            } else {
+                Log.d(TAG, "no color");
+                color = Color.MAGENTA;
+            }
             Log.d(TAG, "routeGeomGJ: " + routeGeomGJ.toString());
             Log.d(TAG, "areaRouteGeomGJ: " + areaRouteGeomGJ.toString());
-            track = new Track(routeGeomGJ, areaRouteGeomGJ);
+            Log.d(TAG, "color: " + color);
+            track = new Track(routeGeomGJ, areaRouteGeomGJ, color);
         } catch (JSONException e) {
             Log.d(TAG, "error: " + e.getMessage() + " " + e);
             e.printStackTrace();

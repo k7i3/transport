@@ -1,6 +1,7 @@
 package k7i3.code.tnc.transport.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -103,10 +105,11 @@ public class TransportActivity extends BaseGoogleMapsActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.refresh) {
-            refreshIfPossible();
+        switch (id) {
+            case R.id.refresh: refreshIfPossible(); return true;
+//            case R.id.tracks: item.setChecked(!item.isChecked()); return true;
+            default: return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     //ACTIVITY RESULTS
@@ -363,7 +366,9 @@ public class TransportActivity extends BaseGoogleMapsActivity {
 //            TODO it checked at TracksLoader too
             if (track != null) {
                 GeoJsonLayer layer = new GeoJsonLayer(googleMap, track.getRouteGeomGJ());
-//                TODO layer.addFeature() for all other?
+                layer.getDefaultLineStringStyle().setColor(track.getColor());
+                layer.getDefaultLineStringStyle().setWidth(4);
+//                layer.getDefaultLineStringStyle().setGeodesic(false);
                 layer.addLayerToMap();
             }
         }
@@ -399,6 +404,9 @@ public class TransportActivity extends BaseGoogleMapsActivity {
         if (routes != null) {
             Toast.makeText(this, "обновление...", Toast.LENGTH_SHORT).show();
             startTransportLoader();
+//            startTracksLoader();
+//            TODO doesn't work
+            drawTracks();
         } else {
             Toast.makeText(this, "маршруты не выбраны", Toast.LENGTH_SHORT).show();
         }
