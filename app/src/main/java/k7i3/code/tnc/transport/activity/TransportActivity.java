@@ -7,6 +7,8 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
@@ -54,7 +56,7 @@ import static k7i3.code.tnc.transport.helper.gmaps.LatLngInterpolator.LinearFixe
 
 public class TransportActivity extends BaseGoogleMapsActivity {
 
-    private static final int REQUEST_CODE_ROUTES = 1;
+    protected static final int REQUEST_CODE_ROUTES = 1;
     private static final int LOADER_TRANSPORT = 70;
     private static final int LOADER_TRACKS = 80;
 
@@ -104,6 +106,7 @@ public class TransportActivity extends BaseGoogleMapsActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d(TAG, "onOptionsItemSelected()");
         int id = item.getItemId();
         switch (id) {
             case R.id.refresh: refreshIfPossible(); return true;
@@ -127,7 +130,9 @@ public class TransportActivity extends BaseGoogleMapsActivity {
                     retainedTransportFragment.setRoutes(routes);
                     Toast.makeText(this, "выбрано маршрутов: " + routes.size(), Toast.LENGTH_SHORT).show();
                     startTransportLoader();
-                    startTracksLoader();
+                    if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsActivity.KEY_PREF_SHOW_TRACKS, false)) {
+                        startTracksLoader();
+                    }
                     break;
             }
         } else {

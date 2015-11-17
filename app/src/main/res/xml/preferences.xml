@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:key="pref_show_tracks"
+        android:title="Показывать трек (тест)"
+        android:summary="ВНИМАНИЕ! В текущей версии приложения данная функция потребляет излишнее количество трафика и ресурсов, поэтому действие ограничено наличием wi-fi соединения и производительностью вашего телефона"
+        android:defaultValue="false" />
+</PreferenceScreen>
