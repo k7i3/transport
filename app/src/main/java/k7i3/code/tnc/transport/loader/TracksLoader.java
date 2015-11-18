@@ -3,6 +3,7 @@ package k7i3.code.tnc.transport.loader;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import k7i3.code.tnc.transport.Constants;
+import k7i3.code.tnc.transport.activity.SettingsActivity;
 import k7i3.code.tnc.transport.helper.SecurityHelper;
 import k7i3.code.tnc.transport.helper.Utils;
 import k7i3.code.tnc.transport.model.InvocationContext;
@@ -68,9 +70,13 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
     public Map<Route, Track> loadInBackground() {
         Log.d(TAG, "loadInBackground()");
 
-//        TODO one of this
-        loadFromServer();
+        // check it, because may be case when it needed (if preferences change and loader start after onResume() in TransportActivity with loader that has been triggered previously)
+        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(SettingsActivity.KEY_PREF_SHOW_TRACKS, false)) {
+//            TODO one of this
+            loadFromServer();
 //        loadFromFile();
+        }
+
 
         return trackByRoute;
     }

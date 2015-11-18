@@ -34,6 +34,8 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:fitsSystemWindows="true">
+            <!--fitsSystemWindows="true" - needed if status bar transparent (set in TransportActivity) else shifted onto the status bar-->
+            <!--in API-21,22? doesn't work with CoordinatorLayout - https://code.google.com/p/android/issues/detail?id=175069-->
 
             <include layout="@layout/toolbar_transport" />
         </android.support.design.widget.AppBarLayout>
