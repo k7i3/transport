@@ -321,7 +321,7 @@ public class TransportActivity extends BaseGoogleMapsActivity {
 
     private void drawTransport() {
         Log.d(TAG, "drawTransport()");
-        clearMap();
+//        clearMap(); off because when track draw before transport it clear track
 
 //        googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title(location.getTime() + " " + location.getProvider()));
 

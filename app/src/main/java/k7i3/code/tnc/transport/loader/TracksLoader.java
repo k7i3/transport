@@ -77,7 +77,6 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
 //        loadFromFile();
         }
 
-
         return trackByRoute;
     }
 
@@ -157,18 +156,12 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
 //            TODO if the JSON would be correct
 //            JSONObject routeGeomGJ = jsonObject.getJSONObject("routeGeomGJ");
 //            JSONObject areaRouteGeomGJ = jsonObject.getJSONObject("areaRouteGeomGJ");
-            JSONObject routeGeomGJ = new JSONObject(jsonObject.getString("routeGeomGJ"));
-            JSONObject areaRouteGeomGJ = new JSONObject(jsonObject.getString("areaRouteGeomGJ"));
-            int color;
-            if (jsonObject.has("color")) {
-                color = jsonObject.getInt("color");
-            } else {
-                Log.d(TAG, "no color");
-                color = Color.MAGENTA;
-            }
-            Log.d(TAG, "routeGeomGJ: " + routeGeomGJ.toString());
-            Log.d(TAG, "areaRouteGeomGJ: " + areaRouteGeomGJ.toString());
-            Log.d(TAG, "color: " + color);
+            JSONObject routeGeomGJ = new JSONObject(jsonObject.getString("routeGeomGJ")); // trows exception - no track
+            JSONObject areaRouteGeomGJ = jsonObject.has("areaRouteGeomGJ")? new JSONObject(jsonObject.getString("areaRouteGeomGJ")) : null;
+            int color = jsonObject.has("color")? jsonObject.getInt("color") : Color.MAGENTA;
+//            Log.d(TAG, "routeGeomGJ: " + routeGeomGJ.toString());
+//            Log.d(TAG, "areaRouteGeomGJ: " + areaRouteGeomGJ.toString());
+//            Log.d(TAG, "color: " + color);
             track = new Track(routeGeomGJ, areaRouteGeomGJ, color);
         } catch (JSONException e) {
             Log.d(TAG, "error: " + e.getMessage() + " " + e);
