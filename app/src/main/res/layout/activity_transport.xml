@@ -33,9 +33,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:fitsSystemWindows="true">
+            android:fitsSystemWindows="true"
+            app:elevation="0dp">
             <!--fitsSystemWindows="true" - needed if status bar transparent (set in TransportActivity) else shifted onto the status bar-->
             <!--in API-21,22? doesn't work with CoordinatorLayout - https://code.google.com/p/android/issues/detail?id=175069-->
+            <!--android:background="@android:color/transparent"-->
+            <!--app:elevation="0dp"-->
+            <!--android:elevation="0dp"-->
+            <!--Remove shadow below actionbar - http://stackoverflow.com/questions/31491667/how-to-remove-shadow-below-actionbar-with-appcompat-light-noactionbar / http://stackoverflow.com/questions/12246388/remove-shadow-below-actionbar-->
+
 
             <include layout="@layout/toolbar_transport" />
         </android.support.design.widget.AppBarLayout>

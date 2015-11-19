@@ -157,6 +157,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 //        getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        getSupportActionBar().setDisplayShowHomeEnabled(true);
+//        getSupportActionBar().setElevation(0); // it sets at layout by app:elevation="0dp"
     }
 
     protected void setRefreshActionButtonState(final boolean refreshing) {
