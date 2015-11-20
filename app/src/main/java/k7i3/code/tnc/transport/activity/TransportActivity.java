@@ -321,7 +321,7 @@ public class TransportActivity extends BaseGoogleMapsActivity {
 
     private void drawTransport() {
         Log.d(TAG, "drawTransport()");
-//        clearMap(); off because when track draw before transport it clear track
+//        clearMap(); off, because when track draw before transport it clear track
 
 //        googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title(location.getTime() + " " + location.getProvider()));
 
@@ -408,10 +408,13 @@ public class TransportActivity extends BaseGoogleMapsActivity {
     private void refreshIfPossible() {
         if (routes != null) {
             Toast.makeText(this, "обновление...", Toast.LENGTH_SHORT).show();
+            clearMap();
             startTransportLoader();
-//            startTracksLoader();
-//            TODO doesn't work
-            drawTracks();
+            if (trackByRoute.size() == routes.size()){ // TODO may be: trackByRoute.size() != 0 && trackByRoute.size() == routes.size();
+                drawTracks();
+            } else {
+                startTracksLoader();
+            }
         } else {
             Toast.makeText(this, "маршруты не выбраны", Toast.LENGTH_SHORT).show();
         }

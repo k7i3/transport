@@ -105,6 +105,7 @@ public abstract class BaseGoogleMapsActivity extends BaseActivity
         UiSettings uiSettings = googleMap.getUiSettings();
         uiSettings.setZoomControlsEnabled(true);
         uiSettings.setMyLocationButtonEnabled(true);
+        uiSettings.setMapToolbarEnabled(false);
     }
 
     /**
@@ -118,17 +119,14 @@ public abstract class BaseGoogleMapsActivity extends BaseActivity
                 REQUEST,
                 this);  // LocationListener
 
-        //TODO check for NULL
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        if (location == null) {
+            location = new Location("");
+            location.setLatitude(54.789);
+            location.setLongitude(56.034);
+        }
 
-        LatLng latLng;
-        if (location != null) {
-            latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        }
-        else {
-        //TODO init location by another way
-            latLng = new LatLng(0,0);
-        }
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());;
 
         if (isFirstConnect) {
             moveCamera(latLng);
