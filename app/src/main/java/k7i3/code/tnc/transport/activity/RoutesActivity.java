@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.R;
 import k7i3.code.tnc.transport.adapter.RoutesPagerAdapter;
+import k7i3.code.tnc.transport.fragment.FavoritesRoutesDialogFragment;
 import k7i3.code.tnc.transport.fragment.RoutesFragment;
 import k7i3.code.tnc.transport.model.Route;
 import k7i3.code.tnc.transport.widget.SlidingTabLayout;
@@ -31,6 +33,7 @@ public class RoutesActivity extends BaseActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private ViewPager viewPager;
     private FloatingActionButton mapsFAB;
+    private FloatingActionButton favoritesFAB;
 
     @Override
     protected int getLayoutResource() {
@@ -70,16 +73,32 @@ public class RoutesActivity extends BaseActivity {
         mapsFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                startActivity(new Intent(getBaseContext(), TransportActivity.class));
 //                RoutesFragment routesFragment = (RoutesFragment) (routesPagerAdapter.getItem(viewPager.getCurrentItem())); // doesn't work (return new instance of Fragment instead of current)
                 RoutesFragment routesFragment = (RoutesFragment) (routesPagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem()));
-//                Toast.makeText(v.getContext(), "routesFragment.getSelectedRoutes().size(): " + routesFragment.getSelectedRoutes().size(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(); //getIntent()?;
                 intent.putParcelableArrayListExtra(Constants.ROUTES, (ArrayList<Route>) routesFragment.getSelectedRoutes());
                 setResult(RESULT_OK, intent);
                 finish();
             }
         });
+
+        favoritesFAB = (FloatingActionButton) findViewById(R.id.favoritesFAB);
+//        TODO implements show/hide behavior when selectedRoutes more than 0 and hide on favorites tab
+        favoritesFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RoutesFragment routesFragment = (RoutesFragment) (routesPagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem()));
+                if (routesFragment.getSelectedRoutes().size() != 0) {
+                    Toast.makeText(v.getContext(), "выбрано маршрутов: " + routesFragment.getSelectedRoutes().size(), Toast.LENGTH_SHORT).show();
+                    DialogFragment dialogFragment = new FavoritesRoutesDialogFragment();
+                    dialogFragment.show(getSupportFragmentManager(), "FavoritesRoutesDialogFragment");
+                } else {
+                    Toast.makeText(v.getContext(), "выберите маршруты для сохранения", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
 
 //        toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
     }
