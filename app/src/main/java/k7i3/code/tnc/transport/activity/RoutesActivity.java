@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.R;
@@ -88,9 +89,13 @@ public class RoutesActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 RoutesFragment routesFragment = (RoutesFragment) (routesPagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem()));
-                if (routesFragment.getSelectedRoutes().size() != 0) {
+                List<Route> selectedRoutes = routesFragment.getSelectedRoutes();
+                if (selectedRoutes.size() != 0) {
                     Toast.makeText(v.getContext(), "выбрано маршрутов: " + routesFragment.getSelectedRoutes().size(), Toast.LENGTH_SHORT).show();
                     DialogFragment dialogFragment = new FavoritesRoutesDialogFragment();
+                    Bundle bundle = new Bundle(1);
+                    bundle.putParcelableArrayList(Constants.ROUTES, (ArrayList<Route>) selectedRoutes);
+                    dialogFragment.setArguments(bundle);
                     dialogFragment.show(getSupportFragmentManager(), "FavoritesRoutesDialogFragment");
                 } else {
                     Toast.makeText(v.getContext(), "выберите маршруты для сохранения", Toast.LENGTH_SHORT).show();
