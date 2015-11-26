@@ -2,20 +2,43 @@ package k7i3.code.tnc.transport.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.BaseColumns;
+
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by k7i3 on 13.08.15.
  */
-public class Route implements Parcelable{
-    private long id;
+@Table(name = "Routes", id = BaseColumns._ID)
+public class Route extends Model implements Parcelable{
+    @Column(name = "remote_id", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
+    @SerializedName("id")
+    private long remoteId;
+
+    @Column(name = "num")
     private String num;
+
+    @Column(name = "distance")
     private double distance;
+
+    @Column(name = "routeDurInMin")
     private int routeDurInMin;
+
+    @Column(name = "name")
     private String name;
+
     private boolean checked;
 
-    public Route(long id, String num, int distance, int routeDurInMin, String name) {
-        this.id = id;
+    public Route() {
+        super();
+    }
+
+    public Route(long remoteId, String num, int distance, int routeDurInMin, String name) {
+//        super();
+        this.remoteId = remoteId;
         this.num = num;
         this.distance = distance;
         this.routeDurInMin = routeDurInMin;
@@ -23,7 +46,7 @@ public class Route implements Parcelable{
     }
 
     private Route(Parcel in) {
-        id = in.readLong();
+        remoteId = in.readLong();
         num = in.readString();
         distance = in.readDouble();
         routeDurInMin = in.readInt();
@@ -37,7 +60,7 @@ public class Route implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
+        dest.writeLong(remoteId);
         dest.writeString(num);
         dest.writeDouble(distance);
         dest.writeInt(routeDurInMin);
@@ -62,7 +85,7 @@ public class Route implements Parcelable{
 
         Route route = (Route) o;
 
-        if (id != route.id) return false;
+        if (remoteId != route.remoteId) return false;
         if (Double.compare(route.distance, distance) != 0) return false;
         if (routeDurInMin != route.routeDurInMin) return false;
         if (!num.equals(route.num)) return false;
@@ -73,7 +96,7 @@ public class Route implements Parcelable{
     public int hashCode() {
         int result;
         long temp;
-        result = (int) (id ^ (id >>> 32));
+        result = (int) (remoteId ^ (remoteId >>> 32));
         result = 31 * result + num.hashCode();
         temp = Double.doubleToLongBits(distance);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
@@ -94,12 +117,12 @@ public class Route implements Parcelable{
         this.checked = checked;
     }
 
-    public long getId() {
-        return id;
+    public long getRemoteId() {
+        return remoteId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setRemoteId(long remoteId) {
+        this.remoteId = remoteId;
     }
 
     public String getNum() {

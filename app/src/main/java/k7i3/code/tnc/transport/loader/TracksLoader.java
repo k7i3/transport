@@ -8,7 +8,6 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,8 +19,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +30,6 @@ import k7i3.code.tnc.transport.helper.Utils;
 import k7i3.code.tnc.transport.model.InvocationContext;
 import k7i3.code.tnc.transport.model.Route;
 import k7i3.code.tnc.transport.model.Track;
-import k7i3.code.tnc.transport.model.Transport;
 
 /**
  * Created by k7i3 on 03.11.15.
@@ -84,7 +80,7 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
         try {
             InputStream in;
             for (Route route : routes) {
-                in = getContext().getAssets().open("tracks/incorrect/" + route.getId() + ".json");
+                in = getContext().getAssets().open("tracks/incorrect/" + route.getRemoteId() + ".json");
 
 //                TODO doesn't work
 //                bufferedReader = new BufferedReader(new InputStreamReader(in));
@@ -105,7 +101,7 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
             Track track;
             for (Route route : routes) {
                 // OUT
-                request = gson.create().toJson(new Object[]{invocationContext, route.getId()});
+                request = gson.create().toJson(new Object[]{invocationContext, route.getRemoteId()});
                 Log.d(TAG, "request: " + request);
 
                 HttpURLConnection c = (HttpURLConnection) new URL(URL).openConnection();

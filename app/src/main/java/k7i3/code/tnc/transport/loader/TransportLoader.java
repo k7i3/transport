@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -76,7 +75,7 @@ public class TransportLoader extends AsyncTaskLoader<Map<Route, List<Transport>>
             Date date = new Date();
             date.setHours(0);
             for (Route route : routes) {
-                request = gsonCustomDateFormat.create().toJson(new Object[]{invocationContext, route.getId(), date});
+                request = gsonCustomDateFormat.create().toJson(new Object[]{invocationContext, route.getRemoteId(), date});
                 Log.d(TAG, "request: " + request);
 
                 HttpURLConnection c = (HttpURLConnection) new URL(URL).openConnection();

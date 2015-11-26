@@ -38,7 +38,7 @@ public class RoutesDataAdapter extends RecyclerView.Adapter<RoutesDataAdapter.Ro
 //        TODO may be equals() instead of ==?
 //        Called by the SortedList to decide whether two object represent the same Item or not.
 //        For example, if your items have unique ids, this method should check their equality.
-        return item1.getId() == item2.getId();
+        return item1.getRemoteId() == item2.getRemoteId();
     }
 });
 

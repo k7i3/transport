@@ -14,11 +14,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.activeandroid.ActiveAndroid;
+import com.activeandroid.query.Select;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.R;
 import k7i3.code.tnc.transport.activity.RoutesActivity;
+import k7i3.code.tnc.transport.model.FavoriteRoute;
 import k7i3.code.tnc.transport.model.Route;
 
 /**
@@ -26,9 +31,10 @@ import k7i3.code.tnc.transport.model.Route;
  */
 public class FavoritesRoutesDialogFragment extends DialogFragment {
     private static final String TAG = "====> FavoritesRoutesDialogFragment";
-    View view;
-    EditText label;
+    private View view;
+    private EditText label;
     private List<Route> routes;
+    private boolean areRoutesSaved;
 
     @NonNull
     @Override
@@ -70,23 +76,65 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
         Log.d(TAG, "onStart()");
         super.onStart();    //super.onStart() is where dialog.show() is actually called on the underlying dialog, so we have to do it after this point
         final AlertDialog dialog = (AlertDialog)getDialog();
-        if(dialog != null)
-        {
+        if(dialog != null) {
             Button positiveButton = (Button) dialog.getButton(Dialog.BUTTON_POSITIVE);
             positiveButton.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v)
                 {
-                    boolean areRoutesSaved = false;
-//                    TODO save routes!
-
-                    Toast.makeText(getActivity(), label.getText() + ": " + routes.size(), Toast.LENGTH_SHORT).show();
+                    saveRoutes();
                     if(areRoutesSaved)
                         dialog.dismiss();
-                    //else dialog stays open. Make sure you have an obvious way to close the dialog especially if you set cancellable to false.
                 }
             });
         }
+    }
+
+    private void saveRoutes() {
+        Log.d(TAG, "saveRoutes()");
+        String labelText = label.getText().toString();
+        Toast.makeText(getActivity(), labelText + ": " + routes.size(), Toast.LENGTH_SHORT).show();
+
+//        TODO 1. foreach routes - .save() // ActiveAndroid
+        // Bulk insert https://github.com/pardom/ActiveAndroid/wiki/Saving-to-the-database
+        ActiveAndroid.beginTransaction();
+        try {
+            for (Route route : routes) {
+                route.save();
+            }
+            ActiveAndroid.setTransactionSuccessful();
+            Log.d(TAG, "ActiveAndroid.setTransactionSuccessful()");
+        }
+        finally {
+            ActiveAndroid.endTransaction();
+        }
+
+        Toast.makeText(getActivity(), labelText + " (fromDb): " + new Select().from(Route.class).execute().size(), Toast.LENGTH_SHORT).show();
+        Log.d(TAG, labelText + " (fromDb): " + new Select().from(Route.class).execute().size());
+
+//        TODO 2. foreach routes - {_id - label - route_remote?_id - num?)} - .save() // DbHelper
+
+
+//        TODO check: is label already exist? show dialog - replace? delete...
+//        try {
+//            FavoriteRoute favoriteRoute;
+//            for (Route route : routes) {
+//                favoriteRoute = new FavoriteRoute(labelText, route);
+//                favoriteRoute.save();
+//            }
+//            ActiveAndroid.setTransactionSuccessful();
+//            Log.d(TAG, "ActiveAndroid.setTransactionSuccessful()");
+//        }
+//        finally {
+//            ActiveAndroid.endTransaction();
+//        }
+//
+//        Toast.makeText(getActivity(), labelText + " (fromDb): " + new Select().from(FavoriteRoute.class).execute().size(), Toast.LENGTH_SHORT).show();
+//        Log.d(TAG, labelText + " (fromDb): " + new Select().from(FavoriteRoute.class).execute().size());
+
+
+
+        areRoutesSaved = true;
     }
 }
