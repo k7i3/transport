@@ -11,19 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Select;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.R;
-import k7i3.code.tnc.transport.activity.RoutesActivity;
-import k7i3.code.tnc.transport.model.FavoriteRoute;
+import k7i3.code.tnc.transport.model.Label;
+import k7i3.code.tnc.transport.model.LabelRoute;
 import k7i3.code.tnc.transport.model.Route;
 
 /**
@@ -32,7 +29,7 @@ import k7i3.code.tnc.transport.model.Route;
 public class FavoritesRoutesDialogFragment extends DialogFragment {
     private static final String TAG = "====> FavoritesRoutesDialogFragment";
     private View view;
-    private EditText label;
+    private EditText editText;
     private List<Route> routes;
     private boolean areRoutesSaved;
 
@@ -68,7 +65,7 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
         Log.d(TAG, "onActivityCreated()");
         super.onActivityCreated(savedInstanceState);
         routes = getArguments().getParcelableArrayList(Constants.ROUTES);
-        label = (EditText)view.findViewById(R.id.label);
+        editText = (EditText)view.findViewById(R.id.label);
     }
 
     @Override
@@ -93,34 +90,39 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
 
     private void saveRoutes() {
         Log.d(TAG, "saveRoutes()");
-        String labelText = label.getText().toString();
-        Toast.makeText(getActivity(), labelText + ": " + routes.size(), Toast.LENGTH_SHORT).show();
+        String labelText = editText.getText().toString();
+//        Toast.makeText(getActivity(), labelText + ": " + routes.size(), Toast.LENGTH_SHORT).show();
 
-//        TODO 1. foreach routes - .save() // ActiveAndroid
+//        TODO 0. - foreach routes - .save() // ActiveAndroid
         // Bulk insert https://github.com/pardom/ActiveAndroid/wiki/Saving-to-the-database
-        ActiveAndroid.beginTransaction();
-        try {
-            for (Route route : routes) {
-                route.save();
-            }
-            ActiveAndroid.setTransactionSuccessful();
-            Log.d(TAG, "ActiveAndroid.setTransactionSuccessful()");
-        }
-        finally {
-            ActiveAndroid.endTransaction();
-        }
-
-        Toast.makeText(getActivity(), labelText + " (fromDb): " + new Select().from(Route.class).execute().size(), Toast.LENGTH_SHORT).show();
-        Log.d(TAG, labelText + " (fromDb): " + new Select().from(Route.class).execute().size());
-
-//        TODO 2. foreach routes - {_id - label - route_remote?_id - num?)} - .save() // DbHelper
-
-
-//        TODO check: is label already exist? show dialog - replace? delete...
+//        ActiveAndroid.beginTransaction();
 //        try {
-//            FavoriteRoute favoriteRoute;
 //            for (Route route : routes) {
-//                favoriteRoute = new FavoriteRoute(labelText, route);
+//                route.save();
+//            }
+//            ActiveAndroid.setTransactionSuccessful();
+//            Log.d(TAG, "ActiveAndroid.setTransactionSuccessful()");
+//        }
+//        finally {
+//            ActiveAndroid.endTransaction();
+//        }
+
+//        Toast.makeText(getActivity(), labelText + " (fromDb): " + new Select().from(Route.class).execute().size(), Toast.LENGTH_SHORT).show();
+//        Log.d(TAG, labelText + " (fromDb): " + new Select().from(Route.class).execute().size());
+
+
+
+//        Label label = new Label(labelText);
+//        label.save();
+//
+//        Toast.makeText(getActivity(), labelText + " (fromDb): " + new Select().from(Label.class).execute().size(), Toast.LENGTH_SHORT).show();
+//        Log.d(TAG, labelText + " (fromDb): " + new Select().from(Label.class).execute().size());
+
+//        TODO 0. - foreach routes - {_id - label - route_remote?_id - num?)} - .save() // DbHelper
+//        try {
+//            LabelRoute favoriteRoute;
+//            for (Route route : routes) {
+//                favoriteRoute = new LabelRoute(labelText, route);
 //                favoriteRoute.save();
 //            }
 //            ActiveAndroid.setTransactionSuccessful();
@@ -130,10 +132,39 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
 //            ActiveAndroid.endTransaction();
 //        }
 //
-//        Toast.makeText(getActivity(), labelText + " (fromDb): " + new Select().from(FavoriteRoute.class).execute().size(), Toast.LENGTH_SHORT).show();
-//        Log.d(TAG, labelText + " (fromDb): " + new Select().from(FavoriteRoute.class).execute().size());
+//        Toast.makeText(getActivity(), labelText + " (fromDb): " + new Select().from(LabelRoute.class).execute().size(), Toast.LENGTH_SHORT).show();
+//        Log.d(TAG, labelText + " (fromDb): " + new Select().from(LabelRoute.class).execute().size());
 
+//        TODO 1. + check: is label already exist? show dialog - replace? delete...
+        Label label;
+        if ((label = Label.getLabelByText(labelText)) != null) {
+            LabelRoute.deleteLabelRouteByLable(label); // will remove the binding (label - route) without removing routes and label
+        } else {
+            label = new Label(labelText);
+            label.save();
+        }
 
+//        TODO 2. + save
+
+        ActiveAndroid.beginTransaction();
+        try {
+            for (Route route : routes) {
+                route.save();
+                new LabelRoute(label, route).save();
+            }
+            ActiveAndroid.setTransactionSuccessful();
+            Log.d(TAG, "ActiveAndroid.setTransactionSuccessful()");
+        }
+        finally {
+            ActiveAndroid.endTransaction();
+        }
+
+        //TEST
+        Log.d(TAG, "Route(fromDb): " + new Select().from(Route.class).execute().size());
+        Log.d(TAG, "Label(fromDb): " + new Select().from(Label.class).execute().size());
+        Log.d(TAG, "LabelRoute(fromDb): " + new Select().from(LabelRoute.class).execute().size());
+        Log.d(TAG, "RoutesByLabel(fromDb): " + label.getRoutes().size());
+        Log.d(TAG, "RoutesByLabel=test1(fromDb): " + Label.getRoutesByLabelText("test1").size());
 
         areRoutesSaved = true;
     }

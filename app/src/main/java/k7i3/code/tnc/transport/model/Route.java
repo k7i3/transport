@@ -37,7 +37,7 @@ public class Route extends Model implements Parcelable{
     }
 
     public Route(long remoteId, String num, int distance, int routeDurInMin, String name) {
-//        super();
+        super();
         this.remoteId = remoteId;
         this.num = num;
         this.distance = distance;
@@ -46,6 +46,7 @@ public class Route extends Model implements Parcelable{
     }
 
     private Route(Parcel in) {
+        super();
         remoteId = in.readLong();
         num = in.readString();
         distance = in.readDouble();
