@@ -3,6 +3,7 @@ package k7i3.code.tnc.transport.fragment;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -156,8 +157,11 @@ public class FavoritesRoutesFragment extends Fragment implements android.support
             @Override
             public void onItemLongClick(View view, int position) {
                 TextView label = (TextView) view.findViewById(R.id.label);
-                Label.deleteLabelByText(label.getText().toString());
-                Toast.makeText(getActivity(), "коллекция удалена: " + label.getText().toString(), Toast.LENGTH_SHORT).show();
+                DialogFragment dialogFragment = new DeleteFavoritesRoutesDialogFragment();
+                Bundle bundle = new Bundle(1);
+                bundle.putString(Constants.LABEL, label.getText().toString());
+                dialogFragment.setArguments(bundle);
+                dialogFragment.show(getActivity().getSupportFragmentManager(), "DeleteFavoritesRoutesDialogFragment");
             }
         }));
 //        TODO waiting for built-in implementation of decorators http://stackoverflow.com/questions/24618829/how-to-add-dividers-and-spaces-between-items-in-recyclerview
