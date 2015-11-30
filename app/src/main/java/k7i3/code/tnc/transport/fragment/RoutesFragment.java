@@ -34,14 +34,15 @@ import k7i3.code.tnc.transport.widget.decorator.DividerItemDecoration;
 public class RoutesFragment extends Fragment implements android.support.v4.app.LoaderManager.LoaderCallbacks<List<Route>> {
     private static final String TAG = "====> RoutesFragment";
     private static final int LOADER_ROUTES = 1;
+    private int position;
     private List<Route> routes;
     private List<Route> selectedRoutes;
 
+    private RoutesDataAdapter routesDataAdapter;
+
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
-    private RoutesDataAdapter routesDataAdapter;
     private View view;
-    private int position;
     private TextView noInternet;
 
     public static RoutesFragment newInstance(int position) {
@@ -166,7 +167,7 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
         routes = new ArrayList<>();
 
         //TODO switch
-        if (position == 2) {
+        if (position == 1) {
             Bundle bundle = new Bundle();
             bundle.putInt(Constants.KEY_POSITION, 2);
             getLoaderManager().initLoader(LOADER_ROUTES, bundle, this);
@@ -203,6 +204,8 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
 //        routes.add(new Route(0, "111", 11, 111, "111 Название маршрута"));
         progressBar.setVisibility(ProgressBar.INVISIBLE);
     }
+
+    //GETTERS & SETTERS
 
     public List<Route> getSelectedRoutes() {
         filterRoutes(routesDataAdapter.getRoutes());

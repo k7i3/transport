@@ -46,6 +46,8 @@ public class RoutesDataAdapter extends RecyclerView.Adapter<RoutesDataAdapter.Ro
         this.routes.addAll(routes);
     }
 
+    //LIFECYCLE
+
     @Override
     public RouteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_routes, parent, false);
@@ -66,6 +68,8 @@ public class RoutesDataAdapter extends RecyclerView.Adapter<RoutesDataAdapter.Ro
         return routes.size();
     }
 
+    //VH
+
     public static class RouteViewHolder extends RecyclerView.ViewHolder {
         TextView routeNumber;
         TextView routeName;
@@ -83,6 +87,8 @@ public class RoutesDataAdapter extends RecyclerView.Adapter<RoutesDataAdapter.Ro
             checkBox = (CheckBox)itemView.findViewById(R.id.checkBox);
         }
     }
+
+    //GETTERS & SETTERS
 
     public void setRoutes(List<Route> routes) {
 //        this.routes = routes;

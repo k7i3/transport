@@ -26,7 +26,7 @@ import k7i3.code.tnc.transport.widget.SlidingTabLayout;
  */
 public class RoutesActivity extends BaseActivity {
 
-    private CharSequence titles[] = {"Избранные", "Рядом", "На линии"};
+    private CharSequence titles[] = {"Избранные", "На линии"};
     private RoutesPagerAdapter routesPagerAdapter;
 
     private CollapsingToolbarLayout collapsingToolbarLayout;
@@ -75,6 +75,7 @@ public class RoutesActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 //                RoutesFragment routesFragment = (RoutesFragment) (routesPagerAdapter.getItem(viewPager.getCurrentItem())); // doesn't work (return new instance of Fragment instead of current)
+//                TODO check instanceOf!!!!!!!!!!!!!!!!!!!!!!!!!!
                 RoutesFragment routesFragment = (RoutesFragment) (routesPagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem()));
                 Intent intent = new Intent(); //getIntent()?;
                 intent.putParcelableArrayListExtra(Constants.ROUTES, (ArrayList<Route>) routesFragment.getSelectedRoutes());

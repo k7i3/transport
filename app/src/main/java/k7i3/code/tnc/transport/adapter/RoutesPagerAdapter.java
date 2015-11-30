@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import k7i3.code.tnc.transport.fragment.FavoritesRoutesFragment;
 import k7i3.code.tnc.transport.fragment.RoutesFragment;
 
 /**
@@ -21,7 +22,11 @@ public class RoutesPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return RoutesFragment.newInstance(position);
+        switch (position) {
+            case 0: return FavoritesRoutesFragment.newInstance(position);
+            case 1: return RoutesFragment.newInstance(position);
+            default: return RoutesFragment.newInstance(position);
+        }
     }
 
     @Override

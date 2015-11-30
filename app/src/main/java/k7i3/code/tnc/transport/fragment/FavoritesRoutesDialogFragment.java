@@ -91,49 +91,6 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
     private void saveRoutes() {
         Log.d(TAG, "saveRoutes()");
         String labelText = editText.getText().toString();
-//        Toast.makeText(getActivity(), labelText + ": " + routes.size(), Toast.LENGTH_SHORT).show();
-
-//        TODO 0. - foreach routes - .save() // ActiveAndroid
-        // Bulk insert https://github.com/pardom/ActiveAndroid/wiki/Saving-to-the-database
-//        ActiveAndroid.beginTransaction();
-//        try {
-//            for (Route route : routes) {
-//                route.save();
-//            }
-//            ActiveAndroid.setTransactionSuccessful();
-//            Log.d(TAG, "ActiveAndroid.setTransactionSuccessful()");
-//        }
-//        finally {
-//            ActiveAndroid.endTransaction();
-//        }
-
-//        Toast.makeText(getActivity(), labelText + " (fromDb): " + new Select().from(Route.class).execute().size(), Toast.LENGTH_SHORT).show();
-//        Log.d(TAG, labelText + " (fromDb): " + new Select().from(Route.class).execute().size());
-
-
-
-//        Label label = new Label(labelText);
-//        label.save();
-//
-//        Toast.makeText(getActivity(), labelText + " (fromDb): " + new Select().from(Label.class).execute().size(), Toast.LENGTH_SHORT).show();
-//        Log.d(TAG, labelText + " (fromDb): " + new Select().from(Label.class).execute().size());
-
-//        TODO 0. - foreach routes - {_id - label - route_remote?_id - num?)} - .save() // DbHelper
-//        try {
-//            LabelRoute favoriteRoute;
-//            for (Route route : routes) {
-//                favoriteRoute = new LabelRoute(labelText, route);
-//                favoriteRoute.save();
-//            }
-//            ActiveAndroid.setTransactionSuccessful();
-//            Log.d(TAG, "ActiveAndroid.setTransactionSuccessful()");
-//        }
-//        finally {
-//            ActiveAndroid.endTransaction();
-//        }
-//
-//        Toast.makeText(getActivity(), labelText + " (fromDb): " + new Select().from(LabelRoute.class).execute().size(), Toast.LENGTH_SHORT).show();
-//        Log.d(TAG, labelText + " (fromDb): " + new Select().from(LabelRoute.class).execute().size());
 
 //        TODO 1. + check: is label already exist? show dialog - replace? delete...
         Label label;
@@ -145,7 +102,6 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
         }
 
 //        TODO 2. + save
-
         ActiveAndroid.beginTransaction();
         try {
             for (Route route : routes) {
@@ -153,7 +109,6 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
                 new LabelRoute(label, route).save();
             }
             ActiveAndroid.setTransactionSuccessful();
-            Log.d(TAG, "ActiveAndroid.setTransactionSuccessful()");
         }
         finally {
             ActiveAndroid.endTransaction();
@@ -164,7 +119,7 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
         Log.d(TAG, "Label(fromDb): " + new Select().from(Label.class).execute().size());
         Log.d(TAG, "LabelRoute(fromDb): " + new Select().from(LabelRoute.class).execute().size());
         Log.d(TAG, "RoutesByLabel(fromDb): " + label.getRoutes().size());
-        Log.d(TAG, "RoutesByLabel=test1(fromDb): " + Label.getRoutesByLabelText("test1").size());
+//        Log.d(TAG, "RoutesByLabel=test1(fromDb): " + Label.getRoutesByLabelText("test1").size()); // may be NULL
 
         areRoutesSaved = true;
     }
