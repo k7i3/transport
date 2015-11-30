@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Select;
@@ -96,9 +97,11 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
         Label label;
         if ((label = Label.getLabelByText(labelText)) != null) {
             LabelRoute.deleteLabelRouteByLable(label); // will remove the binding (label - route) without removing routes and label
+            Toast.makeText(getActivity(), "коллекция обновлена: " + labelText, Toast.LENGTH_SHORT).show();
         } else {
             label = new Label(labelText);
             label.save();
+            Toast.makeText(getActivity(), "коллекция создана: " + labelText, Toast.LENGTH_SHORT).show();
         }
 
 //        TODO 2. + save

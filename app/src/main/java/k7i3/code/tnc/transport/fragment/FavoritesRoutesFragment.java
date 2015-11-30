@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.activeandroid.content.ContentProvider;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -43,8 +44,6 @@ public class FavoritesRoutesFragment extends Fragment implements android.support
     private static final int LOADER_LABELS = 1;
     private int position;
     private Set<String> selectedLabels;
-
-    private RoutesFavoritesAdapter routesFavoritesAdapter;
 
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
@@ -76,6 +75,8 @@ public class FavoritesRoutesFragment extends Fragment implements android.support
         super.onActivityCreated(savedInstanceState);
         position = getArguments().getInt(Constants.KEY_POSITION, -1);
         Log.d(TAG, "position: " + position);
+
+        selectedLabels = new HashSet<>();
 
         initInstances();
         startLabelsLoader();
@@ -134,22 +135,29 @@ public class FavoritesRoutesFragment extends Fragment implements android.support
         noDb = (TextView) view.findViewById(R.id.noDb);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
-        routesFavoritesAdapter = new RoutesFavoritesAdapter(null);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(routesFavoritesAdapter);
+        recyclerView.setAdapter(new RoutesFavoritesAdapter(null));
 //        TODO waiting for built-in implementation http://stackoverflow.com/questions/24471109/recyclerview-onclick/26826692#26826692
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-//                Toast.makeText(view.getContext(), "onItemClick => position = " + position, Toast.LENGTH_SHORT).show();
-                ((CheckBox) view.findViewById(R.id.checkBox)).toggle();
+                TextView label = (TextView) view.findViewById(R.id.label);
+                CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+                checkBox.toggle();
+                if (checkBox.isChecked()) {
+                    selectedLabels.add(label.getText().toString());
+                } else {
+                    selectedLabels.remove(label.getText().toString());
+                }
             }
 
             @Override
             public void onItemLongClick(View view, int position) {
-//                Toast.makeText(view.getContext(), "onItemLongClick => position = " + position, Toast.LENGTH_SHORT).show();
+                TextView label = (TextView) view.findViewById(R.id.label);
+                Label.deleteLabelByText(label.getText().toString());
+                Toast.makeText(getActivity(), "коллекция удалена: " + label.getText().toString(), Toast.LENGTH_SHORT).show();
             }
         }));
 //        TODO waiting for built-in implementation of decorators http://stackoverflow.com/questions/24618829/how-to-add-dividers-and-spaces-between-items-in-recyclerview
@@ -172,5 +180,20 @@ public class FavoritesRoutesFragment extends Fragment implements android.support
     private void initMockLabels() {
         Log.d(TAG, "initMockRoutes()");
         progressBar.setVisibility(ProgressBar.INVISIBLE);
+    }
+
+    //GETTERS & SETTERS
+
+    public List<Route> getSelectedRoutes() {
+
+        Set<Route> routes = new HashSet<>();
+        List<Route> routesByLabel;
+        for (String label: selectedLabels) {
+            routesByLabel = Label.getRoutesByLabelText(label);
+            if (routesByLabel != null) {
+                routes.addAll(routesByLabel);
+            }
+        }
+        return new ArrayList<>(routes);
     }
 }

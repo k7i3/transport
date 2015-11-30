@@ -72,6 +72,12 @@ public class Label extends Model {
                 .executeSingle();
     }
 
+    public static void deleteLabelByText(String text) {
+        Label label = getLabelByText(text);
+        LabelRoute.deleteLabelRouteByLable(label);
+        label.delete();
+    }
+
     //GETTERS & SETTERS
 
     public String getText() {

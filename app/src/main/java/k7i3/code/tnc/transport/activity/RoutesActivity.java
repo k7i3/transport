@@ -12,11 +12,13 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.R;
 import k7i3.code.tnc.transport.adapter.RoutesPagerAdapter;
 import k7i3.code.tnc.transport.fragment.FavoritesRoutesDialogFragment;
+import k7i3.code.tnc.transport.fragment.FavoritesRoutesFragment;
 import k7i3.code.tnc.transport.fragment.RoutesFragment;
 import k7i3.code.tnc.transport.model.Route;
 import k7i3.code.tnc.transport.widget.SlidingTabLayout;
@@ -75,12 +77,26 @@ public class RoutesActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 //                RoutesFragment routesFragment = (RoutesFragment) (routesPagerAdapter.getItem(viewPager.getCurrentItem())); // doesn't work (return new instance of Fragment instead of current)
-//                TODO check instanceOf!!!!!!!!!!!!!!!!!!!!!!!!!!
-                RoutesFragment routesFragment = (RoutesFragment) (routesPagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem()));
-                Intent intent = new Intent(); //getIntent()?;
-                intent.putParcelableArrayListExtra(Constants.ROUTES, (ArrayList<Route>) routesFragment.getSelectedRoutes());
-                setResult(RESULT_OK, intent);
-                finish();
+                Object object = routesPagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+                if (object instanceof RoutesFragment) {
+                    RoutesFragment routesFragment = (RoutesFragment) object;
+                    Intent intent = new Intent(); //getIntent()?;
+                    intent.putParcelableArrayListExtra(Constants.ROUTES, (ArrayList<Route>) routesFragment.getSelectedRoutes());
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } else if (object instanceof FavoritesRoutesFragment) {
+                    FavoritesRoutesFragment favoritesRoutesFragment = (FavoritesRoutesFragment) object;
+                    Intent intent = new Intent(); //getIntent()?;
+                    intent.putParcelableArrayListExtra(Constants.ROUTES, (ArrayList<Route>) favoritesRoutesFragment.getSelectedRoutes());
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+
+//                RoutesFragment routesFragment = (RoutesFragment) (routesPagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem()));
+//                Intent intent = new Intent(); //getIntent()?;
+//                intent.putParcelableArrayListExtra(Constants.ROUTES, (ArrayList<Route>) routesFragment.getSelectedRoutes());
+//                setResult(RESULT_OK, intent);
+//                finish();
             }
         });
 
