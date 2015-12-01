@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.Log;
 
 import k7i3.code.tnc.transport.fragment.FavoritesRoutesFragment;
 import k7i3.code.tnc.transport.fragment.RoutesFragment;
@@ -12,7 +13,7 @@ import k7i3.code.tnc.transport.fragment.RoutesFragment;
  * Created by k7i3 on 11.08.15.
  */
 public class RoutesPagerAdapter extends FragmentPagerAdapter {
-
+    private static final String TAG = "====> RoutesPagerAdapter";
     CharSequence titles[];
 
     public RoutesPagerAdapter(FragmentManager fm, CharSequence titles[]) {
@@ -22,6 +23,7 @@ public class RoutesPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+        Log.d(TAG, "getItem()");
         switch (position) {
             case 0: return FavoritesRoutesFragment.newInstance(position);
             case 1: return RoutesFragment.newInstance(position);
@@ -38,4 +40,6 @@ public class RoutesPagerAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return titles.length;
     }
+
+
 }

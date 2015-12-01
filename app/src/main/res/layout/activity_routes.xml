@@ -65,13 +65,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:src="@drawable/abc_btn_rating_star_on_mtrl_alpha"
+            android:src="@drawable/ic_favorite_white_24dp"
             app:layout_anchor="@+id/viewPager"
             app:layout_anchorGravity="bottom|end"
             android:layout_marginBottom="88dp"
             android:layout_marginEnd="@dimen/fab_margin_end"
-            app:layout_behavior="k7i3.code.tnc.transport.widget.behavior.ScrollAwareFABBehavior"
-            app:backgroundTint="#2196f3"/>
+            app:backgroundTint="#f15257"/>
+        <!--app:backgroundTint="#2196f3"-->
+        <!--android:src="@drawable/abc_btn_rating_star_on_mtrl_alpha"-->
+        <!--app:layout_behavior="k7i3.code.tnc.transport.widget.behavior.ScrollAwareFABBehavior"-->
         <!--app:fabSize="mini"-->
 
         <!--TODO waiting for built-in implementation of ScrollAwareFABBehavior https://guides.codepath.com/android/Floating-Action-Buttons-->
@@ -85,8 +87,9 @@
             app:layout_anchor="@+id/viewPager"
             app:layout_anchorGravity="bottom|end"
             android:layout_marginBottom="@dimen/fab_margin_bottom"
-            android:layout_marginEnd="@dimen/fab_margin_end"
-            app:layout_behavior="k7i3.code.tnc.transport.widget.behavior.ScrollAwareFABBehavior" />
+            android:layout_marginEnd="@dimen/fab_margin_end"/>
+        <!--android:src="@drawable/ic_navigation_white_24dp"-->
+        <!--app:layout_behavior="k7i3.code.tnc.transport.widget.behavior.ScrollAwareFABBehavior"-->
 
     </android.support.design.widget.CoordinatorLayout>
 

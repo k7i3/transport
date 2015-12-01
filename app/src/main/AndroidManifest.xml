@@ -49,7 +49,9 @@
             android:name=".activity.RoutesActivity"
             android:label="@string/title_activity_routes"
             android:launchMode="singleTop"
-            android:parentActivityName=".activity.TransportActivity" >
+            android:parentActivityName=".activity.TransportActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
         <activity
             android:name=".activity.SettingsActivity"

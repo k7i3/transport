@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -27,6 +28,8 @@ import k7i3.code.tnc.transport.widget.SlidingTabLayout;
  * Created by k7i3 on 07.08.15.
  */
 public class RoutesActivity extends BaseActivity {
+
+    private static final String TAG = "====> RoutesActivity";
 
     private CharSequence titles[] = {"Избранные", "На линии"};
     private RoutesPagerAdapter routesPagerAdapter;
@@ -119,8 +122,34 @@ public class RoutesActivity extends BaseActivity {
                 }
             }
         });
+        favoritesFAB.setVisibility(View.GONE);
 
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+              @Override
+              public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                      Log.d(TAG, "onPageScrolled(): " + "position: " + position + " positionOffset: " + positionOffset + " positionOffsetPixels: " + positionOffsetPixels);
+              }
 
+              @Override
+              public void onPageSelected(int position) {
+                    Log.d(TAG, "onPageSelected(): " + "position: " + position);
+                  switch (position) {
+                      case 0:
+                          mapsFAB.setVisibility(View.VISIBLE);
+                          favoritesFAB.setVisibility(View.GONE);
+                          break;
+                      case 1:
+                          mapsFAB.setVisibility(View.VISIBLE);
+                          favoritesFAB.setVisibility(View.VISIBLE);
+                          break;
+                  }
+              }
+
+              @Override
+              public void onPageScrollStateChanged(int state) {
+                  Log.d(TAG, "onPageScrollStateChanged(): " + "state: " + state);
+              }
+        });
 
 //        toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
     }

@@ -38,8 +38,6 @@ public class DeleteFavoritesRoutesDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
         builder.setMessage("Удалить коллекцию?")
                 // Add action buttons
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {

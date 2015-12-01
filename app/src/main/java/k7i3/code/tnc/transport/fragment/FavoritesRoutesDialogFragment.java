@@ -46,6 +46,7 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
         // Pass null as the parent view because its going in the dialog layout
         view = inflater.inflate(R.layout.dialog_routes_favorites, null);
         builder.setView(view)
+                .setMessage("Создать коллекцию:")
                 // Add action buttons
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
