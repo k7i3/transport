@@ -8,6 +8,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -41,6 +42,8 @@ public class RoutesActivity extends BaseActivity {
     private FloatingActionButton mapsFAB;
     private FloatingActionButton favoritesFAB;
 
+    private boolean wereAllSelected;
+
     @Override
     protected int getLayoutResource() {
         return R.layout.activity_routes;
@@ -53,6 +56,16 @@ public class RoutesActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setTAG("====> RoutesActivity");
         initInstances();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d(TAG, "onOptionsItemSelected()");
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.refresh: selectAll(); return true;
+            default: return super.onOptionsItemSelected(item);
+        }
     }
 
     //HELPERS
@@ -94,17 +107,10 @@ public class RoutesActivity extends BaseActivity {
                     setResult(RESULT_OK, intent);
                     finish();
                 }
-
-//                RoutesFragment routesFragment = (RoutesFragment) (routesPagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem()));
-//                Intent intent = new Intent(); //getIntent()?;
-//                intent.putParcelableArrayListExtra(Constants.ROUTES, (ArrayList<Route>) routesFragment.getSelectedRoutes());
-//                setResult(RESULT_OK, intent);
-//                finish();
             }
         });
 
         favoritesFAB = (FloatingActionButton) findViewById(R.id.favoritesFAB);
-//        TODO implements show/hide behavior when selectedRoutes more than 0 and hide on favorites tab
         favoritesFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,7 +128,7 @@ public class RoutesActivity extends BaseActivity {
                 }
             }
         });
-        favoritesFAB.setVisibility(View.GONE);
+        favoritesFAB.setVisibility(View.GONE); // because first tab is favorites
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
               @Override
@@ -150,16 +156,29 @@ public class RoutesActivity extends BaseActivity {
                   Log.d(TAG, "onPageScrollStateChanged(): " + "state: " + state);
               }
         });
-
-//        toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
     }
 
-//    public int getStatusBarHeight() {
-//        int result = 0;
-//        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-//        if (resourceId > 0) {
-//            result = getResources().getDimensionPixelSize(resourceId);
-//        }
-//        return result;
-//    }
+    private void selectAll() {
+//        TODO
+        Object object = routesPagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+        if (!wereAllSelected) {
+            if (object instanceof RoutesFragment) {
+                RoutesFragment routesFragment = (RoutesFragment) object;
+//                routesFragment.selectAll();
+            } else if (object instanceof FavoritesRoutesFragment) {
+                FavoritesRoutesFragment favoritesRoutesFragment = (FavoritesRoutesFragment) object;
+//                favoritesRoutesFragment.selectAll();
+            }
+            wereAllSelected = true;
+        } else {
+            if (object instanceof RoutesFragment) {
+                RoutesFragment routesFragment = (RoutesFragment) object;
+//                routesFragment.unselectAll();
+            } else if (object instanceof FavoritesRoutesFragment) {
+                FavoritesRoutesFragment favoritesRoutesFragment = (FavoritesRoutesFragment) object;
+//                favoritesRoutesFragment.unselectAll();
+            }
+            wereAllSelected = false;
+        }
+    }
 }

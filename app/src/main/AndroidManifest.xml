@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="k7i3.code.tnc.transport" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <!--
- The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
-         Google Maps Android API v2, but are recommended.
-    -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+ <!--The ACCESS_COARSE/FINE_LOCATION permissions are not required to use Google Maps Android API v2, but are recommended.-->
 
     <application
         android:name="com.activeandroid.app.Application"
@@ -65,16 +63,14 @@
         </activity>
 
         <service
-            android:name=".service.LocationIntentService"
-            android:exported="false" >
-        </service>
-        <service
             android:name=".service.LocationService"
-            android:enabled="true"
-            android:exported="true" >
-        </service>
+            android:exported="false" />
 
-        <provider android:authorities="k7i3.code.tnc.transport" android:exported="false" android:name="com.activeandroid.content.ContentProvider" />
+        <provider
+            android:authorities="k7i3.code.tnc.transport"
+            android:exported="false"
+            android:name="com.activeandroid.content.ContentProvider" />
+
     </application>
 
 </manifest>

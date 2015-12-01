@@ -1,7 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="fab_margin_end">16dp</dimen>
     <dimen name="fab_margin_bottom">16dp</dimen>
 
     <dimen name="fab_margin_end_anchor">16dp</dimen>
     <dimen name="fab_margin_bottom_anchor">16dp</dimen>
+
+    <dimen name="fab_margin_bottom_anchor_favorites">88dp</dimen>
 </resources>
