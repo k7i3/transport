@@ -100,7 +100,6 @@ public class TransportActivity extends BaseGoogleMapsActivity {
     protected void onPause() {
         super.onPause();
         Log.d(TAG, "onPause()");
-//        LocationIntentService.stopService(this); doesn't work well
         LocationService.stop(this);
     }
 
@@ -130,9 +129,9 @@ public class TransportActivity extends BaseGoogleMapsActivity {
                     retainedTransportFragment.setRoutes(routes);
                     Toast.makeText(this, "выбрано маршрутов: " + routes.size(), Toast.LENGTH_SHORT).show();
                     startTransportLoader();
-                    if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsActivity.KEY_PREF_SHOW_TRACKS, false)) {
+//                    if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsActivity.KEY_PREF_SHOW_TRACKS, false)) {
                         startTracksLoader();
-                    }
+//                    }
                     break;
             }
         } else {
@@ -196,8 +195,12 @@ public class TransportActivity extends BaseGoogleMapsActivity {
                 trackByRoute = data;
                 retainedTransportFragment.setTrackByRoute(trackByRoute);
                 Log.d(TAG, "trackByRoute.size(): " + trackByRoute.size());
-                Toast.makeText(TransportActivity.this, "найдено треков: " + trackByRoute.size(), Toast.LENGTH_SHORT).show();
-                drawTracks();
+                // check it, because may be case when it needed (if preferences change and loader start after onResume() in TransportActivity with loader that has been triggered previously)
+                // to avoid найдено треков: 0, after change preferences
+                if (PreferenceManager.getDefaultSharedPreferences(TransportActivity.this).getBoolean(SettingsActivity.KEY_PREF_SHOW_TRACKS, false)) {
+                    Toast.makeText(TransportActivity.this, "найдено треков: " + trackByRoute.size(), Toast.LENGTH_SHORT).show();
+                    drawTracks();
+                }
                 setRefreshActionButtonState(false);
             }
 
