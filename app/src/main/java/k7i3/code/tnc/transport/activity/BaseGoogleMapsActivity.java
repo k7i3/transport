@@ -4,8 +4,11 @@ import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -42,6 +45,7 @@ public abstract class BaseGoogleMapsActivity extends BaseActivity
     private GoogleApiClient googleApiClient;
     private SupportMapFragment supportMapFragment;
     protected GoogleMap googleMap; // Might be null if Google Play services APK is not available.
+    private FloatingActionButton myLocationFAB;
     protected Location location;
     private boolean isFirstConnect = true;
 
@@ -65,6 +69,8 @@ public abstract class BaseGoogleMapsActivity extends BaseActivity
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+
+
     }
 
     @Override
@@ -94,18 +100,39 @@ public abstract class BaseGoogleMapsActivity extends BaseActivity
      * Implementation of {@link OnMapReadyCallback}.
      */
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(final GoogleMap googleMap) {
         Log.d(TAG, "onMapReady()");
         this.googleMap = googleMap;
 
 //        TODO change position of maps api's buttons or make their custom http://stackoverflow.com/questions/14489880/how-to-change-the-position-of-maps-apis-get-my-location-button /// http://stackoverflow.com/questions/1768097/how-to-layout-zoom-control-with-setbuiltinzoomcontrolstrue
         googleMap.setMyLocationEnabled(true);
-        googleMap.setPadding(36, 240, 36, 240);
+        googleMap.setPadding(36, 240, 36, 36);
         googleMap.setOnMyLocationButtonClickListener(this);
         UiSettings uiSettings = googleMap.getUiSettings();
-        uiSettings.setZoomControlsEnabled(true);
-        uiSettings.setMyLocationButtonEnabled(true);
+        uiSettings.setZoomControlsEnabled(false);
+        uiSettings.setMyLocationButtonEnabled(false);
         uiSettings.setMapToolbarEnabled(false);
+
+        myLocationFAB = (FloatingActionButton) findViewById(R.id.myLocationFAB);
+        myLocationFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+                if (location == null) {
+                    location = googleMap.getMyLocation();
+                    if (location == null) {
+                        Toast.makeText(BaseGoogleMapsActivity.this, "не удалось определить местоположение", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(BaseGoogleMapsActivity.this, "местоположение может быть устаревшим", Toast.LENGTH_SHORT).show();
+                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        moveCamera(latLng, 15);
+                    }
+                } else {
+                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    moveCamera(latLng, 15);
+                }
+            }
+        });
     }
 
     /**
@@ -126,10 +153,10 @@ public abstract class BaseGoogleMapsActivity extends BaseActivity
             location.setLongitude(56.034);
         }
 
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());;
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
         if (isFirstConnect) {
-            moveCamera(latLng);
+            moveCamera(latLng, 10);
             isFirstConnect = false;
         }
     }
@@ -173,10 +200,10 @@ public abstract class BaseGoogleMapsActivity extends BaseActivity
 
     //HELPERS
 
-    private void moveCamera(LatLng latLng) {
+    private void moveCamera(LatLng latLng, int zoom) {
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(latLng)             // Sets the center of the map to location user
-                .zoom(10)                   // Sets the zoom 17
+                .zoom(zoom)                   // Sets the zoom 17
                 .bearing(0)
                 .build();                   // Creates a CameraPosition from the builder
 //                .tilt(30)                   // Sets the tilt of the camera to 30 degrees

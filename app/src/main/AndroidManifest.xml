@@ -61,6 +61,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.AboutActivity"
+            android:label="@string/title_activity_about"
+            android:launchMode="singleTop"
+            android:parentActivityName=".activity.TransportActivity">
+        </activity>
 
         <service
             android:name=".service.LocationService"

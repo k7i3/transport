@@ -19,6 +19,19 @@
             tools:context=".MapsActivity" />
 
         <android.support.design.widget.FloatingActionButton
+            android:id="@+id/myLocationFAB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="@dimen/fab_margin_bottom_my_location"
+            android:layout_marginEnd="@dimen/fab_margin_end"
+            android:src="@drawable/ic_my_location_black_24dp"
+            app:backgroundTint="#7fffffff"
+            android:elevation="1dp"
+            app:elevation="1dp"
+            app:fabSize="normal"/>
+
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/routesFAB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -20,19 +20,9 @@
     <group android:checkableBehavior="single"
         android:id="@+id/supportGroup">
         <item
-            android:id="@+id/navItem4"
-            android:icon="@drawable/ic_my_location_black_24dp"
-            android:title="Справка" />
-
-        <item
-            android:id="@+id/navItem5"
-            android:icon="@drawable/ic_my_location_black_24dp"
+            android:id="@+id/app_about"
+            android:icon="@drawable/ic_info_black_24dp"
             android:title="О программе" />
-
-        <item
-            android:id="@+id/navItem6"
-            android:icon="@drawable/ic_my_location_black_24dp"
-            android:title="Контакты" />
     </group>
 
     <group android:checkableBehavior="single"

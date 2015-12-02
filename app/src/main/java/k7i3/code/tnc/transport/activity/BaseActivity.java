@@ -132,6 +132,10 @@ public abstract class BaseActivity extends AppCompatActivity {
                         Log.d(TAG, "settings");
                         startActivity(new Intent(getBaseContext(), SettingsActivity.class));
                         return true;
+                    case R.id.app_about:
+                        Log.d(TAG, "about");
+                        startActivity(new Intent(getBaseContext(), AboutActivity.class));
+                        return true;
                     default:
                         Log.d(TAG, "default");
                         return true;

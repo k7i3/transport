@@ -7,4 +7,7 @@
     <dimen name="fab_margin_bottom_anchor">0dp</dimen>
 
     <dimen name="fab_margin_bottom_anchor_favorites">72dp</dimen>
+
+    <dimen name="fab_margin_bottom_my_location">88dp</dimen>
+
 </resources>
