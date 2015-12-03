@@ -141,12 +141,12 @@ public class RoutesActivity extends BaseActivity {
                     Log.d(TAG, "onPageSelected(): " + "position: " + position);
                   switch (position) {
                       case 0:
-                          mapsFAB.setVisibility(View.VISIBLE);
                           favoritesFAB.setVisibility(View.GONE);
+                          mapsFAB.setVisibility(View.VISIBLE);
                           break;
                       case 1:
-                          mapsFAB.setVisibility(View.VISIBLE);
                           favoritesFAB.setVisibility(View.VISIBLE);
+                          mapsFAB.setVisibility(View.VISIBLE);
                           break;
                   }
               }

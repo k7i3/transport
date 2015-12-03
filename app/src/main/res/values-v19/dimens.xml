@@ -3,10 +3,12 @@
     <dimen name="fab_margin_end">16dp</dimen>
     <dimen name="fab_margin_bottom">16dp</dimen>
 
-    <dimen name="fab_margin_end_anchor">0dp</dimen>
-    <dimen name="fab_margin_bottom_anchor">0dp</dimen>
+    <dimen name="fab_margin_end_anchor">2dp</dimen>
+    <dimen name="fab_margin_bottom_anchor">-5dp</dimen>
+    <!--0dp-->
 
-    <dimen name="fab_margin_bottom_anchor_favorites">72dp</dimen>
+    <dimen name="fab_margin_bottom_anchor_favorites">67dp</dimen>
+    <!--72dp-->
 
     <dimen name="fab_margin_bottom_my_location">88dp</dimen>
 
