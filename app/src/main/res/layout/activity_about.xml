@@ -22,21 +22,73 @@
         <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/abc_action_bar_default_height_material">
+            android:layout_marginTop="@dimen/abc_action_bar_default_height_material"
+            android:background="#efefef">
 
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="16dp"-->
+                    <!--android:text="ОТКРЫТЫЙ ТРАНСПОРТ"-->
+                    <!--android:id="@+id/header"-->
+                    <!--android:textAlignment="center"-->
+                    <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:textColor="#797979" />-->
+
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:id="@+id/logo"
+                    android:src="@drawable/app_logo_4"
+
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="ОТКРЫТЫЙ ТРАНСПОРТ"
-                    android:id="@+id/textView"
-                    android:textAlignment="center"
-                    android:textSize="25sp"
-                    android:layout_centerHorizontal="true"/>
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Версия: 1.0"
+                    android:id="@+id/version"
+                    android:layout_below="@+id/logo"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="15dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/tnc"
+                    android:id="@+id/tnc"
+                    android:layout_below="@+id/version"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/email"
+                    android:id="@+id/email"
+                    android:layout_below="@+id/tnc"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/market"
+                    android:id="@+id/market"
+                    android:layout_below="@+id/email"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp" />
+
             </RelativeLayout>
         </ScrollView>
     </android.support.design.widget.CoordinatorLayout>
