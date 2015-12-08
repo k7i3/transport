@@ -20,6 +20,7 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -39,6 +40,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.greenrobot.event.EventBus;
+import k7i3.code.tnc.transport.AnalyticsApplication;
 import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.R;
 import k7i3.code.tnc.transport.fragment.RetainedTransportFragment;
@@ -83,10 +85,19 @@ public class TransportActivity extends BaseGoogleMapsActivity {
         super.onCreate(savedInstanceState);
         setTAG("====> TransportActivity");
         Log.d(TAG, "onCreate()");
+//        ((AnalyticsApplication) getApplication()).getTracker(AnalyticsApplication.TrackerName.XML_APP_TRACKER);
         initInstances();
         initFields();
         startLocationServiceIfNeeded();
         EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart()");
+        //Get an Analytics tracker to report app starts & uncaught exceptions etc.
+//        GoogleAnalytics.getInstance(this).reportActivityStart(this);
     }
 
     @Override
@@ -101,6 +112,14 @@ public class TransportActivity extends BaseGoogleMapsActivity {
         super.onPause();
         Log.d(TAG, "onPause()");
         LocationService.stop(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop()");
+        //Stop the analytics tracking
+//        GoogleAnalytics.getInstance(this).reportActivityStop(this);
     }
 
     @Override
@@ -314,7 +333,7 @@ public class TransportActivity extends BaseGoogleMapsActivity {
 
     private Drawable makeIconDrawable() {
 //        TODO make good nine-patch drawable (.9.png) or custom drawable (.xml) https://romannurik.github.io/AndroidAssetStudio/index.html dynamically: http://stackoverflow.com/questions/14442011/create-a-nine-patch-image-with-code /// http://stackoverflow.com/questions/5079868/create-a-ninepatch-ninepatchdrawable-in-runtime/14061128#14061128 /// https://gist.github.com/briangriffey/4391807
-        Drawable drawable = getResources().getDrawable(R.drawable.a4); //arrow
+        Drawable drawable = getResources().getDrawable(R.drawable.a6); //arrow
 //        drawable.setTint(Color.CYAN); // API 21
 //        ColorFilter filter = new PorterDuffColorFilter(Color.parseColor("#2196F3"), PorterDuff.Mode.MULTIPLY);
 //        drawable.setColorFilter(filter);
