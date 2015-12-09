@@ -19,6 +19,9 @@ import android.view.Window;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.Tracker;
+
+import k7i3.code.tnc.transport.AnalyticsApplication;
 import k7i3.code.tnc.transport.R;
 
 /**
@@ -33,6 +36,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected String TAG;
     private Menu menu;
 
+    public Tracker tracker;
+
     protected abstract int getLayoutResource();
 
     //LIFECYCLE
@@ -44,6 +49,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         initBaseInstances();
         // Setting Default Values (call one/first time if false) http://developer.android.com/guide/topics/ui/settings.html#Defaults
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        tracker = ((AnalyticsApplication) getApplication()).getTracker(AnalyticsApplication.TrackerName.PROGRAMMATICALLY_APP_TRACKER);
     }
 
     @Override

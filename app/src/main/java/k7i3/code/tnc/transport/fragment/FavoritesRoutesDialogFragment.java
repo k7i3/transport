@@ -15,9 +15,12 @@ import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Select;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import java.util.List;
 
+import k7i3.code.tnc.transport.AnalyticsApplication;
 import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.R;
 import k7i3.code.tnc.transport.model.Label;
@@ -103,6 +106,16 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
             label = new Label(labelText);
             label.save();
             Toast.makeText(getActivity(), "коллекция создана: " + labelText, Toast.LENGTH_SHORT).show();
+
+            //Analytics
+            Tracker tracker = ((AnalyticsApplication) getActivity().getApplication()).getTracker(AnalyticsApplication.TrackerName.PROGRAMMATICALLY_APP_TRACKER);
+            tracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("DB")
+                    .setAction("create_collection")
+                    .setLabel("favorites_routes_dialog")
+                    .setValue(routes.size()) //ценность события
+                    .setCustomDimension(1, labelText)
+                    .build());
         }
 
 //        TODO 2. + save

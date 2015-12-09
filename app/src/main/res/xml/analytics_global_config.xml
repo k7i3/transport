@@ -9,5 +9,4 @@
 
         <!-- Treat events as test events and don't send to google -->
     <bool name="ga_dryRun">false</bool>
-
 </resources>

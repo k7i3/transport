@@ -85,19 +85,10 @@ public class TransportActivity extends BaseGoogleMapsActivity {
         super.onCreate(savedInstanceState);
         setTAG("====> TransportActivity");
         Log.d(TAG, "onCreate()");
-//        ((AnalyticsApplication) getApplication()).getTracker(AnalyticsApplication.TrackerName.XML_APP_TRACKER);
         initInstances();
         initFields();
         startLocationServiceIfNeeded();
         EventBus.getDefault().register(this);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart()");
-        //Get an Analytics tracker to report app starts & uncaught exceptions etc.
-//        GoogleAnalytics.getInstance(this).reportActivityStart(this);
     }
 
     @Override
@@ -112,14 +103,6 @@ public class TransportActivity extends BaseGoogleMapsActivity {
         super.onPause();
         Log.d(TAG, "onPause()");
         LocationService.stop(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop()");
-        //Stop the analytics tracking
-//        GoogleAnalytics.getInstance(this).reportActivityStop(this);
     }
 
     @Override

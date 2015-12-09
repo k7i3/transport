@@ -21,9 +21,9 @@
         substitute for the full length canonical Activity name in screen view hit. In order to
         specify an alternate screen name use an <screenName> element, with the name attribute
         specifying the canonical name, and the value the alias to use instead. -->
-    <screenName name="k7i3.code.tnc.transport.activity.TransportActivity">TransportActivityTest2</screenName>
-    <screenName name="k7i3.code.tnc.transport.activity.RoutesActivity">RoutesActivityTest2</screenName>
-    <screenName name="k7i3.code.tnc.transport.activity.SettingsActivity">SettingsActivityTest2</screenName>
-    <screenName name="k7i3.code.tnc.transport.activity.AboutActivity">AboutActivityTest2</screenName>
+    <!--<screenName name="k7i3.code.tnc.transport.activity.TransportActivity">TransportActivityTest2</screenName>-->
+    <!--<screenName name="k7i3.code.tnc.transport.activity.RoutesActivity">RoutesActivityTest2</screenName>-->
+    <!--<screenName name="k7i3.code.tnc.transport.activity.SettingsActivity">SettingsActivityTest2</screenName>-->
+    <!--<screenName name="k7i3.code.tnc.transport.activity.AboutActivity">AboutActivityTest2</screenName>-->
 
 </resources>

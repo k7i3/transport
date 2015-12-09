@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +59,6 @@ public class RoutesActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setTAG("====> RoutesActivity");
         Log.d(TAG, "onCreate()");
-//        ((AnalyticsApplication) getApplication()).getTracker(AnalyticsApplication.TrackerName.XML_APP_TRACKER);
         initInstances();
     }
 
@@ -69,22 +70,6 @@ public class RoutesActivity extends BaseActivity {
             case R.id.refresh: selectAll(); return true;
             default: return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart()");
-        //Get an Analytics tracker to report app starts & uncaught exceptions etc.
-//        GoogleAnalytics.getInstance(this).reportActivityStart(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop()");
-        //Stop the analytics tracking
-//        GoogleAnalytics.getInstance(this).reportActivityStop(this);
     }
 
     //HELPERS
@@ -148,6 +133,9 @@ public class RoutesActivity extends BaseActivity {
             }
         });
         favoritesFAB.setVisibility(View.GONE); // because first tab is favorites
+        //Analytics
+        tracker.setScreenName("routes-favorite-app");
+        tracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
               @Override
@@ -157,15 +145,21 @@ public class RoutesActivity extends BaseActivity {
 
               @Override
               public void onPageSelected(int position) {
-                    Log.d(TAG, "onPageSelected(): " + "position: " + position);
+                  Log.d(TAG, "onPageSelected(): " + "position: " + position);
                   switch (position) {
                       case 0:
                           favoritesFAB.setVisibility(View.GONE);
                           mapsFAB.setVisibility(View.VISIBLE);
+                          //Analytics
+                          tracker.setScreenName("routes-favorite-user");
+                          tracker.send(new HitBuilders.ScreenViewBuilder().build());
                           break;
                       case 1:
                           favoritesFAB.setVisibility(View.VISIBLE);
                           mapsFAB.setVisibility(View.VISIBLE);
+                          //Analytics
+                          tracker.setScreenName("routes-all-user");
+                          tracker.send(new HitBuilders.ScreenViewBuilder().build());
                           break;
                   }
               }
