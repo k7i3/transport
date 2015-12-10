@@ -95,20 +95,30 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
 
     private void saveRoutes() {
         Log.d(TAG, "saveRoutes()");
-        String labelText = editText.getText().toString();
+        String labelText = editText.getText().toString().toUpperCase();
+        //Analytics
+        Tracker tracker = ((AnalyticsApplication) getActivity().getApplication()).getTracker(AnalyticsApplication.TrackerName.PROGRAMMATICALLY_APP_TRACKER);
 
 //        TODO 1. + check: is label already exist? show dialog - replace? delete...
         Label label;
         if ((label = Label.getLabelByText(labelText)) != null) {
             LabelRoute.deleteLabelRouteByLable(label); // will remove the binding (label - route) without removing routes and label
             Toast.makeText(getActivity(), "коллекция обновлена: " + labelText, Toast.LENGTH_SHORT).show();
+
+            //Analytics 1
+            tracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("DB")
+                    .setAction("update_collection")
+                    .setLabel("favorites_routes_dialog")
+                    .setValue(routes.size()) //ценность события
+                    .setCustomDimension(1, labelText) // TODO may be remove???
+                    .build());
         } else {
             label = new Label(labelText);
             label.save();
             Toast.makeText(getActivity(), "коллекция создана: " + labelText, Toast.LENGTH_SHORT).show();
 
-            //Analytics
-            Tracker tracker = ((AnalyticsApplication) getActivity().getApplication()).getTracker(AnalyticsApplication.TrackerName.PROGRAMMATICALLY_APP_TRACKER);
+            //Analytics 1
             tracker.send(new HitBuilders.EventBuilder()
                     .setCategory("DB")
                     .setAction("create_collection")
@@ -118,25 +128,36 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
                     .build());
         }
 
+        //Analytics 2
+        tracker.send(new HitBuilders.EventBuilder()
+                .setCategory("DB")
+                .setAction("collection_size")
+                .setLabel("favorites_routes_dialog")
+                .setValue(routes.size()) //ценность события
+                .setCustomDimension(2, routes.size() + "")
+                .build());
+
 //        TODO 2. + save
         ActiveAndroid.beginTransaction();
         try {
             for (Route route : routes) {
                 route.save();
                 new LabelRoute(label, route).save();
+
+                //Analytics 3x
+                tracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("DB")
+                        .setAction("add_route_to_collection")
+                        .setLabel("favorites_routes_dialog")
+                        .setValue(routes.size()) //ценность события
+                        .setCustomDimension(3, route.getNum())
+                        .build());
             }
             ActiveAndroid.setTransactionSuccessful();
         }
         finally {
             ActiveAndroid.endTransaction();
         }
-
-        //TEST
-        Log.d(TAG, "Route(fromDb): " + new Select().from(Route.class).execute().size());
-        Log.d(TAG, "Label(fromDb): " + new Select().from(Label.class).execute().size());
-        Log.d(TAG, "LabelRoute(fromDb): " + new Select().from(LabelRoute.class).execute().size());
-        Log.d(TAG, "RoutesByLabel(fromDb): " + label.getRoutes().size());
-//        Log.d(TAG, "RoutesByLabel=test1(fromDb): " + Label.getRoutesByLabelText("test1").size()); // may be NULL
 
         areRoutesSaved = true;
     }
