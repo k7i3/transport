@@ -21,6 +21,7 @@ import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -131,9 +132,7 @@ public class TransportActivity extends BaseGoogleMapsActivity {
                     retainedTransportFragment.setRoutes(routes);
                     Toast.makeText(this, "выбрано маршрутов: " + routes.size(), Toast.LENGTH_SHORT).show();
                     startTransportLoader();
-//                    if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsActivity.KEY_PREF_SHOW_TRACKS, false)) {
-                        startTracksLoader();
-//                    }
+                    startTracksLoader();
                     break;
             }
         } else {
@@ -332,17 +331,55 @@ public class TransportActivity extends BaseGoogleMapsActivity {
 
         Route route;
         List<Transport> transportList;
+        int transportCount = 0;
         for(Map.Entry<Route, List<Transport>> entry : transportByRoute.entrySet()) {
             //TODO location may be null if service unavailable!!! change logic or service..
             location.setLatitude(location.getLatitude() + 0.001);
             route = entry.getKey();
             transportList = entry.getValue();
+            transportCount += transportList.size();
 
             for (Transport transport : transportList) {
                 location.setLongitude(location.getLongitude() + 0.001);
                 addMarker(iconGenerator, route.getNum(), location, transport.getDeviceId());
             }
+
+            //Analytics 4
+            tracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("MAP")
+                    .setAction("route_add")
+                    .setLabel("drawTransport")
+                    .setValue(transportList.size()) //ценность события
+                    .setCustomDimension(4, route.getNum())
+                    .build());
+
+            //Analytics 5 (count of transport in route)
+            tracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("MAP")
+                    .setAction("route_transport_size")
+                    .setLabel("drawTransport")
+                    .setValue(transportList.size()) //ценность события
+                    .setCustomDimension(5, transportList.size() + "")
+                    .build());
         }
+
+        //Analytics 6
+        tracker.send(new HitBuilders.EventBuilder()
+                .setCategory("MAP")
+                .setAction("routes_size")
+                .setLabel("drawTransport")
+                .setValue(transportByRoute.size()) //ценность события
+                .setCustomDimension(6, transportByRoute.size() + "")
+                .build());
+
+        //Analytics 7
+        tracker.send(new HitBuilders.EventBuilder()
+                .setCategory("MAP")
+                .setAction("transport_size")
+                .setLabel("drawTransport")
+                .setValue(transportCount) //ценность события
+                .setCustomDimension(7, transportCount + "")
+                .build());
 
         // TEST
 //        location.setBearing(0);  // mock direction

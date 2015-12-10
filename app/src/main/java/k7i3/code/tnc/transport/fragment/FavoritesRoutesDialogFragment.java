@@ -108,7 +108,7 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
             //Analytics 1
             tracker.send(new HitBuilders.EventBuilder()
                     .setCategory("DB")
-                    .setAction("update_collection")
+                    .setAction("collection_update")
                     .setLabel("favorites_routes_dialog")
                     .setValue(routes.size()) //ценность события
                     .setCustomDimension(1, labelText) // TODO may be remove???
@@ -121,7 +121,7 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
             //Analytics 1
             tracker.send(new HitBuilders.EventBuilder()
                     .setCategory("DB")
-                    .setAction("create_collection")
+                    .setAction("collection_create")
                     .setLabel("favorites_routes_dialog")
                     .setValue(routes.size()) //ценность события
                     .setCustomDimension(1, labelText)
@@ -144,10 +144,10 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
                 route.save();
                 new LabelRoute(label, route).save();
 
-                //Analytics 3x
+                //Analytics 3
                 tracker.send(new HitBuilders.EventBuilder()
                         .setCategory("DB")
-                        .setAction("add_route_to_collection")
+                        .setAction("collection_add_route")
                         .setLabel("favorites_routes_dialog")
                         .setValue(routes.size()) //ценность события
                         .setCustomDimension(3, route.getNum())
