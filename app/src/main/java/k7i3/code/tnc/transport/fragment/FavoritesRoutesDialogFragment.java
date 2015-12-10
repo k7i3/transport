@@ -105,37 +105,39 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
             LabelRoute.deleteLabelRouteByLable(label); // will remove the binding (label - route) without removing routes and label
             Toast.makeText(getActivity(), "коллекция обновлена: " + labelText, Toast.LENGTH_SHORT).show();
 
-            //Analytics 1
+            //Analytics 1.1-2
             tracker.send(new HitBuilders.EventBuilder()
                     .setCategory("DB")
-                    .setAction("collection_update")
+                    .setAction("collection_was_updated")
                     .setLabel("favorites_routes_dialog")
                     .setValue(routes.size()) //ценность события
-                    .setCustomDimension(1, labelText) // TODO may be remove???
+                    .setCustomDimension(1, labelText) // TODO del? if no - filter 1.2 by !!!include!!! action at GA (collection_was_created) and 1.1 by !!!include!!! action at GA (collection_was_updated)
+                    .setCustomDimension(2, routes.size() + "")
                     .build());
         } else {
             label = new Label(labelText);
             label.save();
             Toast.makeText(getActivity(), "коллекция создана: " + labelText, Toast.LENGTH_SHORT).show();
 
-            //Analytics 1
+            //Analytics 1.2-2
             tracker.send(new HitBuilders.EventBuilder()
                     .setCategory("DB")
-                    .setAction("collection_create")
+                    .setAction("collection_was_created")
                     .setLabel("favorites_routes_dialog")
                     .setValue(routes.size()) //ценность события
                     .setCustomDimension(1, labelText)
+                    .setCustomDimension(2, routes.size() + "")
                     .build());
         }
 
         //Analytics 2
-        tracker.send(new HitBuilders.EventBuilder()
-                .setCategory("DB")
-                .setAction("collection_size")
-                .setLabel("favorites_routes_dialog")
-                .setValue(routes.size()) //ценность события
-                .setCustomDimension(2, routes.size() + "")
-                .build());
+//        tracker.send(new HitBuilders.EventBuilder()
+//                .setCategory("DB")
+//                .setAction("collection_size")
+//                .setLabel("favorites_routes_dialog")
+//                .setValue(routes.size()) //ценность события
+//                .setCustomDimension(2, routes.size() + "")
+//                .build());
 
 //        TODO 2. + save
         ActiveAndroid.beginTransaction();
@@ -144,12 +146,13 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
                 route.save();
                 new LabelRoute(label, route).save();
 
-                //Analytics 3
+                //Analytics 1 and 3
                 tracker.send(new HitBuilders.EventBuilder()
                         .setCategory("DB")
-                        .setAction("collection_add_route")
+                        .setAction("route_was_added_to_collection")
                         .setLabel("favorites_routes_dialog")
                         .setValue(routes.size()) //ценность события
+                        .setCustomDimension(1, labelText) // TODO del? if no - filter 1.x by !!!exclude!!! action at GA (route_was_added_to_collection) and filter 3 by !!!include!!! action at GA (route_was_added_to_collection)
                         .setCustomDimension(3, route.getNum())
                         .build());
             }

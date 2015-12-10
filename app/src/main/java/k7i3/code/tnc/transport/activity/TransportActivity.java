@@ -344,68 +344,45 @@ public class TransportActivity extends BaseGoogleMapsActivity {
                 addMarker(iconGenerator, route.getNum(), location, transport.getDeviceId());
             }
 
-            //Analytics 4
+            //Analytics 4-5
             tracker.send(new HitBuilders.EventBuilder()
                     .setCategory("MAP")
-                    .setAction("route_add")
+                    .setAction("route_was_added")
                     .setLabel("drawTransport")
                     .setValue(transportList.size()) //ценность события
                     .setCustomDimension(4, route.getNum())
+                    .setCustomDimension(5, transportList.size() + "") // TODO del? if no - filter or del 5 by action at GA (route_transport_size)
                     .build());
 
             //Analytics 5 (count of transport in route)
-            tracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("MAP")
-                    .setAction("route_transport_size")
-                    .setLabel("drawTransport")
-                    .setValue(transportList.size()) //ценность события
-                    .setCustomDimension(5, transportList.size() + "")
-                    .build());
+//            tracker.send(new HitBuilders.EventBuilder()
+//                    .setCategory("MAP")
+//                    .setAction("route_transport_size")
+//                    .setLabel("drawTransport")
+//                    .setValue(transportList.size()) //ценность события
+//                    .setCustomDimension(5, transportList.size() + "")
+//                    .build());
         }
 
-        //Analytics 6
+        //Analytics 6-7
         tracker.send(new HitBuilders.EventBuilder()
                 .setCategory("MAP")
-                .setAction("routes_size")
+                .setAction("routes_were_added")
                 .setLabel("drawTransport")
-                .setValue(transportByRoute.size()) //ценность события
+                .setValue(transportCount / transportByRoute.size()) //ценность события
                 .setCustomDimension(6, transportByRoute.size() + "")
+                .setCustomDimension(7, transportCount + "") // TODO del? if no - filter or del 7 by action at GA (transport_size)
                 .build());
 
         //Analytics 7
-        tracker.send(new HitBuilders.EventBuilder()
-                .setCategory("MAP")
-                .setAction("transport_size")
-                .setLabel("drawTransport")
-                .setValue(transportCount) //ценность события
-                .setCustomDimension(7, transportCount + "")
-                .build());
+//        tracker.send(new HitBuilders.EventBuilder()
+//                .setCategory("MAP")
+//                .setAction("transport_size")
+//                .setLabel("drawTransport")
+//                .setValue(transportCount) //ценность события
+//                .setCustomDimension(7, transportCount + "")
+//                .build());
 
-        // TEST
-//        location.setBearing(0);  // mock direction
-//        addMarker(iconGenerator, "!!!1", location, 1);
-
-//        final Handler handler = new Handler();
-//        final Runnable r = new Runnable() {
-//            public void run() {
-////                location.setLongitude(location.getLongitude() + 0.0001);
-//                location.setLatitude(location.getLatitude() + 0.001);
-//                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-//                MarkerAnimation.animateMarkerToICS(markerByDeviceId.get(1L), latLng, new Spherical());
-//                handler.postDelayed(this, 3000);
-//            }
-//        };
-//        if (true) handler.postDelayed(r, 3000);
-
-//        location.setLongitude(location.getLongitude() + 0.001);
-//        addMarker(iconGenerator, "!!!2", location, 2);
-//        addMarker(iconGenerator, "!!!3", location, 3);
-//        location.setLongitude(location.getLongitude() + 0.001);
-//        addMarker(iconGenerator, "290", location, 2);
-//        location.setLongitude(location.getLongitude() + 0.001);
-//        addMarker(iconGenerator, "69", location, 3);
-//        location.setLongitude(location.getLongitude() + 0.001);
-//        addMarker(iconGenerator, "6", location, 4);
     }
 
     private void drawTracks() {
