@@ -140,10 +140,17 @@ public class TransportActivity extends BaseGoogleMapsActivity {
                     clearMap();
                     routes = data.getParcelableArrayListExtra(Constants.ROUTES);
                     retainedTransportFragment.setRoutes(routes);
-                    Toast.makeText(this, "выбрано маршрутов: " + routes.size(), Toast.LENGTH_SHORT).show();
-                    startTransportLoader();
-                    startTracksLoader();
-                    break;
+//                    TODO may be check routes for == null or .size = 0??? => doesn't work setRefreshActionButtonState(false);
+//                    if (routes == null || routes.size() == 0) {
+//                        Toast.makeText(this, "маршруты не выбраны", Toast.LENGTH_SHORT).show();
+//                        setRefreshActionButtonState(false);
+//                        break;
+//                    } else {
+                        Toast.makeText(this, "выбрано маршрутов: " + routes.size(), Toast.LENGTH_SHORT).show();
+                        startTransportLoader();
+                        startTracksLoader();
+                        break;
+//                    }
             }
         } else {
             if (routes == null) {
@@ -284,6 +291,13 @@ public class TransportActivity extends BaseGoogleMapsActivity {
             @Override
             public void onClick(View v) {
                 startActivityForResult(new Intent(getBaseContext(), RoutesActivity.class), REQUEST_CODE_ROUTES);
+
+                //Analytics
+                tracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("UI")
+                        .setAction("routes_FAB_was_clicked")
+                        .setLabel("FAB")
+                        .build());
             }
         });
     }
@@ -379,7 +393,7 @@ public class TransportActivity extends BaseGoogleMapsActivity {
                 .setCategory("MAP")
                 .setAction("routes_were_added")
                 .setLabel("drawTransport")
-                .setValue(transportCount / transportByRoute.size()) //ценность события
+                .setValue(transportCount / (transportByRoute.size() == 0 ? 1 : transportByRoute.size())) //ценность события //avoid java.lang.ArithmeticException: divide by zero
                 .setCustomDimension(6, transportByRoute.size() + "")
                 .setCustomDimension(7, transportCount + "") // TODO del? if no - filter or del! 7 by action at GA (transport_size)
                 .build());

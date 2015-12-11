@@ -114,6 +114,13 @@ public class RoutesActivity extends BaseActivity {
                     setResult(RESULT_OK, intent);
                     finish();
                 }
+
+                //Analytics
+                tracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("UI")
+                        .setAction("transport(maps)_FAB_was_clicked")
+                        .setLabel("FAB")
+                        .build());
             }
         });
 
@@ -133,6 +140,13 @@ public class RoutesActivity extends BaseActivity {
                 } else {
                     Toast.makeText(v.getContext(), "выберите маршруты для сохранения", Toast.LENGTH_SHORT).show();
                 }
+
+                //Analytics
+                tracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("UI")
+                        .setAction("favorites_FAB_was_clicked")
+                        .setLabel("FAB")
+                        .build());
             }
         });
         favoritesFAB.setVisibility(View.GONE); // because first tab is favorites

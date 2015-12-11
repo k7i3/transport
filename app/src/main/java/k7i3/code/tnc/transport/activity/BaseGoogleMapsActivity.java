@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -131,6 +132,13 @@ public abstract class BaseGoogleMapsActivity extends BaseActivity
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     moveCamera(latLng, 15);
                 }
+
+                //Analytics TODO send location_info here end where was firsZoom? (latLong + speed)
+                tracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("UI")
+                        .setAction("my_location_FAB_was_clicked")
+                        .setLabel("FAB")
+                        .build());
             }
         });
     }
