@@ -351,7 +351,7 @@ public class TransportActivity extends BaseGoogleMapsActivity {
                     .setLabel("drawTransport")
                     .setValue(transportList.size()) //ценность события
                     .setCustomDimension(4, route.getNum())
-                    .setCustomDimension(5, transportList.size() + "") // TODO del? if no - filter or del 5 by action at GA (route_transport_size)
+                    .setCustomDimension(5, transportList.size() + "") // TODO del? if no - filter or del! 5 by action at GA (route_transport_size)
                     .build());
 
             //Analytics 5 (count of transport in route)
@@ -371,7 +371,7 @@ public class TransportActivity extends BaseGoogleMapsActivity {
                 .setLabel("drawTransport")
                 .setValue(transportCount / transportByRoute.size()) //ценность события
                 .setCustomDimension(6, transportByRoute.size() + "")
-                .setCustomDimension(7, transportCount + "") // TODO del? if no - filter or del 7 by action at GA (transport_size)
+                .setCustomDimension(7, transportCount + "") // TODO del? if no - filter or del! 7 by action at GA (transport_size)
                 .build());
 
         //Analytics 7

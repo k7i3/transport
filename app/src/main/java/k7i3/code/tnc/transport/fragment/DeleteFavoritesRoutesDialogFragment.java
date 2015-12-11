@@ -15,9 +15,12 @@ import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Select;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import java.util.List;
 
+import k7i3.code.tnc.transport.AnalyticsApplication;
 import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.R;
 import k7i3.code.tnc.transport.model.Label;
@@ -65,5 +68,16 @@ public class DeleteFavoritesRoutesDialogFragment extends DialogFragment {
         Log.d(TAG, "deleteLabel()");
         Label.deleteLabelByText(text);
         Toast.makeText(getActivity(), "коллекция удалена: " + text, Toast.LENGTH_SHORT).show();
+
+        //Analytics 1.3
+        Tracker tracker = ((AnalyticsApplication) getActivity().getApplication()).getTracker(AnalyticsApplication.TrackerName.PROGRAMMATICALLY_APP_TRACKER);
+        tracker.send(new HitBuilders.EventBuilder()
+                .setCategory("DB")
+                .setAction("collection_was_deleted")
+                .setLabel("delete_favorites_routes_dialog")
+//                .setValue(routes.size()) //ценность события
+                .setCustomDimension(1, text)
+//                .setCustomDimension(2, routes.size() + "")
+                .build());
     }
 }

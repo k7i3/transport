@@ -111,7 +111,7 @@ public class FavoritesRoutesDialogFragment extends DialogFragment {
                     .setAction("collection_was_updated")
                     .setLabel("favorites_routes_dialog")
                     .setValue(routes.size()) //ценность события
-                    .setCustomDimension(1, labelText) // TODO del? if no - filter 1.2 by !!!include!!! action at GA (collection_was_created) and 1.1 by !!!include!!! action at GA (collection_was_updated)
+                    .setCustomDimension(1, labelText) // TODO del? if no - filter 1.2 by !!!include!!! action at GA (collection_was_created) and 1.1 by !!!include!!! action at GA (collection_was_updated) and 1.3 by !!!include!!! action at GA (collection_was_deleted)
                     .setCustomDimension(2, routes.size() + "")
                     .build());
         } else {
