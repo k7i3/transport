@@ -114,14 +114,6 @@ public class TransportActivity extends BaseGoogleMapsActivity {
             case R.id.refresh:
                 refreshIfPossible();
                 return super.onOptionsItemSelected(item);
-                //Analytics
-//                tracker.send(new HitBuilders.EventBuilder()
-//                        .setCategory("UI")
-//                        .setAction("tnc_logo_was_clicked")
-//                        .setLabel("transport_activity")
-//                        .setValue(1) //ценность события
-//                        .build());
-//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
