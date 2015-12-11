@@ -1,6 +1,7 @@
 package k7i3.code.tnc.transport.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,6 +20,7 @@ import android.view.Window;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import k7i3.code.tnc.transport.AnalyticsApplication;
@@ -47,9 +49,38 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResource());
         initBaseInstances();
+
+        //Analytics
+        tracker = ((AnalyticsApplication) getApplication()).getTracker(AnalyticsApplication.TrackerName.PROGRAMMATICALLY_APP_TRACKER);
+
+        //PREFERENCES
         // Setting Default Values (call one/first time if false) http://developer.android.com/guide/topics/ui/settings.html#Defaults
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-        tracker = ((AnalyticsApplication) getApplication()).getTracker(AnalyticsApplication.TrackerName.PROGRAMMATICALLY_APP_TRACKER);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.OnSharedPreferenceChangeListener prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                if (key.equals(SettingsActivity.KEY_PREF_SHOW_TRACKS)) {
+                    if (prefs.getBoolean(SettingsActivity.KEY_PREF_SHOW_TRACKS, false)) {
+                        //Analytics
+                        tracker.send(new HitBuilders.EventBuilder()
+                                .setCategory("PREFERENCES")
+                                .setAction("pref_show_tracks_ON")
+                                .setLabel("boolean")
+                                .setValue(1) //ценность события
+                                .build());
+                    } else {
+                        //Analytics
+                        tracker.send(new HitBuilders.EventBuilder()
+                                .setCategory("PREFERENCES")
+                                .setAction("pref_show_tracks_OFF")
+                                .setLabel("boolean")
+                                .setValue(0) //ценность события
+                                .build());
+                    }
+                }
+            }
+        };
+        prefs.registerOnSharedPreferenceChangeListener(prefListener);
     }
 
     @Override
