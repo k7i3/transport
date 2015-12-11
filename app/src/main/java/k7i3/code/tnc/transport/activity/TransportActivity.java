@@ -347,13 +347,13 @@ public class TransportActivity extends BaseGoogleMapsActivity {
 
         Route route;
         List<Transport> transportList;
-        int transportCount = 0;
+//        int transportCount = 0; //markerByDeviceId.size() instead
         for(Map.Entry<Route, List<Transport>> entry : transportByRoute.entrySet()) {
             //TODO location may be null if service unavailable!!! change logic or service..
             location.setLatitude(location.getLatitude() + 0.001);
             route = entry.getKey();
             transportList = entry.getValue();
-            transportCount += transportList.size();
+//            transportCount += transportList.size(); //markerByDeviceId.size() instead
 
             for (Transport transport : transportList) {
                 location.setLongitude(location.getLongitude() + 0.001);
@@ -385,9 +385,9 @@ public class TransportActivity extends BaseGoogleMapsActivity {
                 .setCategory("MAP")
                 .setAction("routes_were_added")
                 .setLabel("drawTransport")
-                .setValue(transportCount / (transportByRoute.size() == 0 ? 1 : transportByRoute.size())) //ценность события //avoid java.lang.ArithmeticException: divide by zero
+                .setValue(markerByDeviceId.size() / (transportByRoute.size() == 0 ? 1 : transportByRoute.size())) //ценность события //avoid java.lang.ArithmeticException: divide by zero
                 .setCustomDimension(6, transportByRoute.size() + "")
-                .setCustomDimension(7, transportCount + "") // TODO del? if no - filter or del! 7 by action at GA (transport_size)
+                .setCustomDimension(7, markerByDeviceId.size() + "") // TODO del? if no - filter or del! 7 by action at GA (transport_size)
                 .build());
 
         //Analytics 7
