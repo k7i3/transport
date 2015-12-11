@@ -111,6 +111,20 @@ public abstract class BaseActivity extends AppCompatActivity {
             return true;
         }
 
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.refresh:
+                //Analytics
+                tracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("UI")
+                        .setAction("tnc_logo_was_clicked")
+                        .setLabel(getClass().getSimpleName())
+                        .build());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
 //        switch (item.getItemId()) {
 //            case android.R.id.home:
 //                Toast.makeText(this, "android.R.id.home", Toast.LENGTH_SHORT).show();
@@ -129,7 +143,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 //            return true;
 //        }
 
-        return super.onOptionsItemSelected(item);
+//        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -160,6 +174,12 @@ public abstract class BaseActivity extends AppCompatActivity {
                     case R.id.transport:
                         Log.d(TAG, "transport");
                         startActivity(new Intent(getBaseContext(), TransportActivity.class));
+                        //Analytics
+                        tracker.send(new HitBuilders.EventBuilder()
+                                .setCategory("UI")
+                                .setAction("drawer_item_transport(map)_was_clicked")
+                                .setLabel("base")
+                                .build());
                         return true;
 //                    case R.id.routes:
 //                        Log.d(TAG, "routes");
@@ -168,10 +188,22 @@ public abstract class BaseActivity extends AppCompatActivity {
                     case R.id.app_settings:
                         Log.d(TAG, "settings");
                         startActivity(new Intent(getBaseContext(), SettingsActivity.class));
+                        //Analytics
+                        tracker.send(new HitBuilders.EventBuilder()
+                                .setCategory("UI")
+                                .setAction("drawer_item_settings_was_clicked")
+                                .setLabel("base")
+                                .build());
                         return true;
                     case R.id.app_about:
                         Log.d(TAG, "about");
                         startActivity(new Intent(getBaseContext(), AboutActivity.class));
+                        //Analytics
+                        tracker.send(new HitBuilders.EventBuilder()
+                                .setCategory("UI")
+                                .setAction("drawer_item_about_was_clicked")
+                                .setLabel("base")
+                                .build());
                         return true;
                     default:
                         Log.d(TAG, "default");
@@ -183,6 +215,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
 //                TODO make appropriate menu_item at nav_drawer_menu checked
+                //Analytics
+                tracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("UI")
+                        .setAction("drawer_was_opened")
+                        .setLabel("base")
+                        .build());
                 super.onDrawerOpened(drawerView);
             }
 

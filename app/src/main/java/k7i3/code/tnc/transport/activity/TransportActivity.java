@@ -111,9 +111,19 @@ public class TransportActivity extends BaseGoogleMapsActivity {
         Log.d(TAG, "onOptionsItemSelected()");
         int id = item.getItemId();
         switch (id) {
-            case R.id.refresh: refreshIfPossible(); return true;
-//            case R.id.tracks: item.setChecked(!item.isChecked()); return true;
-            default: return super.onOptionsItemSelected(item);
+            case R.id.refresh:
+                refreshIfPossible();
+                return super.onOptionsItemSelected(item);
+                //Analytics
+//                tracker.send(new HitBuilders.EventBuilder()
+//                        .setCategory("UI")
+//                        .setAction("tnc_logo_was_clicked")
+//                        .setLabel("transport_activity")
+//                        .setValue(1) //ценность события
+//                        .build());
+//                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

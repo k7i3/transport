@@ -67,8 +67,11 @@ public class RoutesActivity extends BaseActivity {
         Log.d(TAG, "onOptionsItemSelected()");
         int id = item.getItemId();
         switch (id) {
-            case R.id.refresh: selectAll(); return true;
-            default: return super.onOptionsItemSelected(item);
+            case R.id.refresh:
+//                selectAll();
+                return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -172,7 +175,7 @@ public class RoutesActivity extends BaseActivity {
     }
 
     private void selectAll() {
-//        TODO
+//        TODO is it needed?
         Object object = routesPagerAdapter.instantiateItem(viewPager, viewPager.getCurrentItem());
         if (!wereAllSelected) {
             if (object instanceof RoutesFragment) {
