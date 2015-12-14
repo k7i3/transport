@@ -25,8 +25,8 @@ public class RoutesPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         Log.d(TAG, "getItem()");
         switch (position) {
-            case 0: return FavoritesRoutesFragment.newInstance(position);
-            case 1: return RoutesFragment.newInstance(position);
+            case 0: return RoutesFragment.newInstance(position);
+            case 1: return FavoritesRoutesFragment.newInstance(position);
             default: return RoutesFragment.newInstance(position);
         }
     }

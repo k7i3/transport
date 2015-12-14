@@ -35,7 +35,7 @@ import k7i3.code.tnc.transport.widget.SlidingTabLayout;
  */
 public class RoutesActivity extends BaseActivity {
 
-    private CharSequence titles[] = {"Избранные", "На линии"};
+    private CharSequence titles[] = {"На линии", "Избранные"};
     private RoutesPagerAdapter routesPagerAdapter;
 
     private CollapsingToolbarLayout collapsingToolbarLayout;
@@ -45,7 +45,7 @@ public class RoutesActivity extends BaseActivity {
     private FloatingActionButton mapsFAB;
     private FloatingActionButton favoritesFAB;
 
-    private boolean wereAllSelected;
+    private boolean wereAllSelected; // for selectAll()
 
     @Override
     protected int getLayoutResource() {
@@ -149,9 +149,12 @@ public class RoutesActivity extends BaseActivity {
                         .build());
             }
         });
-        favoritesFAB.setVisibility(View.GONE); // because first tab is favorites
+
+//        favoritesFAB.setVisibility(View.GONE); // if first tab is favorites
+
         //Analytics
-        tracker.setScreenName("routes-favorite-app");
+//        tracker.setScreenName("routes-favorite-app"); // if first tab is favorites
+        tracker.setScreenName("routes-all-app");
         tracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -165,17 +168,17 @@ public class RoutesActivity extends BaseActivity {
                   Log.d(TAG, "onPageSelected(): " + "position: " + position);
                   switch (position) {
                       case 0:
-                          favoritesFAB.setVisibility(View.GONE);
-                          mapsFAB.setVisibility(View.VISIBLE);
-                          //Analytics
-                          tracker.setScreenName("routes-favorite-user");
-                          tracker.send(new HitBuilders.ScreenViewBuilder().build());
-                          break;
-                      case 1:
                           favoritesFAB.setVisibility(View.VISIBLE);
                           mapsFAB.setVisibility(View.VISIBLE);
                           //Analytics
                           tracker.setScreenName("routes-all-user");
+                          tracker.send(new HitBuilders.ScreenViewBuilder().build());
+                          break;
+                      case 1:
+                          favoritesFAB.setVisibility(View.GONE);
+                          mapsFAB.setVisibility(View.VISIBLE);
+                          //Analytics
+                          tracker.setScreenName("routes-favorite-user");
                           tracker.send(new HitBuilders.ScreenViewBuilder().build());
                           break;
                   }

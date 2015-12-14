@@ -172,9 +172,9 @@ public class FavoritesRoutesFragment extends Fragment implements android.support
 
     private void startLabelsLoader() {
         //TODO switch
-        if (position == 0) {
+        if (position == 1) {
             Bundle bundle = new Bundle();
-            bundle.putInt(Constants.KEY_POSITION, 2);
+            bundle.putInt(Constants.KEY_POSITION, position);
             getLoaderManager().initLoader(LOADER_LABELS, bundle, this);
         } else {
             initMockLabels();

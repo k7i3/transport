@@ -167,9 +167,9 @@ public class RoutesFragment extends Fragment implements android.support.v4.app.L
         routes = new ArrayList<>();
 
         //TODO switch
-        if (position == 1) {
+        if (position == 0) {
             Bundle bundle = new Bundle();
-            bundle.putInt(Constants.KEY_POSITION, 2);
+            bundle.putInt(Constants.KEY_POSITION, position);
             getLoaderManager().initLoader(LOADER_ROUTES, bundle, this);
         } else {
             initMockRoutes();
