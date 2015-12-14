@@ -13,6 +13,21 @@ https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend
     string in this file.
     -->
     <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">
-        AIzaSyDBKPbZ3RiZP38GfIg8EGDxhn-KSPcvSTw
+        AIzaSyAujbfHyfE8Oh6sQdIOwS3CxLBhcpaOEL8
     </string>
+    <!--tnc.develop-->
+    <!--RELEASE: ("by link" and "by hands" have the same effect)-->
+    <!--by link-->
+    <!--AIzaSyDDuSkFbI4C3pZXFMVsrY7rn5s_kXy2xDc-->
+    <!--by hands (reserve)-->
+    <!--AIzaSyA5jQm0kVf0a73b07gcan-oPj623ibGkwo-->
+    <!--DEBUG:-->
+    <!--AIzaSyAujbfHyfE8Oh6sQdIOwS3CxLBhcpaOEL8-->
+    <!--65:E4:CE:9B:D9:9C:0D:9D:07:B9:1E:40:8B:A8:29:CE:61:A0:35:C8-->
+
+    <!--klim.yakovlev-->
+    <!--DEBUG:-->
+    <!--AIzaSyDBKPbZ3RiZP38GfIg8EGDxhn-KSPcvSTw-->
+    <!--65:E4:CE:9B:D9:9C:0D:9D:07:B9:1E:40:8B:A8:29:CE:61:A0:35:C8-->
+    <!--A7:E1:7C:13:10:03:2E:E2:33:B2:D9:19:59:84:7A:B4:63:C7:E2:54-->
 </resources>
