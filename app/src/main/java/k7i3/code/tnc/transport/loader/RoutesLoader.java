@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
@@ -20,7 +22,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import k7i3.code.tnc.transport.AnalyticsApplication;
 import k7i3.code.tnc.transport.Constants;
+import k7i3.code.tnc.transport.activity.BaseActivity;
 import k7i3.code.tnc.transport.helper.DateTimeHelper;
 import k7i3.code.tnc.transport.helper.SecurityHelper;
 import k7i3.code.tnc.transport.helper.Utils;
@@ -60,6 +64,10 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
     @Override
     public List<Route> loadInBackground() {
         Log.d(TAG, "loadInBackground()");
+
+        //Analytics
+        Tracker tracker = ((AnalyticsApplication) getContext()).getTracker(AnalyticsApplication.TrackerName.PROGRAMMATICALLY_APP_TRACKER);
+
         try {
             // OUT
             Date date = new Date();
@@ -86,6 +94,16 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
 
             bufferedReader.close();
             in.close();
+//            c.disconnect(); //TODO ???
+
+            //Analytics TODO add parameter routes_count???
+            tracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("DATA")
+                    .setAction("routes_loader_success")
+                    .setValue(routes == null ? 0 : routes.size())
+                    .setLabel("loaders")
+                    .build());
+
 //            String line;
 //            StringBuilder stringBuilder = new StringBuilder();
 //            while ((line = bufferedReader.readLine()) != null) {
@@ -95,40 +113,14 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
 //            Log.d(TAG, "response: " + response);
         } catch (Exception e) {
             Log.d(TAG, "error: " + e.getMessage() + " " + e);
+
+            //Analytics TODO exception_tracker instead of it?
+            tracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("DATA")
+                    .setAction("routes_loader_error")
+                    .setLabel("loaders")
+                    .build());
         }
-
-//        WayBillSimpleWS.getListRoute
-//        JSON
-//        [
-//        {"clientIPAddress":String, "initiator":String, "password":String, "userName":String},
-//        Date
-//        ]
-//        параметры InvocationContext и дата на какое число нужен список маршрутов
-//        вернется список маршрутов, геометрия там тоже будет, если она конечно задана у маршрута
-//
-
-
-//        WayBillSimpleWS.getListTransport(ic, routeId, date)  это список транспорта
-//        JSON
-//        [
-//        {"clientIPAddress":String, "initiator":String, "password":String, "userName":String},
-//        Long,
-//        Date
-//        ]
-
-
-        //TEST
-//        Log.d(TAG, "loadInBackground() before sleep");
-//        try {
-//            TimeUnit.SECONDS.sleep(5);
-//        } catch (InterruptedException e) {
-//            return null;
-//        }
-//        Log.d(TAG, "loadInBackground() after sleep");
-//
-//        routes = new ArrayList<>();
-//        initMockRoutes();
-
         return routes;
     }
 }

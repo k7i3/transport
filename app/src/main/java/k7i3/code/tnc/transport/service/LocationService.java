@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.GsonBuilder;
 
 import java.util.Arrays;
@@ -17,6 +19,7 @@ import de.tavendo.autobahn.WebSocketConnection;
 import de.tavendo.autobahn.WebSocketException;
 import de.tavendo.autobahn.WebSocketHandler;
 import de.tavendo.autobahn.WebSocketOptions;
+import k7i3.code.tnc.transport.AnalyticsApplication;
 import k7i3.code.tnc.transport.helper.Utils;
 import k7i3.code.tnc.transport.model.LocationMessage;
 
@@ -68,6 +71,16 @@ public class LocationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand()");
+
+        //Analytics
+        Tracker tracker = ((AnalyticsApplication) getApplication()).getTracker(AnalyticsApplication.TrackerName.PROGRAMMATICALLY_APP_TRACKER);
+
+        //Analytics
+        tracker.send(new HitBuilders.EventBuilder()
+                .setCategory("DATA")
+                .setAction("location_service_start")
+                .setLabel("services")
+                .build());
 
         long[] deviceIds = intent.getLongArrayExtra(EXTRA_DEVICE_IDS);
         ConnectionToWS connectionToWS = new ConnectionToWS(startId, deviceIds);
@@ -154,6 +167,15 @@ public class LocationService extends Service {
             } catch (WebSocketException e) {
                 Log.d(TAG, "WebSocketException: " + e.toString());
 //                TODO fire message via EVENTBUS: 'ошибка подключения, пробуем соединиться снова'
+
+                //Analytics TODO exception_tracker instead of it? !!!TO MATCH OUTPUT!!!
+//                Tracker tracker = ((AnalyticsApplication) getApplication()).getTracker(AnalyticsApplication.TrackerName.PROGRAMMATICALLY_APP_TRACKER);
+//                tracker.send(new HitBuilders.EventBuilder()
+//                        .setCategory("DATA")
+//                        .setAction("location_service_ws_error")
+//                        .setLabel("services")
+//                        .build());
+
                 reconnectToWS(deviceIds); // TODO may be do nothing instead of reconnectToWS(deviceIds)?
             }
         }

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
@@ -21,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import k7i3.code.tnc.transport.AnalyticsApplication;
 import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.helper.SecurityHelper;
 import k7i3.code.tnc.transport.helper.Utils;
@@ -66,6 +69,9 @@ public class TransportLoader extends AsyncTaskLoader<Map<Route, List<Transport>>
     public Map<Route, List<Transport>> loadInBackground() {
         Log.d(TAG, "loadInBackground()");
 
+        //Analytics
+        Tracker tracker = ((AnalyticsApplication) getContext()).getTracker(AnalyticsApplication.TrackerName.PROGRAMMATICALLY_APP_TRACKER);
+
         try {
             String request;
             OutputStream out;
@@ -103,9 +109,23 @@ public class TransportLoader extends AsyncTaskLoader<Map<Route, List<Transport>>
                 c.disconnect();
 
                 addTransportToRoute(transport, route);
+
+                //Analytics
+                tracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("DATA")
+                        .setAction("transport_loader_success")
+                        .setLabel("loaders")
+                        .build());
             }
         } catch (Exception e) {
             Log.d(TAG, "error: " + e.getMessage() + " " + e);
+
+            //Analytics TODO exception_tracker instead of it?
+            tracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("DATA")
+                    .setAction("transport_loader_error")
+                    .setLabel("loaders")
+                    .build());
         }
         return transportByRoute;
     }

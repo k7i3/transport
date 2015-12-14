@@ -7,6 +7,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.GsonBuilder;
 
 import org.json.JSONException;
@@ -23,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import k7i3.code.tnc.transport.AnalyticsApplication;
 import k7i3.code.tnc.transport.Constants;
 import k7i3.code.tnc.transport.activity.SettingsActivity;
 import k7i3.code.tnc.transport.helper.SecurityHelper;
@@ -47,9 +50,7 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
 
     public TracksLoader (Context context, Bundle args) {
         super(context);
-        Log.d(TAG, "CONSTRUCTOR!!!");
         routes = args.getParcelableArrayList(Constants.ROUTES);
-        Log.d(TAG, "CONSTRUCTOR!!! routes.size(): " + routes.size());
     }
 
     @Override
@@ -94,6 +95,9 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
     }
 
     private void loadFromServer() {
+        //Analytics
+        Tracker tracker = ((AnalyticsApplication) getContext()).getTracker(AnalyticsApplication.TrackerName.PROGRAMMATICALLY_APP_TRACKER);
+
         try {
             String request;
             OutputStream out;
@@ -131,15 +135,33 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
 
                 // CLOSE TODO finally?
                 c.disconnect();
+
+                //Analytics
+                tracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("DATA")
+                        .setAction("tracks_loader_success(loadFromServer)")
+                        .setValue(trackByRoute == null? 0 : trackByRoute.size())
+                        .setLabel("loaders")
+                        .build());
             }
         } catch (Exception e) {
             Log.d(TAG, "error: " + e.getMessage() + " " + e);
             e.printStackTrace();
+
+            //Analytics TODO exception_tracker instead of it?
+            tracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("DATA")
+                    .setAction("tracks_loader_error(loadFromServer)")
+                    .setLabel("loaders")
+                    .build());
         }
     }
 
 //    TODO solve try/catch/finally/return
     private Track parseJsonFromStream(InputStream in) throws IOException {
+        //Analytics
+        Tracker tracker = ((AnalyticsApplication) getContext()).getTracker(AnalyticsApplication.TrackerName.PROGRAMMATICALLY_APP_TRACKER);
+
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
         String line;
         StringBuilder result = new StringBuilder();
@@ -162,6 +184,13 @@ public class TracksLoader extends AsyncTaskLoader<Map<Route, Track>> {
         } catch (JSONException e) {
             Log.d(TAG, "error: " + e.getMessage() + " " + e);
             e.printStackTrace();
+
+            //Analytics TODO exception_tracker instead of it?
+            tracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("DATA")
+                    .setAction("tracks_loader_error(parseJsonFromStream)")
+                    .setLabel("loaders")
+                    .build());
         } finally {
                 bufferedReader.close();
                 in.close();

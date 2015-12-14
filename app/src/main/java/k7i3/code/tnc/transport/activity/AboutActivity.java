@@ -45,7 +45,7 @@ public class AboutActivity extends BaseActivity {
                 Uri uri = Uri.parse("http://www.tncrb.ru");
                 Intent goTo = new Intent(Intent.ACTION_VIEW, uri);
 
-                //Analytics TODO working?
+                //Analytics
                 tracker.send(new HitBuilders.EventBuilder()
                         .setCategory("UI")
                         .setAction("uri_tnc_was_clicked")
@@ -70,7 +70,7 @@ public class AboutActivity extends BaseActivity {
                 Uri uri = Uri.parse("mailto:tnc.develop@gmail.com");
                 Intent goTo = new Intent(Intent.ACTION_VIEW, uri);
 
-                //Analytics TODO working?
+                //Analytics
                 tracker.send(new HitBuilders.EventBuilder()
                         .setCategory("UI")
                         .setAction("uri_email_was_clicked")
@@ -100,14 +100,13 @@ public class AboutActivity extends BaseActivity {
 //                        Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET |
 //                        Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
 
-                //Analytics TODO working
+                //Analytics TODO
                 tracker.send(new HitBuilders.EventBuilder()
                         .setCategory("UI")
                         .setAction("uri_market_was_clicked")
                         .setLabel("about")
                         .build());
                 try {
-//                    throw new ActivityNotFoundException();
                     startActivity(goToMarket);
                 } catch (ActivityNotFoundException e) {
                     startActivity(new Intent(Intent.ACTION_VIEW,
