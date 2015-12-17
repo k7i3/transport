@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/aigir_3_720" />
+        android:src="@drawable/aigir_02_720" />
 
     <!--routes_header4-->
 
@@ -15,7 +15,7 @@
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="60dp"-->
         <!--android:layout_gravity="center"-->
-        <!--android:src="@drawable/logo" />-->
+        <!--android:src="@drawable/logo_tnc" />-->
 
     <!--<ImageView-->
         <!--android:layout_width="84dp"-->
@@ -23,7 +23,7 @@
         <!--android:layout_gravity="bottom|start"-->
         <!--android:layout_marginStart="2dp"-->
         <!--android:layout_marginBottom="12dp"-->
-        <!--android:src="@drawable/logo" />-->
+        <!--android:src="@drawable/logo_tnc" />-->
 
     <!--<TextView-->
         <!--android:layout_width="match_parent"-->

@@ -9,7 +9,7 @@
         android:id="@+id/refresh"
         android:orderInCategory="200"
         android:title="@string/refresh"
-        android:icon="@drawable/logo"
+        android:icon="@drawable/logo_tnc"
         app:showAsAction="ifRoom"/>
 
     <!--<group android:checkableBehavior="all">-->
