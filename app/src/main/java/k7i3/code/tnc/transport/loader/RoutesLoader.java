@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -57,6 +58,8 @@ public class RoutesLoader extends AsyncTaskLoader<List<Route>> {
         super.onStartLoading();
         invocationContext = new InvocationContext(Utils.getIPAddress(true), "Android", SecurityHelper.encrypt("Klim55CVfg"), "Klim");
         gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        gson.excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC); // fix gson framework bug (can't make field constructor accessible)
+        //gson.excludeFieldsWithoutExposeAnnotation(); // may be needed too for fix bug
         type = new TypeToken<ArrayList<Route>>(){}.getType();
         forceLoad();
     }
